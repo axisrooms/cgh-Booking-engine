@@ -15,7 +15,7 @@
     </ng-container>
 
     <ng-template #elseBookingTemplate>
-        <ng-container *ngIf="streams.currBookingItem">
+        <!-- <ng-container *ngIf="streams.currBookingItem"> -->
             <app-stepper [stepper]="stepper"></app-stepper>
 
             <section class="contents-section">
@@ -23,11 +23,12 @@
                     {'max-width': '1050px'} : {'max-width': '1150px'}">
                     <div class="content-col">
                         <div style="min-height: 480px;">
+                            <app-addons *ngIf="stepper === eStepper.addons">
+                            </app-addons>
                             <app-personal-details *ngIf="stepper === eStepper.personalDetails">
                             </app-personal-details>
 
-                            <app-addons *ngIf="stepper === eStepper.addons">
-                            </app-addons>
+                         
                         </div>
 
                         <div class="btn-row">
@@ -46,15 +47,15 @@
                     </div>
                 </div>
             </section>
-        </ng-container>
+        <!-- </ng-container> -->
 
-        <app-no-booking *ngIf="!streams.currBookingItem && 
+        <!-- <app-no-booking *ngIf="!streams.currBookingItem && 
             !(streams.bookingCart?.bookingItems?.length ?? 0 > 0)">
         </app-no-booking>
 
         <app-ongoing-bookings *ngIf="!streams.currBookingItem && 
             (streams.bookingCart?.bookingItems?.length ?? 0 > 0)">
-        </app-ongoing-bookings>
+        </app-ongoing-bookings> -->
     </ng-template>
 
     <hr class="contents-section-seperator">

@@ -18,6 +18,7 @@ export class RecommendationsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.data)
   }
 
   closeDialog() {
@@ -27,6 +28,14 @@ export class RecommendationsComponent implements OnInit {
   viewRecommendations() {
     let searchParams: any = this.bookingService.getRecommendationsSearchParams();
     searchParams['searchType'] = 'location';
+    this.dialogRef.close()
+    this.router.navigate(['/search'], { queryParams: searchParams })
+  }
+
+
+  viewRecommendationsForSpecific(id: any) {
+    let searchParams: any = this.bookingService.getRecommendationsSearchParams();
+    searchParams['productId'] = id;
     this.dialogRef.close()
     this.router.navigate(['/search'], { queryParams: searchParams })
   }

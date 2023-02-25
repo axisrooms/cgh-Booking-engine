@@ -9,12 +9,12 @@ import { PersonalDetailsComponent } from './personal-details/personal-details.co
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PaymentService } from 'src/app/services/payment.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { SearchService } from 'src/app/services/search.service'; 
+import { SearchService } from 'src/app/services/search.service';
 
 export enum StepperType {
   none,
-  personalDetails,
   addons,
+  personalDetails,
   payment,
   confirmation,
 }
@@ -30,7 +30,7 @@ export class BookComponent implements OnInit {
 
   addons: any = [];
   eStepper = StepperType;
-  stepper: StepperType = this.eStepper.personalDetails;
+  stepper: StepperType = this.eStepper.addons;
   activateRouteSubscription$!: Subscription;
   personalDetailsForm!: FormGroup;
   currBookingItem$: Observable<BookingItem | undefined>;
@@ -48,11 +48,11 @@ export class BookComponent implements OnInit {
     this.bookingCart$ = this.bookingService.bookingCart$;
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   openRecommendationsDialog() {
-    this.spinner.show(); 
-    this.searchService.searchRooms(this.bookingService.getRecommendationsSearchParams()).subscribe(res => {
+    this.spinner.show();
+    this.searchService.getAllHotels().subscribe(res => {
       this.dialog.open(RecommendationsComponent, {
         width: '600px',
         panelClass: ['mat-dialog-custom-dimensions'],
@@ -60,7 +60,7 @@ export class BookComponent implements OnInit {
           searchResult: res
         },
       });
-      this.spinner.hide(); 
+      this.spinner.hide();
     })
   }
 
@@ -82,31 +82,54 @@ export class BookComponent implements OnInit {
   }
 
   onNext() {
-    if (this.stepper === this.eStepper.personalDetails) {
+
+    if (this.stepper === this.eStepper.addons) {
+
+      this.stepper = this.eStepper.personalDetails;
+      this.openRecommendationsDialog()
+
+    } else if (this.stepper === this.eStepper.personalDetails) {
       if (this.personalDetailsComponent.personalDetailsForm.valid) {
         this.personalDetailsForm =
           this.personalDetailsComponent.personalDetailsForm;
-        this.stepper = this.eStepper.addons;
-        this.openRecommendationsDialog()
+        // this.stepper = this.eStepper.addons;
+        this.paymentService.createOrderAndMakePayment(
+          this.bookingService.currBookingItemValue, this.personalDetailsForm.value
+        );
+
       } else {
         this.personalDetailsComponent.personalDetailsForm.markAllAsTouched();
         this.snackBar.open('Please complete the form', '', { duration: 2000 });
       }
-    } else if (this.stepper === this.eStepper.addons) {
-      this.paymentService.createOrderAndMakePayment(
-        this.bookingService.currBookingItemValue, this.personalDetailsForm.value
-      );
     }
+
+
+
+    // if (this.stepper === this.eStepper.personalDetails) {
+    //   if (this.personalDetailsComponent.personalDetailsForm.valid) {
+    //     this.personalDetailsForm =
+    //       this.personalDetailsComponent.personalDetailsForm;
+    //     this.stepper = this.eStepper.addons;
+    //     this.openRecommendationsDialog()
+    //   } else {
+    //     this.personalDetailsComponent.personalDetailsForm.markAllAsTouched();
+    //     this.snackBar.open('Please complete the form', '', { duration: 2000 });
+    //   }
+    // } else if (this.stepper === this.eStepper.addons) {
+    //   this.paymentService.createOrderAndMakePayment(
+    //     this.bookingService.currBookingItemValue, this.personalDetailsForm.value
+    //   );
+    // }
     window.scrollTo(0, 200);
   }
 
   goBack() {
-    if (this.stepper === this.eStepper.personalDetails) {
+    if (this.stepper === this.eStepper.addons) {
       history.back();
-    } else if (this.stepper === this.eStepper.addons) {
-      this.stepper = this.eStepper.personalDetails;
-    } else if (this.stepper === this.eStepper.payment) {
+    } else if (this.stepper === this.eStepper.personalDetails) {
       this.stepper = this.eStepper.addons;
+    } else if (this.stepper === this.eStepper.payment) {
+      this.stepper = this.eStepper.personalDetails;
     }
     window.scrollTo(0, 0);
   }

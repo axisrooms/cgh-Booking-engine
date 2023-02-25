@@ -17,7 +17,7 @@
 
             <ng-container *ngIf="searchForm.controls.searchType.value === 'hotel'; else elseLocationInpuTemplate">
                 <input type="search" autocomplete="off" class="field-content cstm" id="hotel-field-input"
-                    placeholder="Enter Hotel" aria-label="Number" matInput formControlName="hotel"
+                    placeholder="Search By Hotel/City" aria-label="Number" matInput formControlName="hotel"
                     (keydown)="onHotelFieldEvent('keydown', $event)" (focus)="onHotelFieldEvent('focus')">
 
                 <mat-card class="dropdown-card p-0" *ngIf="showDropdown === dropdownType.hotel">
@@ -39,7 +39,7 @@
 
             <ng-template #elseLocationInpuTemplate>
                 <input type="search" autocomplete="off" class="field-content cstm" id="location-field-input"
-                    placeholder="Enter Destination" aria-label="Number" matInput formControlName="location"
+                    placeholder="Search By Hotel/City" aria-label="Number" matInput formControlName="location"
                     (keydown)="onLocationFieldEvent('keydown', $event)" (focus)="onLocationFieldEvent('focus')">
 
                 <mat-card class="dropdown-card p-0" *ngIf="showDropdown === dropdownType.location">
@@ -162,7 +162,7 @@
             <hr>
             <ng-container *ngIf="searchResponse?.Hotel_Details?.length > 0; else noPackageTemplate">
                 <div *ngFor="let property of searchResponse?.Hotel_Details; let i = index">
-                    <app-package [property]="property" [searchId]="searchId"
+                    <app-package [property]="property" [searchId]="searchId" [id]="i"
                         [buttonActionType]="'searchComponent-newBooking'"></app-package>
                 </div>
             </ng-container>

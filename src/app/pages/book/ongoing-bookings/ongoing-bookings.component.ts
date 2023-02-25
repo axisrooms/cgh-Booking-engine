@@ -16,4 +16,9 @@ export class OngoingBookingsComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+
+  remove(i:any){
+    this.bookingService.removeCurrentBookingItemFromList(i)
+
+  }
 }

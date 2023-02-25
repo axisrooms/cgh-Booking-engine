@@ -44,7 +44,7 @@ export class PaymentService {
   makePayment(bookingItem: any, personalDetails: any) {
     this.bookingService.setPGLoaderFlag()
     let item = cloneDeep(bookingItem)
-    this.bookingService.removeCurrentBookingItemFromList()
+    // this.bookingService.removeCurrentBookingItemFromList()
     let url1 = `https://app.axisrooms.com/beV2/hotelBooking.html?currency=1&`;
     let url2 = `searchId=${item.searchId}&promoCodeApplied=&promoCode=&`;
     let url3 = `tokenvalues=&master_pax_first_name=${personalDetails.firstName}&master_pax_last_name=${personalDetails.lastName}&`;

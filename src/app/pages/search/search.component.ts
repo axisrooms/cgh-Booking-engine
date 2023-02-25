@@ -53,7 +53,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     private router: Router,
     private spinner: NgxSpinnerService,
     private dealsService: DealsService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.searchForm = this.getsearchForm();
@@ -82,7 +82,7 @@ export class SearchComponent implements OnInit, OnDestroy {
           ]);
         }
       });
-      
+
 
     this.activateRouteSubscription$ = this.activatedRoute.queryParams.pipe(
       debounceTime(500)
@@ -383,13 +383,17 @@ export class SearchComponent implements OnInit, OnDestroy {
       let searchParams: any = this.getSearchParams();
       this.searchService.searchRooms(searchParams).subscribe((res) => {
         this.searchResponse = res;
+
         this.searchId = this.searchResponse['search_id'];
         this.scrollToSearchView();
         this.spinner.hide();
+
+        console.log(this.searchResponse)
       });
     }
   }
 
+ 
   scrollToSearchView() {
     var element = document.getElementById('searchTitleId');
     var headerOffset = 250;
@@ -466,7 +470,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       } else if (i > 1) {
         this.agesOfChildren.push(this.getChildrensAgeForm());
         this.agesOfChildren.controls[i - 2].get('age')?.setValue(parseInt(e));
-      } 
+      }
     });
   }
 

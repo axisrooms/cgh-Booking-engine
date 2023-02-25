@@ -16,6 +16,9 @@ export type RoomButtonActionType =
 })
 export class PackageComponent implements OnInit, OnDestroy {
   _property: any;
+  lowestRoomPrice: number | undefined;
+  addons: any;
+  @Input() id:number | undefined
 
   @Input() set property(val) {
     this._property = val
@@ -28,7 +31,7 @@ export class PackageComponent implements OnInit, OnDestroy {
 
   @Input() searchId!: number;
   @Input() buttonActionType: RoomButtonActionType;
-  @Input() index!:number;
+  @Input() index!: number;
 
   highlightedDeal: any;
   checkIn!: string;
@@ -47,7 +50,7 @@ export class PackageComponent implements OnInit, OnDestroy {
   constructor(
     private activatedRoute: ActivatedRoute,
     private bookingService: BookingService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.activateRouteSubscription$ = this.activatedRoute.queryParams.subscribe(
@@ -61,7 +64,7 @@ export class PackageComponent implements OnInit, OnDestroy {
         this.productId = queryParams['productId'];
         this.paxInfo = queryParams['paxInfo'];
       }
-    ); 
+    );
   }
 
   ngOnDestroy(): void {
@@ -71,11 +74,23 @@ export class PackageComponent implements OnInit, OnDestroy {
   setDeal() {
     let deal: any
     this._property?.rooms?.forEach((e: any) => {
-       if(e.deal?.title && !deal) {
+      if (e.deal?.title && !deal) {
         deal = e.deal
-       }
+      }
     });
     this.highlightedDeal = deal
+
+
+    console.log(this._property, "hiii")
+
+    var arr: number[] = [];
+    this._property.rooms.forEach((element: { price: { actual: number; }; }) => {
+      arr.push(element.price.actual)
+    });
+
+   this.lowestRoomPrice = arr.reduce((a, b) => Math.min(a, b));  // 1
+    console.log(this.lowestRoomPrice,arr)
+
   }
 
   onExpandTab(selection: 'overview' | 'rooms' | 'deals') {
@@ -100,10 +115,14 @@ export class PackageComponent implements OnInit, OnDestroy {
         this.searchId,
         this.checkIn,
         this.checkOut,
-        this.paxInfo
+        this.paxInfo,
+        this.addons
       );
     } else if (this.buttonActionType === 'ongoingComponent-proceed') {
       this.bookingService.proceedBookingFromOngoingList(this.index)
     }
+
+
+    console.log(room, "hiii")
   }
 }

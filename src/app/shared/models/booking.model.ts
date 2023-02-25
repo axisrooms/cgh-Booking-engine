@@ -6,6 +6,7 @@ export interface BookingCart {
 
 export interface BookingItem {
     addons?: Addon[],
+    addonTotalPrice:number,
     prevUrl?: string,
     searchId: number,
     hotelId: number,
@@ -21,11 +22,13 @@ export interface BookingItem {
     agesOfChildren: number[],
     rooms: Room[],
     renderData?: any
+
 }
 
 export interface Room {
     ratePlanId: number,
     roomId: number,
+    currency:string
     price: {
         actual: number,
         discounted: number,
@@ -34,7 +37,8 @@ export interface Room {
 }
 
 export interface Addon {
-    cost: string,
+    cost: number,
+    totalCost: number,
     currency: string,
     mandatory: boolean,
     policy_description: string,

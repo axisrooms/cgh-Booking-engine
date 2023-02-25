@@ -1,12 +1,32 @@
 <div class="wrapper">
     <div class="property-row" [ngStyle]="expandTabBlock ? { background: 'white' } : {}">
-        <div class="property-image-col" *ngIf="property.images && property.images[0]">
-            <img src="{{property.images[0]}}"  alt="">
+        <div class="property-image-col" >
+            <!-- <img src="{{property.images[1]}}" alt=""> -->
+
+            <div id="carouselExampleControls" class="carousel slide" [id]="'slider'+id" data-ride="carousel"
+            style="width: 200px;">
+            <div class="carousel-inner">
+                <div class="carousel-item" *ngFor="let item of property.images;let i=index"
+                    [ngClass]="i == 1 ? 'active' : ''" [id]="'slide'+ i">
+                    <img class="d-block w-100" [src]="item">
+                </div>
+            </div>
+            <a class="carousel-control-prev" [href]="'#slider'+id" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" [href]="'#slider'+id" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
         </div>
+        </div>
+        <!-- <img src="{{property.images[0]}}"  alt=""> -->
+
 
         <div class="property-text-col">
             <p class="package-title">{{ property.hotel_name }}</p>
-            
+
             <p class="higlight-point" style="margin-bottom: 5px" *ngIf="3 > 0">
                 <ng-container *ngFor="let star of [1, 2, 3, 4, 5, 6, 7, 8]">
                     <i class="bi bi-star-fill" *ngIf="star <= 3"
@@ -54,7 +74,7 @@
                     <span class="text-col-span">
                         <span class="highlight-btn-type">Our lowest price</span>
                         <span>
-                            <span class="highlight-btn-text">$1200</span>
+                            <span class="highlight-btn-text">{{property.currency}} {{lowestRoomPrice}}</span>
                             <span class="view-more-span">View more</span>
                         </span>
                     </span>
@@ -125,15 +145,15 @@
 
 <ng-template #roomsTab let-property="property">
     <p class="room-list-heading">Rooms Starting from</p>
-    <ng-container *ngFor="let room of property.rooms">
-        <app-room [room]="room" [property]="property" (btnEvent)="roomBtnEvent(property, room)">
+    <ng-container *ngFor="let room of property.rooms;let i=index">
+        <app-room [room]="room" [id]="i" [property]="property" (btnEvent)="roomBtnEvent(property, room)">
         </app-room>
     </ng-container>
 </ng-template>
 
 <ng-template #dealsTab>
     <div class="deals-wrapper">
-        <ng-container  *ngFor="let item of property.rooms">
+        <ng-container *ngFor="let item of property.rooms">
             <div class="deal-card" *ngIf="item.deal">
                 <div class="deal-room-section">
                     <p class="deal-title mb-0">{{item.roomName}}</p>
@@ -143,7 +163,7 @@
                     <p class="deal-desc">Description: {{item.deal.description}}</p>
                 </div>
                 <div class="deal-bottom-section">
-                    <p class="deal-value">Value: 
+                    <p class="deal-value">Value:
                         <span style="font-weight: 400;">{{item.deal.value}} {{item.deal.type}}</span>
                     </p>
                 </div>
