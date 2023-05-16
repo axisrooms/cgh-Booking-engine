@@ -40,3 +40,11 @@ input:nth-child(even) {
 .form-input-error {
   border: 1px solid red;
 }
+
+
+.err-txt{
+  color: #c81515;
+    padding: 0;
+    font-size: 12px;
+}
+

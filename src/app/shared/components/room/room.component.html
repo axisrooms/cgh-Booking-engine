@@ -33,7 +33,7 @@
                 </div>
             </div>
             <div class="room-header-text-col">
-                <p class="room-title">Room: {{room.roomName}}</p>
+                <p class="room-title">{{room.roomName}}</p>
                 <p *ngIf="room.description && room.description != ''"
                     style="height: 80px; overflow: hidden; margin-bottom: 0;">{{room.description}}</p>
                 <div>
@@ -82,11 +82,11 @@
                             <i class="bi bi-egg-fried"></i>
                             Meal Plan: {{room.mealPlan}}
                         </p>
-                        <p class="higlight-point style-x">
+                        <!-- <p class="higlight-point style-x">
                             <i class="bi bi-tags"></i>
                             Rate Plan: {{room.ratePlanName}} <br>
                             (ID: {{room.roomId}})
-                        </p>
+                        </p> -->
                     </div>
                 </div>
             </div>
