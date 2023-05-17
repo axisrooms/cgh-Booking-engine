@@ -75,7 +75,8 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  background: none;;
+  background: none;
+  ;
 }
 
 .search-bar .field-heading {
@@ -110,20 +111,12 @@
   font-weight: 300 !important;
 }
 
-.search-bar
-  .ages-row
-  ::ng-deep
-  .mat-form-field-appearance-fill
-  .mat-form-field-flex {
+.search-bar .ages-row ::ng-deep .mat-form-field-appearance-fill .mat-form-field-flex {
   padding: 4px 10px;
   height: 34px;
 }
 
-.search-bar
-  .ages-row
-  ::ng-deep
-  .mat-form-field-appearance-fill
-  .mat-form-field-infix {
+.search-bar .ages-row ::ng-deep .mat-form-field-appearance-fill .mat-form-field-infix {
   border-top: 0;
 }
 
@@ -132,16 +125,12 @@
   height: 40px;
 }
 
-.search-bar
-  ::ng-deep
-  .mat-form-field-appearance-fill.mat-form-field-disabled
-  .mat-form-field-label {
+.search-bar ::ng-deep .mat-form-field-appearance-fill.mat-form-field-disabled .mat-form-field-label {
   color: rgba(0, 0, 0, 0.6);
 }
 
 .search-bar ::ng-deep .mat-input-element:disabled,
-.mat-form-field-type-mat-native-select.mat-form-field-disabled
-  .mat-form-field-infix::after {
+.mat-form-field-type-mat-native-select.mat-form-field-disabled .mat-form-field-infix::after {
   color: rgba(0, 0, 0, 0.9);
 }
 
@@ -166,6 +155,8 @@
   z-index: 1;
   box-shadow: 0 10px 30px rgba(41, 51, 57, 0.75) !important;
   border-radius: 2px;
+  scroll-behavior: smooth;
+  max-height: 255px;
 }
 
 .search-bar .hotel-field .dropdown-card {
@@ -321,7 +312,7 @@
 
 .search-bar .ages-row {
   margin-left: -5px;
-    margin-bottom: -5px;
+  margin-bottom: -5px;
   display: flex;
   padding: 0 0 0 0;
   flex-wrap: wrap;
