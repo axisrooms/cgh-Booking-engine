@@ -20,7 +20,8 @@
                     placeholder="Search By Hotel/City" aria-label="Number" matInput formControlName="hotel"
                     (keydown)="onHotelFieldEvent('keydown', $event)" (focus)="onHotelFieldEvent('focus')">
 
-                <mat-card class="dropdown-card p-0" *ngIf="showDropdown === dropdownType.hotel">
+                <mat-card class="dropdown-card p-0" style="  scroll-behavior: smooth;
+                max-height: 255px;" *ngIf="showDropdown === dropdownType.hotel">
                     <div class="option-block" *ngFor="let option of filteredHotelsList | async"
                         (click)="selectHotel(option.hotel_name)">
                         <i class="bi bi-building"></i>
@@ -42,7 +43,8 @@
                     placeholder="Search By Hotel/City" aria-label="Number" matInput formControlName="location"
                     (keydown)="onLocationFieldEvent('keydown', $event)" (focus)="onLocationFieldEvent('focus')">
 
-                <mat-card class="dropdown-card p-0" *ngIf="showDropdown === dropdownType.location">
+                <mat-card class="dropdown-card p-0" style="  scroll-behavior: smooth;
+                max-height: 255px;" *ngIf="showDropdown === dropdownType.location">
                     <div class="option-block" *ngFor="let option of filteredLocationList | async"
                         (click)="selectLocation(option)">
                         <i class="bi bi-geo-alt"></i>
@@ -70,7 +72,7 @@
         <div class="checkin-field">
             <div (click)="toggleDropdown(dropdownType.checkin)">
                 <p class="field-heading">Check in</p>
-                <input class="field-content date-plchldr" formControlName="checkIn" placeholder="-- / -- / ----"
+                <input class="field-content date-plchldr" formControlName="checkIn"  placeholder="-- / -- / ----"
                     readonly>
             <i class="bi bi-calendar4-week icon-style"></i>
 
@@ -86,7 +88,7 @@
         <div class="checkout-field">
             <div (click)="toggleDropdown(dropdownType.checkout)">
                 <p class="field-heading">Check out</p>
-                <input class="field-content date-plchldr" formControlName="checkOut" placeholder="-- / -- / ----"
+                <input class="field-content date-plchldr"   formControlName="checkOut"   placeholder="-- / -- / ----"
                     readonly>
             <i class="bi bi-calendar4-week icon-style"></i>
 

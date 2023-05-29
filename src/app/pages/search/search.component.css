@@ -155,8 +155,7 @@
   z-index: 1;
   box-shadow: 0 10px 30px rgba(41, 51, 57, 0.75) !important;
   border-radius: 2px;
-  scroll-behavior: smooth;
-  max-height: 255px;
+
 }
 
 .search-bar .hotel-field .dropdown-card {
