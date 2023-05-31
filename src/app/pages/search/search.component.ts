@@ -18,7 +18,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { DropdownType } from 'src/app/shared/models/dropdown-type';
 import { DealsService } from 'src/app/services/deals.service';
-
+import { formatDate, NgIf } from '@angular/common';
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
@@ -57,7 +57,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.searchForm = this.getsearchForm();
-
+    console.log(this.searchForm, "searchform")
     this.filteredHotelsList = this.searchForm.controls.hotel.valueChanges.pipe(
       startWith(''),
       map((value) => this.filterHotel(value))
@@ -88,18 +88,22 @@ export class SearchComponent implements OnInit, OnDestroy {
       debounceTime(300)
     ).subscribe(
       async (queryParams) => {
-        this.searchForm.controls.checkIn.setValue(queryParams['checkIn']);
-        this.searchForm.controls.checkOut.setValue(queryParams['checkOut']);
-        this.searchForm.controls.cityId.setValue(queryParams['cityId'] || '');
-        this.searchForm.controls.stateId.setValue(queryParams['stateId']);
-        this.searchForm.controls.countryId.setValue(queryParams['countryId']);
-        this.searchForm.controls.searchType.setValue(
-          queryParams['searchType'] || 'hotel'
-        );
-        await this.setHotelName(parseInt(queryParams['productId']));
-        this.setLocation(queryParams['cityId'], queryParams['stateId']);
-        this.setPaxInfo(queryParams['paxInfo']);
-        this.fetchSearchResult();
+        if (queryParams['checkIn']) {
+
+          this.searchForm.controls.checkIn.setValue(queryParams['checkIn']);
+          this.searchForm.controls.checkOut.setValue(queryParams['checkOut']);
+          this.searchForm.controls.cityId.setValue(queryParams['cityId'] || '');
+          this.searchForm.controls.stateId.setValue(queryParams['stateId']);
+          this.searchForm.controls.countryId.setValue(queryParams['countryId']);
+          this.searchForm.controls.searchType.setValue(
+            queryParams['searchType'] || 'hotel'
+          );
+          await this.setHotelName(parseInt(queryParams['productId']));
+          this.setLocation(queryParams['cityId'], queryParams['stateId']);
+          this.setPaxInfo(queryParams['paxInfo']);
+          this.fetchSearchResult();
+        }
+
       }
     );
   }
@@ -109,6 +113,12 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   getsearchForm() {
+    let dt = formatDate(new Date(), 'dd/MM/yyyy', 'en')
+
+    const tomorrow = new Date()
+    let dtTom = formatDate(tomorrow.getDate() + 1, 'dd/MM/yyyy', 'en')
+
+
     return this.formBuilder.group({
       searchType: ['hotel'],
       hotel: [''],
@@ -116,8 +126,8 @@ export class SearchComponent implements OnInit, OnDestroy {
       cityId: [''],
       stateId: [''],
       countryId: [''],
-      checkIn: ['', Validators.required],
-      checkOut: ['', Validators.required],
+      checkIn: [dt, Validators.required],
+      checkOut: [dtTom, Validators.required],
       noOfAdults: [1],
       agesOfChildren: this.formBuilder.array([]),
     });
@@ -248,8 +258,8 @@ export class SearchComponent implements OnInit, OnDestroy {
     }, 0);
   }
 
-    selectLocation(option: any) {
-      // this.searchForm.controls.status = 'VALID';
+  selectLocation(option: any) {
+    // this.searchForm.controls.status = 'VALID';
     if ((option.type = 'city')) {
       this.searchForm.controls.cityId.setValue(option.cityId);
     }
@@ -343,8 +353,8 @@ export class SearchComponent implements OnInit, OnDestroy {
     }
   }
 
-  
-  
+
+
   onSubmit() {
     console.log(this.searchForm, this.searchForm.valid)
     this.searchForm.markAllAsTouched();
@@ -352,7 +362,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     // if(      this.searchForm.controls.searchType.status== "VALID" ){
     //   this.searchForm.valid
     // }
-    if (this.searchForm.controls.searchType.status== "VALID") {
+    if (this.searchForm.controls.searchType.status == "VALID") {
       let prevUrl = this.router.url.toString();
       let searchParams: any = this.getSearchParams();
       searchParams['searchType'] = this.searchForm.controls.searchType.value;
@@ -388,7 +398,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     if (this.searchForm.valid) {
       this.spinner.show();
       let searchParams: any = this.getSearchParams();
-      console.log(searchParams,"searchparams")
+      console.log(searchParams, "searchparams")
       this.searchService.searchRooms(searchParams).subscribe((res) => {
         this.searchResponse = res;
 
@@ -401,7 +411,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     }
   }
 
- 
+
   scrollToSearchView() {
     var element = document.getElementById('searchTitleId');
     var headerOffset = 250;
