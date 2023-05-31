@@ -115,10 +115,11 @@ export class SearchComponent implements OnInit, OnDestroy {
   getsearchForm() {
     let dt = formatDate(new Date(), 'dd/MM/yyyy', 'en')
 
-    const tomorrow = new Date()
-    let dtTom = formatDate(tomorrow.getDate() + 1, 'dd/MM/yyyy', 'en')
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    let dtTom = formatDate(tomorrow, 'dd/MM/yyyy', 'en')
 
-
+    console.log(dtTom)
     return this.formBuilder.group({
       searchType: ['hotel'],
       hotel: [''],
