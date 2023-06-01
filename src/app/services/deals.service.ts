@@ -14,7 +14,7 @@ export class DealsService {
   }
 
   getDeals() {
-    return this.http.get<any>(`${BASE_URL}api/be/productDeals`, {
+    return this.http.get<any>(`https://preprod4.axisrooms.com/api/be/productDealsNew?supplierId=13027`, {
       headers: getDefaultHeaders(),
     });
   }
