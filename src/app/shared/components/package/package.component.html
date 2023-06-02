@@ -29,7 +29,7 @@
             <p class="package-title">{{ property.hotel_name }}</p>
 
             <p class="higlight-point" style="margin-bottom: 5px" *ngIf="3 > 0">
-                <ng-container *ngFor="let star of [1, 2, 3, 4, 5, 6, 7, 8]">
+                <ng-container *ngFor="let star of [].constructor(property.star_rating)">
                     <i class="bi bi-star-fill" *ngIf="star <= 5"
                         [ngStyle]="star === 5 ? { 'margin-right': '5px' } : {}"></i>
                 </ng-container>
