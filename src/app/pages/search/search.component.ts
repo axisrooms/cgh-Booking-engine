@@ -149,10 +149,12 @@ export class SearchComponent implements OnInit, OnDestroy {
     if (!value) value = '';
     let filterValue = value?.toLowerCase();
     let filteredArray = this.locationList.filter((val: any) =>
-      val.key?.toLowerCase().includes(filterValue)
+      val.key?.toLowerCase().includes(filterValue) && val.type == 'city'
     );
     this.showDropdown =
       filteredArray.length > 0 ? DropdownType.location : DropdownType.none;
+
+      console.log(this.locationList,filteredArray,"########")
     return filteredArray;
   }
 
@@ -234,6 +236,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   onLocationFieldEvent(type: string, event?: any) {
+    console.log(this.searchForm,event,"@@@@@@@@@")
     if (type === 'focus') {
       this.filterLocation(this.searchForm.controls.location.value);
     } else if (type === 'keydown') {
