@@ -57,10 +57,10 @@ export class CartBoxComponent implements OnInit {
 
   }
 
-  getRatePlan(roomList: any, roomID: any){
+  getRatePlan(roomList: any, roomID: any, rtID: any) {
     let ratePlan
     roomList.forEach((element: any) => {
-      if (element.roomId == roomID) {
+      if (element.roomId == roomID && element.ratePlanId == rtID) {
         ratePlan = element.ratePlanName;
       }
     });
