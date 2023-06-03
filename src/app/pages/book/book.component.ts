@@ -30,7 +30,7 @@ export enum StepperType {
 export class BookComponent implements OnInit {
   @ViewChild(PersonalDetailsComponent)
   personalDetailsComponent!: PersonalDetailsComponent;
-
+ 
   addons: any = [];
   eStepper = StepperType;
   stepper: StepperType = this.eStepper.addons;
@@ -38,7 +38,7 @@ export class BookComponent implements OnInit {
   personalDetailsForm!: FormGroup;
   currBookingItem$: Observable<BookingItem | undefined>;
   bookingCart$: Observable<BookingCart>;
-
+  payathotel:any = false;
   constructor(
     public dialog: MatDialog,
     private bookingService: BookingService,
@@ -66,6 +66,14 @@ export class BookComponent implements OnInit {
       });
       this.spinner.hide();
     })
+  }
+
+  payhotel(){
+    if(this.payathotel){
+      this.payathotel =false;
+    }else{
+      this.payathotel =true;
+    }
   }
 
   getAddressString() {
@@ -99,7 +107,7 @@ console.log(this.stepper, this.eStepper.payment,  this.eStepper.personalDetails)
         // this.stepper = this.eStepper.addons;
      
         this.paymentService.createOrderAndMakePayment(
-          this.bookingService.currBookingItemValue, this.personalDetailsForm.value
+          this.bookingService.currBookingItemValue, this.personalDetailsForm.value,this.payathotel
         );
       } else {
         this.personalDetailsComponent.personalDetailsForm.markAllAsTouched();
