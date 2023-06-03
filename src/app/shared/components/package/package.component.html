@@ -26,10 +26,10 @@
 
 
         <div class="property-text-col">
-            <p class="package-title">{{ property.hotel_name }}</p>
+            <p class="package-title">{{ property.hotel_name}}{{property['star_rating']}}</p>
 
             <p class="higlight-point" style="margin-bottom: 5px" *ngIf="3 > 0">
-                <ng-container *ngFor="let star of [].constructor(property.star_rating)">
+                <ng-container *ngFor="let star of starrate">
                     <i class="bi bi-star-fill" *ngIf="star <= 5"
                         [ngStyle]="star === 5 ? { 'margin-right': '5px' } : {}"></i>
                 </ng-container>
@@ -81,7 +81,10 @@
                     </span>
                     <span><i class="bi bi-chevron-down"></i></span>
                 </button>
-            </div>
+            </div><br>
+            <ul>
+                <li *ngFor="let amenity of property['amenities']">{{amenity}}</li>
+            </ul>
         </div>
     </div>
 

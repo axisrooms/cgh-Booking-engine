@@ -11,7 +11,14 @@
   flex-direction: row;
   flex-wrap: nowrap;
 }
-
+ul {
+   height: 60px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    text-decoration: none;
+    background: white;
+}
 .property-image-col {
   width: fit-content;
   padding: 10px;

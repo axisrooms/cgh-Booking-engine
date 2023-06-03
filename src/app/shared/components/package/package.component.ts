@@ -44,6 +44,7 @@ export class PackageComponent implements OnInit, OnDestroy {
   searchType!: any;
   productId!: any;
   paxInfo!: any;
+  starrate:any = [];
   bookingEngineId = BOOKING_ENGINE_ID;
   activateRouteSubscription$!: Subscription;
   expandTabBlock = false;
@@ -56,6 +57,11 @@ export class PackageComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+       for (let i =1; i <= this.property['star_rating']; i++) {
+      this.starrate.push(i);
+    }
+    
+  console.log( )
     this.activateRouteSubscription$ = this.activatedRoute.queryParams.subscribe(
       (queryParams) => {
         this.checkIn = queryParams['checkIn'];

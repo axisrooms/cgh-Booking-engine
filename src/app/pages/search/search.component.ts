@@ -57,6 +57,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.searchForm = this.getsearchForm();
+    this.getAllHotels();  
     console.log(this.searchForm, "searchform")
     this.filteredHotelsList = this.searchForm.controls.hotel.valueChanges.pipe(
       startWith(''),
@@ -73,10 +74,10 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.searchForm.controls.searchType.valueChanges.subscribe((value) => {
         if (value === 'hotel') {
           this.searchForm.controls.hotel.setValidators([Validators.required]);
-          this.searchForm.controls.location.setValidators(null);
+          
         }
         if (value === 'location') {
-          this.searchForm.controls.hotel.setValidators(null);
+         
           this.searchForm.controls.location.setValidators([
             Validators.required,
           ]);
@@ -121,7 +122,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     console.log(dtTom)
     return this.formBuilder.group({
-      searchType: ['hotel'],
+      searchType: [],
       hotel: [''],
       location: [''],
       cityId: [''],
@@ -221,7 +222,17 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   changeSearchType(val: string) {
+    console.log(val)
     this.searchForm.controls.searchType.setValue(val);
+    if (val === 'hotel') {
+      this.searchForm.controls.hotel.setValidators([Validators.required]);
+      this.searchForm.controls.location.setValidators([]); 
+    }
+    if (val === 'location') {
+      this.searchForm.controls.hotel.setValidators([]);
+      this.searchForm.controls.location.setValidators([Validators.required]);
+    }
+   
   }
 
   async onHotelFieldEvent(type: string, event?: any) {
@@ -236,7 +247,9 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   onLocationFieldEvent(type: string, event?: any) {
-    console.log(this.searchForm,event,"@@@@@@@@@")
+    if (!this.isHotelListLoaded) {
+      this.getAllHotels();
+    }
     if (type === 'focus') {
       this.filterLocation(this.searchForm.controls.location.value);
     } else if (type === 'keydown') {
@@ -244,8 +257,8 @@ export class SearchComponent implements OnInit, OnDestroy {
     }
   }
 
-  focusDestinationFieldInput() {
-    if (this.searchForm.controls.searchType.value === 'hotel') {
+  focusDestinationFieldInput(type: string) {
+    if (type === 'hotel') {
       document.getElementById('hotel-field-input')?.focus();
     } else {
       document.getElementById('location-field-input')?.focus();
@@ -266,6 +279,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     // this.searchForm.controls.status = 'VALID';
     if ((option.type = 'city')) {
       this.searchForm.controls.cityId.setValue(option.cityId);
+      if(this.searchForm.controls.searchType.value !== "hotel"){
+        this.searchForm.controls.searchType.setValue('location')
+      }
     }
     this.searchForm.controls.stateId.setValue(option.stateId);
     this.searchForm.controls.countryId.setValue(option.countryId);
@@ -433,15 +449,15 @@ export class SearchComponent implements OnInit, OnDestroy {
     let searchParams: any = {
       bookingEngineId: BOOKING_ENGINE_ID,
     };
-    if (this.searchForm.controls.searchType.value === 'hotel') {
+  
       searchParams.productId = this.getProductId();
-    } else {
+ 
       if (this.searchForm.controls.cityId.value?.length > 0) {
         searchParams.cityId = this.searchForm.controls.cityId.value;
       }
       // searchParams.stateId = this.searchForm.controls.stateId.value;
       // searchParams.countryId = this.searchForm.controls.countryId.value;
-    }
+    
     if (this.searchForm.controls.checkIn.value?.length > 0) {
       searchParams.checkIn = this.searchForm.controls.checkIn.value;
     }

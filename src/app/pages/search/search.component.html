@@ -1,21 +1,17 @@
 <section class="banner-section">
 
     <div class="search-bar" [formGroup]="searchForm" autocomplete="off">
-        <div class="hotel-field" (click)="focusDestinationFieldInput()">
+        <div class="hotel-field" (click)="focusDestinationFieldInput('hotel')">
             <p class="field-heading" style="margin-bottom: 5px;">
                 <span (click)="changeSearchType('hotel')"
-                    [ngStyle]="searchForm.controls.searchType.value === 'hotel' ? {'font-weight': '500'} : {}">Hotel</span>
-                <i class="bi"
-                    [ngClass]="searchForm.controls.searchType.value === 'hotel' ? 'bi-caret-left-fill' : 'bi-caret-left'"
+                style="font-weight: 500">Hotel</span>
+                <i class="bi bi-caret-left-fill"
+                    
                     style="margin-left: 1px;" (click)="changeSearchType('hotel')"></i>
-                <i class="bi"
-                    [ngClass]="searchForm.controls.searchType.value === 'location' ? 'bi-caret-right-fill' : 'bi-caret-right'"
-                    style="margin-left: -6px;" (click)="changeSearchType('location')"></i>
-                <span (click)="changeSearchType('location')"
-                    [ngStyle]="searchForm.controls.searchType.value === 'location' ? {'font-weight': '500'} : {}">Location</span>
+               
             </p>
 
-            <ng-container *ngIf="searchForm.controls.searchType.value === 'hotel'; else elseLocationInpuTemplate">
+            <ng-container>
                 <input type="search" autocomplete="off" class="field-content cstm" id="hotel-field-input"
                     placeholder="Search By Hotel/City" aria-label="Number" matInput formControlName="hotel"
                     (keydown)="onHotelFieldEvent('keydown', $event)" (focus)="onHotelFieldEvent('focus')">
@@ -37,36 +33,47 @@
                     </div>
                 </mat-card>
             </ng-container>
-
-            <ng-template #elseLocationInpuTemplate>
-                <input type="search" autocomplete="off" class="field-content cstm" id="location-field-input"
-                    placeholder="Search By Hotel/City" aria-label="Number" matInput formControlName="location"
-                    (keydown)="onLocationFieldEvent('keydown', $event)" (focus)="onLocationFieldEvent('focus')">
-
-                <mat-card class="dropdown-card p-0" style="  scroll-behavior: smooth;
-                max-height: 255px;" *ngIf="showDropdown === dropdownType.location">
-                    <div class="option-block" *ngFor="let option of filteredLocationList | async"
-                        (click)="selectLocation(option)">
-                        <i class="bi bi-geo-alt"></i>
-                        <div class="option-text-block">
-                            <p class="option-title-text">{{option.key}}</p>
-                            <p class="option-sub-text">
-                                <span style="text-transform: capitalize; font-weight: 600; color: #666;">{{option.type}}
-                                    . </span>
-                                {{option.city && option.key != option.city ? option.city + ', ' : ''}}
-                                {{option.state && option.key != option.state ? option.state + ', ' : ''}}
-                                {{option.country ? option.country : ''}}
-                            </p>
-                        </div>
-                    </div>
-                </mat-card>
-            </ng-template>
+          
 
             <p class="hotel-field-warning"
                 *ngIf="showFieldWarnings === dropdownType.hotel || showFieldWarnings === dropdownType.location">To
                 start, tell us where you're going</p>
 
             <i class="bi bi-building icon-style"></i>
+        </div>
+        <div class="hotel-field" (click)="focusDestinationFieldInput('location')">
+        <p class="field-heading" style="margin-bottom: 5px;">
+               
+               
+            <i class="bi bi-caret-right-fill"
+                
+                style="margin-left: -6px;" (click)="changeSearchType('location')"></i>
+            <span (click)="changeSearchType('location')"
+                style="font-weight: 500">Location</span>
+        </p>
+        <ng-container>
+            <input type="search" autocomplete="off" class="field-content cstm" id="location-field-input"
+                placeholder="Search By Hotel/City" aria-label="Number" matInput formControlName="location"
+                (keydown)="onLocationFieldEvent('keydown', $event)" (focus)="onLocationFieldEvent('focus')">
+
+            <mat-card class="dropdown-card p-0" style="  scroll-behavior: smooth;
+            max-height: 255px;" *ngIf="showDropdown === dropdownType.location">
+                <div class="option-block" *ngFor="let option of filteredLocationList | async"
+                    (click)="selectLocation(option)">
+                    <i class="bi bi-geo-alt"></i>
+                    <div class="option-text-block">
+                        <p class="option-title-text">{{option.key}}</p>
+                        <p class="option-sub-text">
+                            <span style="text-transform: capitalize; font-weight: 600; color: #666;">{{option.type}}
+                                . </span>
+                            {{option.city && option.key != option.city ? option.city + ', ' : ''}}
+                            {{option.state && option.key != option.state ? option.state + ', ' : ''}}
+                            {{option.country ? option.country : ''}}
+                        </p>
+                    </div>
+                </div>
+            </mat-card>
+        </ng-container>
         </div>
 
         <div class="checkin-field">
