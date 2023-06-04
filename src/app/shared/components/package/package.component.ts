@@ -48,7 +48,7 @@ export class PackageComponent implements OnInit, OnDestroy {
   bookingEngineId = BOOKING_ENGINE_ID;
   activateRouteSubscription$!: Subscription;
   expandTabBlock = false;
-  selectedTab!: 'overview' | 'rooms' | 'deals' | undefined;
+  selectedTab!: 'overview' | 'rooms' | 'deals' | 'amenities' | undefined;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -102,7 +102,7 @@ export class PackageComponent implements OnInit, OnDestroy {
 
   }
 
-  onExpandTab(selection: 'overview' | 'rooms' | 'deals') {
+  onExpandTab(selection: 'overview' | 'rooms' | 'deals' | 'amenities') {
     if (this.selectedTab === selection) {
       this.selectedTab = undefined;
       this.expandTabBlock = false;
@@ -112,7 +112,7 @@ export class PackageComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectTab(selection: 'overview' | 'rooms' | 'deals') {
+  selectTab(selection: 'overview' | 'rooms' | 'deals' | 'amenities') {
     this.selectedTab = selection;
   }
 

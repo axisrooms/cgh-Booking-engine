@@ -105,7 +105,7 @@ console.log(this.stepper, this.eStepper.payment,  this.eStepper.personalDetails)
         this.personalDetailsForm =
           this.personalDetailsComponent.personalDetailsForm;
         // this.stepper = this.eStepper.addons;
-     
+        
         this.paymentService.createOrderAndMakePayment(
           this.bookingService.currBookingItemValue, this.personalDetailsForm.value,this.payathotel
         );

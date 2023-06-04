@@ -33,7 +33,8 @@
                     <i class="bi bi-star-fill" *ngIf="star <= 5"
                         [ngStyle]="star === 5 ? { 'margin-right': '5px' } : {}"></i>
                 </ng-container>
-                <span>{{property.property_type}}</span>
+                <span>{{property.property_type}}</span><br>
+                <span class="view-more-span"(click)="onExpandTab('amenities')">Click to view Amenities</span>
             </p>
 
             <p class="higlight-point" style="margin-top: 2px; margin-bottom: 18px">
@@ -82,9 +83,7 @@
                     <span><i class="bi bi-chevron-down"></i></span>
                 </button>
             </div><br>
-            <!-- <ul>
-                <li *ngFor="let amenity of property['amenities']">{{amenity}}</li>
-            </ul> -->
+          
         </div>
     </div>
 
@@ -92,6 +91,13 @@
         <ng-container *ngIf="selectedTab === 'overview'">
             <ng-container *ngTemplateOutlet="
                 overviewTab;
+                context: { property: property }
+                ">
+            </ng-container>
+        </ng-container>
+        <ng-container *ngIf="selectedTab === 'amenities'">
+            <ng-container *ngTemplateOutlet="
+            amenitesTab;
                 context: { property: property }
                 ">
             </ng-container>
@@ -162,6 +168,14 @@
         <app-room [room]="room" [id]="i" [property]="property" (btnEvent)="roomBtnEvent(property, room)"
         [checkIn]="checkIn" [checkOut]="checkOut" [paxInfo]="paxInfo" [productId]="productId">
         </app-room>
+    </ng-container>
+</ng-template>
+<ng-template #amenitesTab let-property="property">
+    <p class="room-list-heading">Amenities</p>
+    <ng-container >
+        <ul>
+            <li *ngFor="let amenitie of property.amenities;let i=index">{{amenitie}}</li>
+        </ul>
     </ng-container>
 </ng-template>
 
