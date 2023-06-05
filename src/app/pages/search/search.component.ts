@@ -57,7 +57,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.searchForm = this.getsearchForm();
-    this.getAllHotels();  
+    this.getWithExpiry();  
     console.log(this.searchForm, "searchform")
     this.filteredHotelsList = this.searchForm.controls.hotel.valueChanges.pipe(
       startWith(''),
@@ -136,6 +136,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   filterHotel(value: any): any[] {
+    this.getWithExpiry();
     if (!value) value = '';
     let filterValue = value?.toLowerCase();
     let filteredArray = this.hotelsList.filter((val) =>
@@ -147,6 +148,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   filterLocation(value: any): any[] {
+    this.getWithExpiry();
     if (!value) value = '';
     let filterValue = value?.toLowerCase();
     let filteredArray = this.locationList.filter((val: any) =>
@@ -158,19 +160,52 @@ export class SearchComponent implements OnInit, OnDestroy {
       console.log(this.locationList,filteredArray,"########")
     return filteredArray;
   }
+  
+  setWithExpiry( value: any) {
+    const now = new Date()
+  
+    // `item` is an object which contains the original value
+    // as well as the time when it's supposed to expire
+    const item = {
+      value: value,
+      expiry: now.getTime(),
+    }
+    localStorage.setItem('hotel', JSON.stringify(item))
+  }
 
   async getAllHotels() {
     await this.searchService
       .getAllHotels()
       .toPromise()
       .then((res) => {
-        this.hotelsList = res['Hotel_Details'];
-        this.getLocationList(res['Hotel_Details']);
-        this.isHotelListLoaded = true;
+        this.setWithExpiry(res['Hotel_Details'])
+        this.getWithExpiry();
+       
       })
       .catch((err) => console.log(err));
   }
+  getWithExpiry() {
+    const itemStr = localStorage.getItem('hotel')
+    // if the item doesn't exist, return null
+    if (!itemStr) {
+      return null
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+    // compare the expiry time of the item with the current time
+    if (now.getTime() > item.expiry && !localStorage.getItem('hotel')) {
+      // If the item is expired, delete the item from storage
+      // and return null
+      localStorage.removeItem('hotel');
+      this.getAllHotels();
 
+      return null
+    }
+    this.hotelsList= item.value;
+    this.getLocationList(item.value);
+    this.isHotelListLoaded = true;
+    return;
+  }
   getLocationList(val: any) {
     val.forEach((e1: any) => {
       //Push city if available
@@ -237,7 +272,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   async onHotelFieldEvent(type: string, event?: any) {
     if (!this.isHotelListLoaded) {
-      await this.getAllHotels();
+      this.getWithExpiry();
     }
     if (type === 'focus') {
       this.filterHotel(this.searchForm.controls.hotel.value);
@@ -248,7 +283,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   onLocationFieldEvent(type: string, event?: any) {
     if (!this.isHotelListLoaded) {
-      this.getAllHotels();
+      this.getWithExpiry();
     }
     if (type === 'focus') {
       this.filterLocation(this.searchForm.controls.location.value);
@@ -295,7 +330,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   async setHotelName(id: number) {
     if (!this.isHotelListLoaded) {
-      await this.getAllHotels();
+      this.getWithExpiry();
     }
     let hotelName = '';
     for (let i = 0; i < this.hotelsList.length; i++) {
