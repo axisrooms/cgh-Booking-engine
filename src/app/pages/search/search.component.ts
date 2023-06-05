@@ -186,25 +186,31 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
   getWithExpiry() {
     const itemStr = localStorage.getItem('hotel')
+    console.log(itemStr)
     // if the item doesn't exist, return null
     if (!itemStr) {
-      return null
-    }
-    const item = JSON.parse(itemStr)
-    const now = new Date()
-    // compare the expiry time of the item with the current time
-    if (now.getTime() > item.expiry && !localStorage.getItem('hotel')) {
-      // If the item is expired, delete the item from storage
-      // and return null
-      localStorage.removeItem('hotel');
       this.getAllHotels();
 
-      return null
     }
-    this.hotelsList= item.value;
-    this.getLocationList(item.value);
-    this.isHotelListLoaded = true;
-    return;
+    let item 
+    if (itemStr) {
+  item = JSON.parse(itemStr)
+  const now = new Date()
+  // compare the expiry time of the item with the current time
+  if (now.getTime() > item.expiry) {
+    // If the item is expired, delete the item from storage
+    // and return null
+    localStorage.removeItem('hotel');
+   
+    this.getAllHotels();
+
+  }
+  this.hotelsList= item.value;
+  this.getLocationList(item.value);
+  this.isHotelListLoaded = true;
+  return;
+  }
+   
   }
   getLocationList(val: any) {
     val.forEach((e1: any) => {
