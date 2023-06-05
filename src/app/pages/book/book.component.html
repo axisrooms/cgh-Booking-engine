@@ -31,17 +31,34 @@
 
                     </div>
 
+                    
+                    <div class="btn-row" style="display: flow-root;">
+                        
+                        <ng-container *ngIf="stepper == eStepper.personalDetails">
+                           <label style="font-weight:bolder"> Pay Now
+                            <input type="radio" style="
+                           margin-top: 15px;margin-left: -60px;
+                        " checked="true"class="btn-main" name="pay" (click)="payhotel();"  ></label>
+                           
+                        </ng-container>
+                        <ng-container *ngIf="stepper == eStepper.personalDetails">
+                            <label style="font-weight:bolder"> Pay At Hotel
+                             <input type="radio" style="
+                            margin-top: 15px;margin-left: -60px;
+                         " class="btn-main" name="pay"(click)="payhotel();"  ></label>
+                            
+                         </ng-container>
+                        
+                 
+
+
+                    </div>
                     <div class="btn-row">
                         <button class="btn-main" (click)="goBack()">
                             {{ stepper != eStepper.confirmation ? 'BACK' : 'Download PDF'}}
                         </button>
-                        <ng-container *ngIf="stepper == eStepper.personalDetails">
-                           <label style="font-weight:bolder"> Pay At Hotel
-                            <input type="radio" style="
-                           margin-top: 15px;margin-left: -60px;
-                        " class="btn-main" (click)="payhotel();"  ></label>
-                           
-                        </ng-container>
+                        
+                        
                         <ng-container *ngIf="stepper != eStepper.addons">
                             <button class="btn-main" (click)="onNext()"  *ngIf="stepper == eStepper.confirmation">
                                 CONTINUE

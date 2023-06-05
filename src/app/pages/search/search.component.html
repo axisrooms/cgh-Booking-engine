@@ -13,7 +13,7 @@
 
             <ng-container>
                 <input type="search" autocomplete="off" class="field-content cstm" id="hotel-field-input"
-                    placeholder="Search By Hotel/City" aria-label="Number" matInput formControlName="hotel"
+                    placeholder="Search By Hotel" aria-label="Number" matInput formControlName="hotel"
                     (keydown)="onHotelFieldEvent('keydown', $event)" (focus)="onHotelFieldEvent('focus')">
 
                 <mat-card class="dropdown-card p-0" style="  scroll-behavior: smooth;
@@ -53,7 +53,7 @@
         </p>
         <ng-container>
             <input type="search" autocomplete="off" class="field-content cstm" id="location-field-input"
-                placeholder="Search By Hotel/City" aria-label="Number" matInput formControlName="location"
+                placeholder="Search By City" aria-label="Number" matInput formControlName="location"
                 (keydown)="onLocationFieldEvent('keydown', $event)" (focus)="onLocationFieldEvent('focus')">
 
             <mat-card class="dropdown-card p-0" style="  scroll-behavior: smooth;
