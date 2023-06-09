@@ -95,12 +95,12 @@
     <div class="room-col">
         <p class="mb-1" *ngIf="room.price.discounted ">
             <span class="price-before">{{property.currency}} {{room.price.discounted ?
-                (room.price.actual | number : '1.2' ) : ''}}</span>
+                ((room.price.actual + room.price.discounted) | number : '1.2' ) : ''}}</span>
         </p>
         <p class="mb-0">
             <span class="price">
                 {{property.currency}}
-                {{room.price.discounted ? (room.price.actual-room.price.discounted ) : room.price.actual | number : '1.2' }}
+                {{room.price.actual | number : '1.2' }}
             </span>
         </p>
         <p class="mb-0">
