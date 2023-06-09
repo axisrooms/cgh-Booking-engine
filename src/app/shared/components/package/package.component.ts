@@ -44,10 +44,11 @@ export class PackageComponent implements OnInit, OnDestroy {
   searchType!: any;
   productId!: any;
   paxInfo!: any;
+  starrate:any = [];
   bookingEngineId = BOOKING_ENGINE_ID;
   activateRouteSubscription$!: Subscription;
   expandTabBlock = false;
-  selectedTab!: 'overview' | 'rooms' | 'deals' | undefined;
+  selectedTab!: 'overview' | 'rooms' | 'deals' | 'amenities' | undefined;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -56,6 +57,11 @@ export class PackageComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+       for (let i =1; i <= this.property['star_rating']; i++) {
+      this.starrate.push(i);
+    }
+    
+  console.log( )
     this.activateRouteSubscription$ = this.activatedRoute.queryParams.subscribe(
       (queryParams) => {
         this.checkIn = queryParams['checkIn'];
@@ -96,7 +102,7 @@ export class PackageComponent implements OnInit, OnDestroy {
 
   }
 
-  onExpandTab(selection: 'overview' | 'rooms' | 'deals') {
+  onExpandTab(selection: 'overview' | 'rooms' | 'deals' | 'amenities') {
     if (this.selectedTab === selection) {
       this.selectedTab = undefined;
       this.expandTabBlock = false;
@@ -106,7 +112,7 @@ export class PackageComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectTab(selection: 'overview' | 'rooms' | 'deals') {
+  selectTab(selection: 'overview' | 'rooms' | 'deals' | 'amenities') {
     this.selectedTab = selection;
   }
 

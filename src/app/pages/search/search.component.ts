@@ -57,6 +57,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.searchForm = this.getsearchForm();
+    this.getWithExpiry();  
     console.log(this.searchForm, "searchform")
     this.filteredHotelsList = this.searchForm.controls.hotel.valueChanges.pipe(
       startWith(''),
@@ -73,10 +74,10 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.searchForm.controls.searchType.valueChanges.subscribe((value) => {
         if (value === 'hotel') {
           this.searchForm.controls.hotel.setValidators([Validators.required]);
-          this.searchForm.controls.location.setValidators(null);
+          
         }
         if (value === 'location') {
-          this.searchForm.controls.hotel.setValidators(null);
+         
           this.searchForm.controls.location.setValidators([
             Validators.required,
           ]);
@@ -121,7 +122,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     console.log(dtTom)
     return this.formBuilder.group({
-      searchType: ['hotel'],
+      searchType: [],
       hotel: [''],
       location: [''],
       cityId: [''],
@@ -135,6 +136,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   filterHotel(value: any): any[] {
+    this.getWithExpiry();
     if (!value) value = '';
     let filterValue = value?.toLowerCase();
     let filteredArray = this.hotelsList.filter((val) =>
@@ -146,6 +148,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   filterLocation(value: any): any[] {
+    this.getWithExpiry();
     if (!value) value = '';
     let filterValue = value?.toLowerCase();
     let filteredArray = this.locationList.filter((val: any) =>
@@ -157,19 +160,58 @@ export class SearchComponent implements OnInit, OnDestroy {
       console.log(this.locationList,filteredArray,"########")
     return filteredArray;
   }
+  
+  setWithExpiry( value: any) {
+    const now = new Date()
+  
+    // `item` is an object which contains the original value
+    // as well as the time when it's supposed to expire
+    const item = {
+      value: value,
+      expiry: now.getTime(),
+    }
+    localStorage.setItem('hotel', JSON.stringify(item))
+  }
 
   async getAllHotels() {
     await this.searchService
       .getAllHotels()
       .toPromise()
       .then((res) => {
-        this.hotelsList = res['Hotel_Details'];
-        this.getLocationList(res['Hotel_Details']);
-        this.isHotelListLoaded = true;
+        this.setWithExpiry(res['Hotel_Details'])
+        this.getWithExpiry();
+       
       })
       .catch((err) => console.log(err));
   }
+  getWithExpiry() {
+    const itemStr = localStorage.getItem('hotel')
+    console.log(itemStr)
+    // if the item doesn't exist, return null
+    if (!itemStr) {
+      this.getAllHotels();
 
+    }
+    let item 
+    if (itemStr) {
+  item = JSON.parse(itemStr)
+  const now = new Date()
+  // compare the expiry time of the item with the current time
+  if (now.getTime() > item.expiry) {
+    // If the item is expired, delete the item from storage
+    // and return null
+    localStorage.removeItem('hotel');
+   
+    this.getAllHotels();
+
+  }
+  this.hotelsList= item.value;
+  this.getLocationList(item.value);
+  this.isHotelListLoaded = true;
+  return;
+  }
+   
+  }
   getLocationList(val: any) {
     val.forEach((e1: any) => {
       //Push city if available
@@ -221,12 +263,22 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   changeSearchType(val: string) {
+    console.log(val)
     this.searchForm.controls.searchType.setValue(val);
+    if (val === 'hotel') {
+      this.searchForm.controls.hotel.setValidators([Validators.required]);
+      this.searchForm.controls.location.setValidators([]); 
+    }
+    if (val === 'location') {
+      this.searchForm.controls.hotel.setValidators([]);
+      this.searchForm.controls.location.setValidators([Validators.required]);
+    }
+   
   }
 
   async onHotelFieldEvent(type: string, event?: any) {
     if (!this.isHotelListLoaded) {
-      await this.getAllHotels();
+      this.getWithExpiry();
     }
     if (type === 'focus') {
       this.filterHotel(this.searchForm.controls.hotel.value);
@@ -236,7 +288,9 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   onLocationFieldEvent(type: string, event?: any) {
-    console.log(this.searchForm,event,"@@@@@@@@@")
+    if (!this.isHotelListLoaded) {
+      this.getWithExpiry();
+    }
     if (type === 'focus') {
       this.filterLocation(this.searchForm.controls.location.value);
     } else if (type === 'keydown') {
@@ -244,8 +298,8 @@ export class SearchComponent implements OnInit, OnDestroy {
     }
   }
 
-  focusDestinationFieldInput() {
-    if (this.searchForm.controls.searchType.value === 'hotel') {
+  focusDestinationFieldInput(type: string) {
+    if (type === 'hotel') {
       document.getElementById('hotel-field-input')?.focus();
     } else {
       document.getElementById('location-field-input')?.focus();
@@ -266,6 +320,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     // this.searchForm.controls.status = 'VALID';
     if ((option.type = 'city')) {
       this.searchForm.controls.cityId.setValue(option.cityId);
+      if(this.searchForm.controls.searchType.value !== "hotel"){
+        this.searchForm.controls.searchType.setValue('location')
+      }
     }
     this.searchForm.controls.stateId.setValue(option.stateId);
     this.searchForm.controls.countryId.setValue(option.countryId);
@@ -279,7 +336,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   async setHotelName(id: number) {
     if (!this.isHotelListLoaded) {
-      await this.getAllHotels();
+      this.getWithExpiry();
     }
     let hotelName = '';
     for (let i = 0; i < this.hotelsList.length; i++) {
@@ -433,15 +490,15 @@ export class SearchComponent implements OnInit, OnDestroy {
     let searchParams: any = {
       bookingEngineId: BOOKING_ENGINE_ID,
     };
-    if (this.searchForm.controls.searchType.value === 'hotel') {
+  
       searchParams.productId = this.getProductId();
-    } else {
+ 
       if (this.searchForm.controls.cityId.value?.length > 0) {
         searchParams.cityId = this.searchForm.controls.cityId.value;
       }
       // searchParams.stateId = this.searchForm.controls.stateId.value;
       // searchParams.countryId = this.searchForm.controls.countryId.value;
-    }
+    
     if (this.searchForm.controls.checkIn.value?.length > 0) {
       searchParams.checkIn = this.searchForm.controls.checkIn.value;
     }

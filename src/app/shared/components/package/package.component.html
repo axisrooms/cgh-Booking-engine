@@ -26,14 +26,15 @@
 
 
         <div class="property-text-col">
-            <p class="package-title">{{ property.hotel_name }}</p>
+            <p class="package-title">{{ property.hotel_name}}</p>
 
             <p class="higlight-point" style="margin-bottom: 5px" *ngIf="3 > 0">
-                <ng-container *ngFor="let star of [].constructor(property.star_rating)">
+                <ng-container *ngFor="let star of starrate">
                     <i class="bi bi-star-fill" *ngIf="star <= 5"
                         [ngStyle]="star === 5 ? { 'margin-right': '5px' } : {}"></i>
                 </ng-container>
-                <span>Resort</span>
+                <span>{{property.property_type}}</span><br>
+                <span class="view-more-span"(click)="onExpandTab('amenities')">Click to view Amenities</span>
             </p>
 
             <p class="higlight-point" style="margin-top: 2px; margin-bottom: 18px">
@@ -81,7 +82,8 @@
                     </span>
                     <span><i class="bi bi-chevron-down"></i></span>
                 </button>
-            </div>
+            </div><br>
+          
         </div>
     </div>
 
@@ -89,6 +91,13 @@
         <ng-container *ngIf="selectedTab === 'overview'">
             <ng-container *ngTemplateOutlet="
                 overviewTab;
+                context: { property: property }
+                ">
+            </ng-container>
+        </ng-container>
+        <ng-container *ngIf="selectedTab === 'amenities'">
+            <ng-container *ngTemplateOutlet="
+            amenitesTab;
                 context: { property: property }
                 ">
             </ng-container>
@@ -159,6 +168,14 @@
         <app-room [room]="room" [id]="i" [property]="property" (btnEvent)="roomBtnEvent(property, room)"
         [checkIn]="checkIn" [checkOut]="checkOut" [paxInfo]="paxInfo" [productId]="productId">
         </app-room>
+    </ng-container>
+</ng-template>
+<ng-template #amenitesTab let-property="property">
+    <p class="room-list-heading">Amenities</p>
+    <ng-container >
+        <ul>
+            <li *ngFor="let amenitie of property.amenities;let i=index">{{amenitie}}</li>
+        </ul>
     </ng-container>
 </ng-template>
 
