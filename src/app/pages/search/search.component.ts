@@ -30,6 +30,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   showFieldWarnings!: DropdownType;
 
   searchId!: any;
+  flag:any;
   activateRouteSubscription$!: Subscription;
 
   searchForm!: FormGroup;
@@ -187,14 +188,17 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
   getWithExpiry() {
     const itemStr = localStorage.getItem('hotel')
-    console.log(itemStr)
+    if(this.flag == null){
+      this.flag = true;
+    }
+   
     // if the item doesn't exist, return null
-    if (!itemStr) {
+    if (!itemStr && this.flag==true) {
       this.getAllHotels();
-
+      this.flag = false;
     }
     let item 
-    if (itemStr) {
+    if (itemStr && this.flag==true) {
   item = JSON.parse(itemStr)
   const now = new Date()
   // compare the expiry time of the item with the current time
@@ -204,6 +208,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     localStorage.removeItem('hotel');
    
     this.getAllHotels();
+    this.flag = false;
 
   }
   this.hotelsList= item.value;
