@@ -131,6 +131,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       checkIn: [dt, Validators.required],
       checkOut: [dtTom, Validators.required],
       noOfAdults: [1],
+      rooms:[1],
       agesOfChildren: this.formBuilder.array([]),
     });
   }
@@ -402,6 +403,17 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.searchForm.controls.noOfAdults.setValue(current + 1);
     }
   }
+  updateroomCount(type: string) {
+    if (type === 'decrement') {
+      let current = this.searchForm.controls.rooms.value;
+      if (current > 1) {
+        this.searchForm.controls.rooms.setValue(current - 1);
+      }
+    } else if (type === 'increment') {
+      let current = this.searchForm.controls.rooms.value;
+      this.searchForm.controls.rooms.setValue(current + 1);
+    }
+  }
 
   updateChildCount(type: string) {
     if (type === 'decrement') {
@@ -508,6 +520,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     if (this.getPaxInfo()) {
       searchParams.paxInfo = this.getPaxInfo();
     }
+    searchParams.rooms = this.searchForm.controls.rooms.value;
     return searchParams;
   }
 

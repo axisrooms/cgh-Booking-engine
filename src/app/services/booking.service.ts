@@ -304,6 +304,7 @@ console.log( this.currBookingItem$)
 
     searchParams.checkOut = checkOut.format('DD/MM/YYYY');
     searchParams.paxInfo = bookingItem?.paxInfo;
+    searchParams.rooms = bookingItem?.rooms;
 
     return searchParams;
   }

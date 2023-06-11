@@ -1,7 +1,7 @@
 import { HttpHeaders } from "@angular/common/http";
 
 //export const BASE_URL = 'https://be.axisrooms.com/'
-export const BASE_URL = 'https://app.axisrooms.com/'
+export const BASE_URL = 'https://preprod4.axisrooms.com/'
 
 export const BOOKING_ENGINE_ID = 4310;
 

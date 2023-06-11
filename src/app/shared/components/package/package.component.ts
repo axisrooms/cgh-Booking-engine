@@ -59,6 +59,7 @@ export class PackageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
        for (let i =1; i <= this.property['star_rating']; i++) {
       this.starrate.push(i);
+      localStorage.setItem('policy', JSON.stringify(this.property))
     }
     
   console.log( )
@@ -78,6 +79,7 @@ export class PackageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.activateRouteSubscription$.unsubscribe();
+    
   }
 
   setDeal() {
