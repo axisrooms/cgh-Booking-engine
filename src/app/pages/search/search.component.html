@@ -167,7 +167,7 @@
                 <p class="field-content" style="margin-top: 1px;" [ngClass]="{'not-selected': searchForm?.controls?.rooms?.value 
                          === 0 }">
                     {{(searchForm?.controls?.rooms?.value  > 0)
-                    ? searchForm?.controls?.rooms?.value  + ' Rooms'
+                    ? searchForm?.controls?.rooms?.value  + ' Room'
                     + (searchForm?.controls?.rooms?.value  > 1 ? 's' : '')
                     : 'Add Rooms' }}
                 </p>
@@ -177,7 +177,10 @@
                 *ngIf="showDropdown === dropdownType.rooms">
                 <div class="content-row mt-0">
                     <div class="text-box">
-                        <p class="field-heading">Room</p>
+                        <p class="field-heading"> {{(searchForm?.controls?.rooms?.value  > 0)
+                            ? searchForm?.controls?.rooms?.value  + ' Room'
+                            + (searchForm?.controls?.rooms?.value  > 1 ? 's' : '')
+                            : 'Add Rooms' }}</p>
                         <!-- <p class="field-content">Ages 0 to 5</p> -->
                     </div>
                     <div class="control-box">
