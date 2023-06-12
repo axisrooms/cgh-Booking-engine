@@ -107,7 +107,37 @@
                 (searchForm.controls.checkOut.dirty || searchForm.controls.checkOut.touched)
                 && showFieldWarnings === dropdownType.checkout">Please add checkout</p>
         </div>
+        <div class="pax-field">
+            <div (click)="toggleDropdown(dropdownType.rooms)" style="height: 36px;">
+                <p class="field-heading">Room</p>
+                <p class="field-content" style="margin-top: 1px;" [ngClass]="{'not-selected': searchForm?.controls?.rooms?.value 
+                         === 0 }">
+                    {{(searchForm?.controls?.rooms?.value  > 0)
+                    ? searchForm?.controls?.rooms?.value  + ' Room'
+                    + (searchForm?.controls?.rooms?.value  > 1 ? 's' : '')
+                    : 'Add Rooms' }}
+                </p>
+                <i class="bi bi-people  icon-style"></i>
+            </div>
+            <mat-card class="dropdown-card" style="padding: 25px; height: fit-content; min-height: unset; z-index: 1;"
+                *ngIf="showDropdown === dropdownType.rooms">
+                <div class="content-row mt-0">
+                    <div class="text-box">
+                        <p class="field-heading"> {{(searchForm?.controls?.rooms?.value  > 0)
+                            ? searchForm?.controls?.rooms?.value  + ' Room'
+                            + (searchForm?.controls?.rooms?.value  > 1 ? 's' : '')
+                            : 'Add Rooms' }}</p>
+                        <!-- <p class="field-content">Ages 0 to 5</p> -->
+                    </div>
+                    <div class="control-box">
+                        <i class="bi bi-dash" (click)="updateroomCount('decrement')"></i>
+                        <span>{{searchForm.controls.rooms.value}}</span>
+                        <i class="bi bi-plus" (click)="updateroomCount('increment')"></i>
+                    </div>
+                </div>
 
+            </mat-card>
+        </div>
         <div class="pax-field">
             <div (click)="toggleDropdown(dropdownType.guest)" style="height: 36px;">
                 <p class="field-heading">Guests</p>
@@ -161,37 +191,7 @@
                 </ng-container>
             </mat-card>
         </div>
-        <div class="pax-field">
-            <div (click)="toggleDropdown(dropdownType.rooms)" style="height: 36px;">
-                <p class="field-heading">Room</p>
-                <p class="field-content" style="margin-top: 1px;" [ngClass]="{'not-selected': searchForm?.controls?.rooms?.value 
-                         === 0 }">
-                    {{(searchForm?.controls?.rooms?.value  > 0)
-                    ? searchForm?.controls?.rooms?.value  + ' Room'
-                    + (searchForm?.controls?.rooms?.value  > 1 ? 's' : '')
-                    : 'Add Rooms' }}
-                </p>
-                <i class="bi bi-people  icon-style"></i>
-            </div>
-            <mat-card class="dropdown-card" style="padding: 25px; height: fit-content; min-height: unset; z-index: 1;"
-                *ngIf="showDropdown === dropdownType.rooms">
-                <div class="content-row mt-0">
-                    <div class="text-box">
-                        <p class="field-heading"> {{(searchForm?.controls?.rooms?.value  > 0)
-                            ? searchForm?.controls?.rooms?.value  + ' Room'
-                            + (searchForm?.controls?.rooms?.value  > 1 ? 's' : '')
-                            : 'Add Rooms' }}</p>
-                        <!-- <p class="field-content">Ages 0 to 5</p> -->
-                    </div>
-                    <div class="control-box">
-                        <i class="bi bi-dash" (click)="updateroomCount('decrement')"></i>
-                        <span>{{searchForm.controls.rooms.value}}</span>
-                        <i class="bi bi-plus" (click)="updateroomCount('increment')"></i>
-                    </div>
-                </div>
-
-            </mat-card>
-        </div>
+       
         <i class="bi bi-search" (click)="onSubmit()"></i>
     </div>
 </section>
