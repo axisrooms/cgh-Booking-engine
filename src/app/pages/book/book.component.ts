@@ -31,7 +31,7 @@ export enum StepperType {
 export class BookComponent implements OnInit {
   @ViewChild(PersonalDetailsComponent)
   personalDetailsComponent!: PersonalDetailsComponent;
- 
+  load:boolean =true;
   addons: any = [];
   eStepper = StepperType;
   stepper: StepperType = this.eStepper.addons;
@@ -73,8 +73,10 @@ export class BookComponent implements OnInit {
   payhotel(){
     if(this.payathotel==true){
       this.payathotel =false;
+      this.load = true;
     }else{
       this.payathotel =true;
+      this.load = false;
     }
   }
 
