@@ -177,7 +177,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   async getAllHotels() {
     await this.searchService
-      .getAllHotels()
+      .getAllHotels(this.searchForm.controls.checkIn.value)
       .toPromise()
       .then((res) => {
         this.setWithExpiry(res['Hotel_Details'])
