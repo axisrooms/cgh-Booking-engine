@@ -12,6 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { SearchService } from 'src/app/services/search.service';
 import { Router } from '@angular/router';
 import { BOOKING_ENGINE_ID } from 'src/app/shared/constants/url.constants';
+import { ComponentType } from '@angular/cdk/portal';
 // import { Router } from 'express';
 
 export enum StepperType {
@@ -30,7 +31,7 @@ export enum StepperType {
 export class BookComponent implements OnInit {
   @ViewChild(PersonalDetailsComponent)
   personalDetailsComponent!: PersonalDetailsComponent;
- 
+  load:boolean =true;
   addons: any = [];
   eStepper = StepperType;
   stepper: StepperType = this.eStepper.addons;
@@ -56,7 +57,8 @@ export class BookComponent implements OnInit {
 
   openRecommendationsDialog() {
     this.spinner.show();
-    this.searchService.getAllHotels().subscribe(res => {
+    let dat = this.currBookingItem$.subscribe(e => { return e?.checkIn})
+    this.searchService.getAllHotels(dat).subscribe(res => {
       this.dialog.open(RecommendationsComponent, {
         width: '600px',
         panelClass: ['mat-dialog-custom-dimensions'],
@@ -69,10 +71,12 @@ export class BookComponent implements OnInit {
   }
 
   payhotel(){
-    if(this.payathotel){
+    if(this.payathotel==true){
       this.payathotel =false;
+      this.load = true;
     }else{
       this.payathotel =true;
+      this.load = false;
     }
   }
 
@@ -147,6 +151,7 @@ console.log(this.stepper, this.eStepper.payment,  this.eStepper.personalDetails)
         searchParams['checkIn'] = e?.checkIn;
         searchParams['checkOut'] = e?.checkOut;
         searchParams['paxInfo'] = e?.paxInfo;
+        searchParams['rooms'] = e?.rooms;
         searchParams['searchType'] = 'hotel';
       })
       this.router.navigate(['/search'], { queryParams: searchParams })
@@ -166,5 +171,12 @@ console.log(this.stepper, this.eStepper.payment,  this.eStepper.personalDetails)
     setTimeout(() => {
       this.spinner.hide();
     }, 1000);
+  }
+  policy(data: ComponentType<unknown>){
+    const dialogRef = this.dialog.open(data, {
+
+      width: '600px',
+      height: '500px'
+    });
   }
 }

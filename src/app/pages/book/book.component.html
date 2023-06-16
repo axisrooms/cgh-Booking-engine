@@ -3,7 +3,7 @@
 <ng-container *ngIf="{bookingCart: bookingCart$ | async, 
     currBookingItem: currBookingItem$ | async} as streams">
 
-    <ng-container *ngIf="streams.bookingCart?.loadingPaymentGateway; else elseBookingTemplate">
+    <ng-container *ngIf="streams.bookingCart?.loadingPaymentGateway && load ; else elseBookingTemplate">
         <div class="pg-alert-wrapper">
             <div class="alert alert-secondary" role="alert">
                 Loading Payment Gateway
@@ -94,3 +94,6 @@
 
     <hr class="contents-section-seperator">
 </ng-container>
+<!-- <ng-template #template>
+    <h1>This is a message</h1>
+   </ng-template> -->

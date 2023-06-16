@@ -30,6 +30,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   showFieldWarnings!: DropdownType;
 
   searchId!: any;
+  flag:any;
   activateRouteSubscription$!: Subscription;
 
   searchForm!: FormGroup;
@@ -131,6 +132,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       checkIn: [dt, Validators.required],
       checkOut: [dtTom, Validators.required],
       noOfAdults: [1],
+      rooms:[1],
       agesOfChildren: this.formBuilder.array([]),
     });
   }
@@ -175,7 +177,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   async getAllHotels() {
     await this.searchService
-      .getAllHotels()
+      .getAllHotels(this.searchForm.controls.checkIn.value)
       .toPromise()
       .then((res) => {
         this.setWithExpiry(res['Hotel_Details'])
@@ -186,14 +188,17 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
   getWithExpiry() {
     const itemStr = localStorage.getItem('hotel')
-    console.log(itemStr)
+    if(this.flag == null){
+      this.flag = true;
+    }
+   
     // if the item doesn't exist, return null
-    if (!itemStr) {
+    if (!itemStr && this.flag==true) {
       this.getAllHotels();
-
+      this.flag = false;
     }
     let item 
-    if (itemStr) {
+    if (itemStr && this.flag==true) {
   item = JSON.parse(itemStr)
   const now = new Date()
   // compare the expiry time of the item with the current time
@@ -203,6 +208,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     localStorage.removeItem('hotel');
    
     this.getAllHotels();
+    this.flag = false;
 
   }
   this.hotelsList= item.value;
@@ -402,6 +408,17 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.searchForm.controls.noOfAdults.setValue(current + 1);
     }
   }
+  updateroomCount(type: string) {
+    if (type === 'decrement') {
+      let current = this.searchForm.controls.rooms.value;
+      if (current > 1) {
+        this.searchForm.controls.rooms.setValue(current - 1);
+      }
+    } else if (type === 'increment') {
+      let current = this.searchForm.controls.rooms.value;
+      this.searchForm.controls.rooms.setValue(current + 1);
+    }
+  }
 
   updateChildCount(type: string) {
     if (type === 'decrement') {
@@ -508,6 +525,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     if (this.getPaxInfo()) {
       searchParams.paxInfo = this.getPaxInfo();
     }
+    searchParams.rooms = this.searchForm.controls.rooms.value;
     return searchParams;
   }
 

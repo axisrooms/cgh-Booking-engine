@@ -5,4 +5,5 @@ export enum DropdownType {
     checkin,
     checkout,
     guest,
+    rooms,
 }
