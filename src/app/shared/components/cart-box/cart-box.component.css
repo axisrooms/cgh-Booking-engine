@@ -51,8 +51,8 @@ p {
 
 .box .label {
   font-size: 10px;
-    text-transform: uppercase;
-    font-weight: 500;
+  text-transform: uppercase;
+  font-weight: 500;
 }
 
 .guest.box {
@@ -111,4 +111,23 @@ p {
   min-height: 100px;
   /* margin-top: 20px; */
   flex-direction: column;
+}
+
+
+@media screen and (min-width:100px) and (max-width: 480px) {
+  .date-row {
+    font-size: 10px;
+
+  }
+  .line-item{
+    font-size: 11px;
+  }
+
+  hr{
+    margin: 9px 0;
+  }
+
+  .total{
+    font-size: 12px;
+  }
 }

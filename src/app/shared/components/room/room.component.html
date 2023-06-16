@@ -1,11 +1,11 @@
-<div class="room-details">
-    <div class="room-desc-col">
-        <div class="room-header">
+<div class="room-details row">
+    <div class="room-desc-col col-12 col-md-8 col-lg-8">
+        <div class="room-header row">
             <!-- <div class="room-header-image-col"  *ngIf="property.images && property.images[0]">
                     <img src="../../../../assets/temp/images/room-1.jpg" alt="">
                 </div> -->
 
-            <div class="room-header-image-col">
+            <div class="room-header-image-col  col-12 col-md-4 col-lg-4">
 
                 <div id="carouselExampleControls" class="carousel slide" [id]="'slider'+ id" data-ride="carousel"
                     style="width: 200px;">
@@ -32,7 +32,7 @@
 
                 </div>
             </div>
-            <div class="room-header-text-col">
+            <div class="room-header-text-col col-12 col-md-8 col-lg-8">
                 <p class="room-title">{{room.roomName}}</p>
                 <p *ngIf="room.description && room.description != ''"
                     style="height: 80px; overflow: hidden; margin-bottom: 0;">{{room.description}}</p>
@@ -92,7 +92,7 @@
             </div>
         </div>
     </div>
-    <div class="room-col">
+    <div class="room-col col-12 col-md-4 col-lg-4">
         <p class="mb-1" *ngIf="room.price.discounted ">
             <span class="price-before">{{property.currency}} {{room.price.discounted ?
                 ((room.price.actual + room.price.discounted) | number : '1.2' ) : ''}}</span>

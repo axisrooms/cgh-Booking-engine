@@ -80,7 +80,27 @@
   border: 1px dashed;
 }
 
-.btn-main{
+.btn-main {
   max-width: 270px !important;
   word-spacing: 1px !important;
+}
+
+
+
+
+@media screen and (max-width: 480px) {
+  .stepper {
+    display: none;
+  }
+
+  .cart-col {
+    margin-top: 15px;
+  }
+
+
+  .btn-main{
+    margin: 0 2px;
+  }
+
+  
 }

@@ -157,7 +157,15 @@ footer .copy {
     padding: 7px 0 0;
 }
 
-@media (max-width: 1920px) {
+@media (min-width: 200px) and (max-width: 480px){
+    footer{
+        padding: 107px 15px 70px;
+    }
+}
+
+
+
+@media (min-width: 481px) and (max-width: 1920px) {
     footer {
         padding: 151px 0 105px;
     }
@@ -184,7 +192,10 @@ footer .copy {
     }
 }
 
-@media (max-width: 1600px) {
+
+
+
+@media (min-width: 1921px) and (max-width: 1600px) {
     footer {
         padding: 107px 0 70px;
     }

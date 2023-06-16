@@ -5,7 +5,7 @@
             <div [ngClass]="openAddon == true ? 'col-6' : 'col-12'">
                 <div class="row">
                     <ng-container *ngFor="let item of addons | paginate: config; let i=index ">
-                        <div class="col-6" [ngClass]="openAddon == true ? 'col-12' : 'col-6'">
+                        <div class="col-12 col-md-6 col-lg-6" [ngClass]="openAddon == true ? 'col-12' : 'col-12  col-md-6 col-lg6'">
                             <div class="card">
                                 <img class="addon-img" [src]='item.policy_image_url' alt="">
                                 <div style="padding:15px">

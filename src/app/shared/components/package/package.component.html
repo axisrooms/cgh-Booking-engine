@@ -1,6 +1,6 @@
 <div class="wrapper">
-    <div class="property-row" [ngStyle]="expandTabBlock ? { background: 'white' } : {}">
-        <div class="property-image-col" >
+    <div class="property-row row" [ngStyle]="expandTabBlock ? { background: 'white' } : {}">
+        <div class="property-image-col  col-12 col-md-4 col-lg-4" >
             <!-- <img src="{{property.images[1]}}" alt=""> -->
 
             <div id="carouselExampleControls" class="carousel slide" [id]="'slider_hotel'+ id_num" data-ride="carousel"
@@ -25,7 +25,7 @@
         <!-- <img src="{{property.images[0]}}"  alt=""> -->
 
 
-        <div class="property-text-col">
+        <div class="property-text-col  col-12 col-md-8 col-lg-8">
             <p class="package-title">{{ property.hotel_name}}</p>
 
             <p class="higlight-point" style="margin-bottom: 5px" *ngIf="3 > 0">
