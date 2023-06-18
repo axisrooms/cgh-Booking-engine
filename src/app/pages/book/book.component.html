@@ -16,12 +16,12 @@
 
     <ng-template #elseBookingTemplate>
         <!-- <ng-container *ngIf="streams.currBookingItem"> -->
-        <app-stepper [stepper]="stepper"></app-stepper>
+        <app-stepper [stepper]="stepper" class="stepper"></app-stepper>
 
-        <section class="contents-section">
-            <div class="contents-wrapper" [ngStyle]="stepper === eStepper.confirmation ? 
+        <section class="contents-section ">
+            <div class="contents-wrapper row" [ngStyle]="stepper === eStepper.confirmation ? 
                     {'max-width': '1050px'} : {'max-width': '1150px'}">
-                <div class="content-col">
+                <div class="content-col col-12 col-md-8 col-lg-8">
                     <div style="min-height: 480px;">
                         <app-addons *ngIf="stepper === eStepper.addons">
                         </app-addons>
@@ -75,7 +75,7 @@
                     </div>
                 </div>
 
-                <div class="cart-col" *ngIf="stepper != eStepper.confirmation">
+                <div class="cart-col col-12 col-md-4 col-lg-4" *ngIf="stepper != eStepper.confirmation">
                     <p class="title">BOOKING DETAILS</p>
                     <app-cart-box></app-cart-box>
                 </div>

@@ -82,11 +82,13 @@ console.log( this.currBookingItem$)
   }
 
   getTotalAmount(checkIn: string, checkOut: string, room: any) {
-    let diff = this.getNoOfDays(checkIn, checkOut);
+    // let diff = this.getNoOfDays(checkIn, checkOut);
     let price =
       (room.price.discounted ? (room.price.actual-room.price.discounted) : room.price.actual) +
       room.price.taxValue;
-    return diff * price;
+    // return diff * price;
+    return  price;
+
   }
 
   // getTotalAmtWithAddon(){}

@@ -23,6 +23,7 @@ ul {
   width: fit-content;
   padding: 10px;
   padding-right: 0px;
+  padding-left: 20px;
 }
 
 .property-image-col img {
@@ -345,3 +346,48 @@ ul {
   padding: 4px 5px;
   border-radius: 3px;
 }
+
+
+@media (min-width: 200px) and (max-width: 480px){
+
+  
+  .property-row {
+    justify-content: center;
+    align-items: center;
+    flex-direction: row; 
+     flex-wrap: wrap;
+    display: flex;
+    text-align: center;
+}
+
+.property-text-col{
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+}
+.higlight-points-row {
+  display: flex;
+  font-weight: 400;
+  margin: 0px;
+  flex-wrap: wrap;
+  margin-left: -5px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.property-image-col {
+  width: fit-content;
+  padding: 10px;
+  padding-right: 0px;
+  padding-left: 0px;
+}
+
+.highlight-btn{
+  width: 100%;
+}
+}
+

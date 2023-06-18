@@ -1,222 +1,206 @@
-<section class="banner-section">
 
-    <div class="search-bar" [formGroup]="searchForm" autocomplete="off">
-        <div class="hotel-field" (click)="focusDestinationFieldInput('hotel')">
-            <p class="field-heading" style="margin-bottom: 5px;">
-                <span (click)="changeSearchType('hotel')"
-                style="font-weight: 500">Hotel</span>
-                <i class="bi bi-caret-left-fill"
-                    
-                    style="margin-left: 1px;" (click)="changeSearchType('hotel')"></i>
-               
-            </p>
 
-            <ng-container>
-                <input type="search" autocomplete="off" class="field-content cstm" id="hotel-field-input"
-                    placeholder="Search By Hotel" aria-label="Number" matInput formControlName="hotel"
-                    (keydown)="onHotelFieldEvent('keydown', $event)" (focus)="onHotelFieldEvent('focus')">
+<div class="container-fluid" style="position: relative;">
+    <div class="row">
+        <div class="col-12">
+            <section class="banner-section img-fluid overlay">
 
-                <mat-card class="dropdown-card p-0" style="  scroll-behavior: smooth;
-                max-height: 255px;" *ngIf="showDropdown === dropdownType.hotel">
-                    <div class="option-block" *ngFor="let option of filteredHotelsList | async"
-                        (click)="selectHotel(option.hotel_name)">
-                        <i class="bi bi-building"></i>
-                        <div class="option-text-block">
-                            <p class="option-title-text">{{option.hotel_name}}</p>
-                            <p class="option-sub-text">
-                                <span style="font-weight: 600; color: #666">Resorts . </span>
-                                {{option.address.city ? option.address.city + ', ' : ''}}
-                                {{option.address.state ? option.address.state + ', ' : ''}}
-                                {{option.address.country ? option.address.country : ''}}
+               <div class="search-bar" [formGroup]="searchForm" autocomplete="off">
+                    <div class="hotel-field" (click)="focusDestinationFieldInput('hotel')">
+                        <p class="field-heading" style="margin-bottom: 5px;">
+                            <span (click)="changeSearchType('hotel')" style="font-weight: 500">Hotel</span>
+                            <i class="bi bi-caret-left-fill" style="margin-left: 1px;" (click)="changeSearchType('hotel')"></i>
+            
+                        </p>
+            
+                        <ng-container>
+                            <input type="search" autocomplete="off" class="field-content cstm" id="hotel-field-input"
+                                placeholder="Search By Hotel" aria-label="Number" matInput formControlName="hotel"
+                                (keydown)="onHotelFieldEvent('keydown', $event)" (focus)="onHotelFieldEvent('focus')">
+            
+                            <mat-card class="dropdown-card p-0" style="  scroll-behavior: smooth;
+                            max-height: 255px;" *ngIf="showDropdown === dropdownType.hotel">
+                                <div class="option-block" *ngFor="let option of filteredHotelsList | async"
+                                    (click)="selectHotel(option.hotel_name)">
+                                    <i class="bi bi-building"></i>
+                                    <div class="option-text-block">
+                                        <p class="option-title-text">{{option.hotel_name}}</p>
+                                        <p class="option-sub-text">
+                                            <span style="font-weight: 600; color: #666">Resorts . </span>
+                                            {{option.address.city ? option.address.city + ', ' : ''}}
+                                            {{option.address.state ? option.address.state + ', ' : ''}}
+                                            {{option.address.country ? option.address.country : ''}}
+                                        </p>
+                                    </div>
+                                </div>
+                            </mat-card>
+                        </ng-container>
+            
+            
+                        <p class="hotel-field-warning"
+                            *ngIf="showFieldWarnings === dropdownType.hotel || showFieldWarnings === dropdownType.location">To
+                            start, tell us where you're going</p>
+            
+                        <i class="bi bi-building icon-style"></i>
+                    </div>
+                    <div class="hotel-field" (click)="focusDestinationFieldInput('location')">
+                        <p class="field-heading" style="margin-bottom: 5px;">
+            
+            
+                            <i class="bi bi-caret-right-fill" style="margin-left: -6px;" (click)="changeSearchType('location')"></i>
+                            <span (click)="changeSearchType('location')" style="font-weight: 500">Location</span>
+                        </p>
+                        <ng-container>
+                            <input type="search" autocomplete="off" class="field-content cstm" id="location-field-input"
+                                placeholder="Search By City" aria-label="Number" matInput formControlName="location"
+                                (keydown)="onLocationFieldEvent('keydown', $event)" (focus)="onLocationFieldEvent('focus')">
+            
+                            <mat-card class="dropdown-card p-0" style="  scroll-behavior: smooth;
+                        max-height: 255px;" *ngIf="showDropdown === dropdownType.location">
+                                <div class="option-block" *ngFor="let option of filteredLocationList | async"
+                                    (click)="selectLocation(option)">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <div class="option-text-block">
+                                        <p class="option-title-text">{{option.key}}</p>
+                                        <p class="option-sub-text">
+                                            <span style="text-transform: capitalize; font-weight: 600; color: #666;">{{option.type}}
+                                                . </span>
+                                            {{option.city && option.key != option.city ? option.city + ', ' : ''}}
+                                            {{option.state && option.key != option.state ? option.state + ', ' : ''}}
+                                            {{option.country ? option.country : ''}}
+                                        </p>
+                                    </div>
+                                </div>
+                            </mat-card>
+                        </ng-container>
+
+                        <i class="bi bi-map icon-style"></i>
+
+                    </div>
+            
+                    <div class="checkin-field">
+                        <div (click)="toggleDropdown(dropdownType.checkin)">
+                            <p class="field-heading">Check in</p>
+                            <input class="field-content date-plchldr" formControlName="checkIn" placeholder="-- / -- / ----"
+                                readonly>
+                            <i class="bi bi-calendar4-week icon-style"></i>
+            
+                        </div>
+                        <mat-card class="dropdown-card date-card pt-0" *ngIf="showDropdown === dropdownType.checkin">
+                            <ng-container *ngTemplateOutlet="matCalendar"></ng-container>
+                        </mat-card>
+                        <p class="hotel-field-warning" *ngIf="searchForm.controls.checkIn.invalid && 
+                            (searchForm.controls.checkIn.dirty || searchForm.controls.checkIn.touched)
+                            && showFieldWarnings === dropdownType.checkin">Please add checkin</p>
+                    </div>
+            
+                    <div class="checkout-field">
+                        <div (click)="toggleDropdown(dropdownType.checkout)">
+                            <p class="field-heading">Check out</p>
+                            <input class="field-content date-plchldr" formControlName="checkOut" placeholder="-- / -- / ----"
+                                readonly>
+                            <i class="bi bi-calendar4-week icon-style"></i>
+            
+                        </div>
+                        <mat-card class="dropdown-card date-card right-card pt-0" *ngIf="showDropdown === dropdownType.checkout">
+                            <ng-container *ngTemplateOutlet="matCalendar"></ng-container>
+                        </mat-card>
+                        <p class="hotel-field-warning" *ngIf="searchForm.controls.checkOut.invalid && 
+                            (searchForm.controls.checkOut.dirty || searchForm.controls.checkOut.touched)
+                            && showFieldWarnings === dropdownType.checkout">Please add checkout</p>
+                    </div>
+            
+                    <div class="pax-field">
+                        <div (click)="toggleDropdown(dropdownType.guest)" style="height: 36px;">
+                            <p class="field-heading">Guests</p>
+                            <p class="field-content" style="margin-top: 1px;" [ngClass]="{'not-selected': searchForm?.controls?.noOfAdults?.value 
+                                    + agesOfChildren?.controls?.length === 0 }">
+                                {{(searchForm?.controls?.noOfAdults?.value + agesOfChildren?.controls?.length > 0)
+                                ? searchForm?.controls?.noOfAdults?.value + agesOfChildren?.controls?.length + ' Guest'
+                                + (searchForm?.controls?.noOfAdults?.value + agesOfChildren?.controls?.length > 1 ? 's' : '')
+                                : 'Add Guests' }}
                             </p>
+                            <i class="bi bi-people  icon-style"></i>
+                        </div>
+                        <mat-card class="dropdown-card" style="padding: 25px; height: fit-content; min-height: unset; z-index: 1;"
+                            *ngIf="showDropdown === dropdownType.guest">
+                            <div class="content-row mt-0">
+                                <div class="text-box">
+                                    <p class="field-heading">Adult</p>
+                                </div>
+                                <div class="control-box">
+                                    <i class="bi bi-dash" (click)="updateAdultCount('decrement')"></i>
+                                    <span>{{searchForm.controls.noOfAdults.value}}</span>
+                                    <i class="bi bi-plus" (click)="updateAdultCount('increment')"></i>
+                                </div>
+                            </div>
+                            <div class="content-row" [ngClass]="{'content-row-alt': agesOfChildren?.controls?.length === 0}">
+                                <div class="text-box">
+                                    <p class="field-heading">Children</p>
+                                    <p class="field-content"></p>
+                                </div>
+                                <div class="control-box">
+                                    <i class="bi bi-dash" (click)="updateChildCount('decrement')"></i>
+                                    <span>{{agesOfChildren?.controls?.length}}</span>
+                                    <i class="bi bi-plus" (click)="updateChildCount('increment')"></i>
+                                </div>
+                            </div>
+            
+                            <ng-container formArrayName="agesOfChildren" *ngIf="agesOfChildren?.controls?.length ?? 0 > 0">
+                                <p class="ages-input-heading">Children's age <span>(Required)</span></p>
+                                <div class="ages-row">
+                                    <ng-container [formGroupName]="idx"
+                                        *ngFor="let control of agesOfChildren?.controls; let idx=index; let last=last">
+                                        <div class="age-input"
+                                            [ngClass]="{'error-border': control.invalid && (control.dirty || control.touched)}">
+                                            <select formControlName="age">
+                                                <option *ngFor="let age of agesArray" [value]="age">{{age}}</option>
+                                            </select>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                        </mat-card>
+                    </div>
+            
+                    <i class="bi bi-search" (click)="onSubmit()"></i>
+                </div>
+            </section> 
+        </div>
+        <div class="col-12" style="margin-top: 100vh;">
+            <section class="contents-section">
+                <div class="row contents-wrapper">
+                    <div class="col-12 col-md-8 col-lg-8">
+                        <div class="search-results mb-5">
+                            <p class="main-title" id="searchTitleId">SEARCH RESULTS</p>
+                            <hr>
+                            <ng-container *ngIf="searchResponse?.Hotel_Details?.length > 0; else noPackageTemplate">
+                                <div *ngFor="let property of searchResponse?.Hotel_Details; let i = index">
+                                    <app-package [property]="property" [searchId]="searchId" [id_num]="i"
+                                        [buttonActionType]="'searchComponent-newBooking'"></app-package>
+                                </div>
+                            </ng-container>
+                            <ng-template #noPackageTemplate>
+                                <div class="no-packages">
+                                    No content available to display
+                                </div>
+                            </ng-template>
                         </div>
                     </div>
-                </mat-card>
-            </ng-container>
-          
-
-            <p class="hotel-field-warning"
-                *ngIf="showFieldWarnings === dropdownType.hotel || showFieldWarnings === dropdownType.location">To
-                start, tell us where you're going</p>
-
-            <i class="bi bi-building icon-style"></i>
-        </div>
-        <div class="hotel-field" (click)="focusDestinationFieldInput('location')">
-        <p class="field-heading" style="margin-bottom: 5px;">
-               
-               
-            <i class="bi bi-caret-right-fill"
-                
-                style="margin-left: -6px;" (click)="changeSearchType('location')"></i>
-            <span (click)="changeSearchType('location')"
-                style="font-weight: 500">Location</span>
-        </p>
-        <ng-container>
-            <input type="search" autocomplete="off" class="field-content cstm" id="location-field-input"
-                placeholder="Search By City" aria-label="Number" matInput formControlName="location"
-                (keydown)="onLocationFieldEvent('keydown', $event)" (focus)="onLocationFieldEvent('focus')">
-
-            <mat-card class="dropdown-card p-0" style="  scroll-behavior: smooth;
-            max-height: 255px;" *ngIf="showDropdown === dropdownType.location">
-                <div class="option-block" *ngFor="let option of filteredLocationList | async"
-                    (click)="selectLocation(option)">
-                    <i class="bi bi-geo-alt"></i>
-                    <div class="option-text-block">
-                        <p class="option-title-text">{{option.key}}</p>
-                        <p class="option-sub-text">
-                            <span style="text-transform: capitalize; font-weight: 600; color: #666;">{{option.type}}
-                                . </span>
-                            {{option.city && option.key != option.city ? option.city + ', ' : ''}}
-                            {{option.state && option.key != option.state ? option.state + ', ' : ''}}
-                            {{option.country ? option.country : ''}}
-                        </p>
+                    <div class="col-12 col-md-4 col-lg-4">
+                        <app-deals-bar></app-deals-bar>
+            
                     </div>
+            
                 </div>
-            </mat-card>
-        </ng-container>
+                <hr class="contents-section-seperator">
+            </section>
         </div>
-
-        <div class="checkin-field">
-            <div (click)="toggleDropdown(dropdownType.checkin)">
-                <p class="field-heading">Check in</p>
-                <input class="field-content date-plchldr" formControlName="checkIn"  placeholder="-- / -- / ----"
-                    readonly>
-            <i class="bi bi-calendar4-week icon-style"></i>
-
-            </div>
-            <mat-card class="dropdown-card date-card pt-0" *ngIf="showDropdown === dropdownType.checkin">
-                <ng-container *ngTemplateOutlet="matCalendar"></ng-container>
-            </mat-card>
-            <p class="hotel-field-warning" *ngIf="searchForm.controls.checkIn.invalid && 
-                (searchForm.controls.checkIn.dirty || searchForm.controls.checkIn.touched)
-                && showFieldWarnings === dropdownType.checkin">Please add checkin</p>
-        </div>
-
-        <div class="checkout-field">
-            <div (click)="toggleDropdown(dropdownType.checkout)">
-                <p class="field-heading">Check out</p>
-                <input class="field-content date-plchldr"   formControlName="checkOut"   placeholder="-- / -- / ----"
-                    readonly>
-            <i class="bi bi-calendar4-week icon-style"></i>
-
-            </div>
-            <mat-card class="dropdown-card date-card right-card pt-0" *ngIf="showDropdown === dropdownType.checkout">
-                <ng-container *ngTemplateOutlet="matCalendar"></ng-container>
-            </mat-card>
-            <p class="hotel-field-warning" *ngIf="searchForm.controls.checkOut.invalid && 
-                (searchForm.controls.checkOut.dirty || searchForm.controls.checkOut.touched)
-                && showFieldWarnings === dropdownType.checkout">Please add checkout</p>
-        </div>
-        <div class="pax-field">
-            <div (click)="toggleDropdown(dropdownType.rooms)" style="height: 36px;">
-                <p class="field-heading">Room</p>
-                <p class="field-content" style="margin-top: 1px;" [ngClass]="{'not-selected': searchForm?.controls?.rooms?.value 
-                         === 0 }">
-                    {{(searchForm?.controls?.rooms?.value  > 0)
-                    ? searchForm?.controls?.rooms?.value  + ' Room'
-                    + (searchForm?.controls?.rooms?.value  > 1 ? 's' : '')
-                    : 'Add Rooms' }}
-                </p>
-                <i class="bi bi-people  icon-style"></i>
-            </div>
-            <mat-card class="dropdown-card" style="padding: 25px; height: fit-content; min-height: unset; z-index: 1;"
-                *ngIf="showDropdown === dropdownType.rooms">
-                <div class="content-row mt-0">
-                    <div class="text-box">
-                        <p class="field-heading"> {{(searchForm?.controls?.rooms?.value  > 0)
-                            ? searchForm?.controls?.rooms?.value  + ' Room'
-                            + (searchForm?.controls?.rooms?.value  > 1 ? 's' : '')
-                            : 'Add Rooms' }}</p>
-                        <!-- <p class="field-content">Ages 0 to 5</p> -->
-                    </div>
-                    <div class="control-box">
-                        <i class="bi bi-dash" (click)="updateroomCount('decrement')"></i>
-                        <span>{{searchForm.controls.rooms.value}}</span>
-                        <i class="bi bi-plus" (click)="updateroomCount('increment')"></i>
-                    </div>
-                </div>
-
-            </mat-card>
-        </div>
-        <div class="pax-field">
-            <div (click)="toggleDropdown(dropdownType.guest)" style="height: 36px;">
-                <p class="field-heading">Guests</p>
-                <p class="field-content" style="margin-top: 1px;" [ngClass]="{'not-selected': searchForm?.controls?.noOfAdults?.value 
-                        + agesOfChildren?.controls?.length === 0 }">
-                    {{(searchForm?.controls?.noOfAdults?.value + agesOfChildren?.controls?.length > 0)
-                    ? searchForm?.controls?.noOfAdults?.value + agesOfChildren?.controls?.length + ' Guest'
-                    + (searchForm?.controls?.noOfAdults?.value + agesOfChildren?.controls?.length > 1 ? 's' : '')
-                    : 'Add Guests' }}
-                </p>
-                <i class="bi bi-people  icon-style"></i>
-            </div>
-            <mat-card class="dropdown-card" style="padding: 25px; height: fit-content; min-height: unset; z-index: 1;"
-                *ngIf="showDropdown === dropdownType.guest">
-                <div class="content-row mt-0">
-                    <div class="text-box">
-                        <p class="field-heading">Adult</p>
-                        <!-- <p class="field-content">Ages 0 to 5</p> -->
-                    </div>
-                    <div class="control-box">
-                        <i class="bi bi-dash" (click)="updateAdultCount('decrement')"></i>
-                        <span>{{searchForm.controls.noOfAdults.value}}</span>
-                        <i class="bi bi-plus" (click)="updateAdultCount('increment')"></i>
-                    </div>
-                </div>
-                <div class="content-row" [ngClass]="{'content-row-alt': agesOfChildren?.controls?.length === 0}">
-                    <div class="text-box">
-                        <p class="field-heading">Children</p>
-                        <p class="field-content"></p>
-                    </div>
-                    <div class="control-box">
-                        <i class="bi bi-dash" (click)="updateChildCount('decrement')"></i>
-                        <span>{{agesOfChildren?.controls?.length}}</span>
-                        <i class="bi bi-plus" (click)="updateChildCount('increment')"></i>
-                    </div>
-                </div>
-
-                <ng-container formArrayName="agesOfChildren" *ngIf="agesOfChildren?.controls?.length ?? 0 > 0">
-                    <p class="ages-input-heading">Children's age <span>(Required)</span></p>
-                    <div class="ages-row">
-                        <ng-container [formGroupName]="idx"
-                            *ngFor="let control of agesOfChildren?.controls; let idx=index; let last=last">
-                            <div class="age-input"
-                                [ngClass]="{'error-border': control.invalid && (control.dirty || control.touched)}">
-                                <select formControlName="age">
-                                    <option *ngFor="let age of agesArray" [value]="age">{{age}}</option>
-                                </select>
-                            </div>
-                        </ng-container>
-                    </div>
-                </ng-container>
-            </mat-card>
-        </div>
-       
-        <i class="bi bi-search" (click)="onSubmit()"></i>
     </div>
-</section>
-
-<section class="contents-section">
-    <div class="contents-wrapper">
-        <div class="search-results">
-            <p class="main-title" id="searchTitleId">SEARCH RESULTS</p>
-            <hr>
-            <ng-container *ngIf="searchResponse?.Hotel_Details[0]?.hotel_name;  else noPackageTemplate">
-                <div *ngFor="let property of searchResponse?.Hotel_Details; let i = index">
-                    <app-package [property]="property" [searchId]="searchId" [id_num]="i"
-                        [buttonActionType]="'searchComponent-newBooking'"></app-package>
-                </div>
-            </ng-container>
-            <ng-template #noPackageTemplate>
-                <div class="no-packages">
-                    <b>Sorry, we are unable to match your search criteria. <br> Please choose alternate dates or you may reach out to us via email at contact@cghearth.com or call us at +91 7558999998
-</b>                </div>
-            </ng-template>
-        </div>
-        <app-deals-bar></app-deals-bar>
-    </div>
-    <hr class="contents-section-seperator">
-</section>
+ 
+    
+ 
+</div>
 
 <ng-template #matCalendar>
     <p class="calendar-heading">Select
