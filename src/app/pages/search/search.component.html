@@ -232,7 +232,7 @@
 
             </div>
             <mat-calendar class="mat-calendar-class" [selected]="selectedRangeValue"
-                (selectedChange)="selectedChange($event)">
+                (selectedChange)="selectedChange($event)" [minDate]="minDate">
             </mat-calendar>
         </div>
         <div>
@@ -242,7 +242,7 @@
                 <i class="bi bi-chevron-right" (click)="onChangeMonth('next')"></i>
             </div>
             <mat-calendar class="mat-calendar-class second-calendar" [selected]="selectedRangeValue"
-                (selectedChange)="selectedChange($event)" [startAt]="secondCalStartDate">
+                (selectedChange)="selectedChange($event)" [minDate]="minDate" [startAt]="secondCalStartDate">
             </mat-calendar>
         </div>
     </div>
