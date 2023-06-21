@@ -1,5 +1,3 @@
-
-
 <div class="container-fluid" style="position: relative;">
     <div class="row">
         <div class="col-12">
@@ -9,7 +7,7 @@
                     <div class="hotel-field" (click)="focusDestinationFieldInput('hotel')">
                         <p class="field-heading" style="margin-bottom: 5px;">
                             <span (click)="changeSearchType('hotel')" style="font-weight: 500">Hotel</span>
-                            <i class="bi bi-caret-left-fill" style="margin-left: 1px;" (click)="changeSearchType('hotel')"></i>
+                            <i  style="margin-left: 1px;" (click)="changeSearchType('hotel')"></i>
             
                         </p>
             
@@ -47,7 +45,7 @@
                         <p class="field-heading" style="margin-bottom: 5px;">
             
             
-                            <i class="bi bi-caret-right-fill" style="margin-left: -6px;" (click)="changeSearchType('location')"></i>
+                            <i  style="margin-left: -6px;" (click)="changeSearchType('location')"></i>
                             <span (click)="changeSearchType('location')" style="font-weight: 500">Location</span>
                         </p>
                         <ng-container>
@@ -216,7 +214,7 @@
 
             </div>
             <mat-calendar class="mat-calendar-class" [selected]="selectedRangeValue"
-                (selectedChange)="selectedChange($event)">
+                (selectedChange)="selectedChange($event)"[minDate]="minDate">
             </mat-calendar>
         </div>
         <div>
@@ -226,7 +224,7 @@
                 <i class="bi bi-chevron-right" (click)="onChangeMonth('next')"></i>
             </div>
             <mat-calendar class="mat-calendar-class second-calendar" [selected]="selectedRangeValue"
-                (selectedChange)="selectedChange($event)" [startAt]="secondCalStartDate">
+                (selectedChange)="selectedChange($event)" [startAt]="secondCalStartDate" [minDate]="minDate">
             </mat-calendar>
         </div>
     </div>

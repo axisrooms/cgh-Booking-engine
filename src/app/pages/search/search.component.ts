@@ -28,7 +28,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   dropdownType = DropdownType;
   showDropdown!: DropdownType;
   showFieldWarnings!: DropdownType;
-
+  minDate: Date | undefined;
   searchId!: any;
   flag:any;
   activateRouteSubscription$!: Subscription;
@@ -57,6 +57,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.minDate = new Date();
     this.searchForm = this.getsearchForm();
     this.getWithExpiry();  
     console.log(this.searchForm, "searchform")
