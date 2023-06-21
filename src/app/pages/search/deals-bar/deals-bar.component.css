@@ -95,3 +95,15 @@ hr {
 .btn-main {
   width: 100%;
 }
+
+
+@media screen and (min-width:100px) and (max-width: 480px) {
+  .deals {
+    width: fit-content;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: 0;
+  }
+}
