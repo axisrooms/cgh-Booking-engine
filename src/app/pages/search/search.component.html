@@ -6,22 +6,23 @@
                 <div class="search-bar" [formGroup]="searchForm" autocomplete="off">
                     <div class="hotel-field" (click)="focusDestinationFieldInput('hotel')">
                         <p class="field-heading" style="margin-bottom: 5px;">
-                            <span (click)="changeSearchType('hotel')" style="font-weight: 500">Hotel</span>
+
+                            <span (click)="changeSearchType('hotel')" style="font-weight: 500">Hotel/City</span>
+
                             <i style="margin-left: 1px;" (click)="changeSearchType('hotel')"></i>
 
                         </p>
 
                         <ng-container>
                             <input type="search" autocomplete="off" class="field-content cstm" id="hotel-field-input"
-                                placeholder="Search By Hotel" aria-label="Number" matInput formControlName="hotel"
+                                placeholder="Search By Hotel/City" aria-label="Number" matInput formControlName="hotel"
                                 (keydown)="onHotelFieldEvent('keydown', $event)" (focus)="onHotelFieldEvent('focus')">
 
                             <mat-card class="dropdown-card p-0" style="  scroll-behavior: smooth;
-                            max-height: 255px;" *ngIf="showDropdown === dropdownType.hotel">
-                                <div class="option-block" *ngFor="let option of filteredHotelsList | async"
-                                    (click)="selectHotel(option.hotel_name)">
+                            max-height: 255px;">
+                                <div class="option-block" *ngFor="let option of filteredHotelsList | async">
                                     <i class="bi bi-building"></i>
-                                    <div class="option-text-block">
+                                    <div class="option-text-block" (click)="selectHotel(option.hotel_name)">
                                         <p class="option-title-text">{{option.hotel_name}}</p>
                                         <p class="option-sub-text">
                                             <span style="font-weight: 600; color: #666">Resorts . </span>
@@ -30,8 +31,25 @@
                                             {{option.address.country ? option.address.country : ''}}
                                         </p>
                                     </div>
+
+                                </div>
+                                <div class="option-block" *ngFor="let option of filteredLocationList | async"
+                                    (click)="selectLocation(option)">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <div class="option-text-block">
+                                        <p class="option-title-text">{{option.key}}</p>
+                                        <p class="option-sub-text">
+                                            <span
+                                                style="text-transform: capitalize; font-weight: 600; color: #666;">{{option.type}}
+                                                . </span>
+                                            {{option.city && option.key != option.city ? option.city + ', ' : ''}}
+                                            {{option.state && option.key != option.state ? option.state + ', ' : ''}}
+                                            {{option.country ? option.country : ''}}
+                                        </p>
+                                    </div>
                                 </div>
                             </mat-card>
+
                         </ng-container>
 
 
@@ -42,7 +60,7 @@
 
                         <i class="bi bi-building icon-style"></i>
                     </div>
-                    <div class="hotel-field" (click)="focusDestinationFieldInput('location')">
+                    <!-- <div class="hotel-field" (click)="focusDestinationFieldInput('location')">
                         <p class="field-heading" style="margin-bottom: 5px;">
 
 
@@ -77,7 +95,7 @@
 
                         <i class="bi bi-map icon-style"></i>
 
-                    </div>
+                    </div> -->
 
                     <div class="checkin-field">
                         <div (click)="toggleDropdown(dropdownType.checkin)">

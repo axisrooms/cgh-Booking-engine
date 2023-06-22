@@ -194,8 +194,12 @@ export class BookingService {
       headers: getDefaultHeaders(),
     });
   }
-
-
+ getpolicy(searchParams: any): Observable<any> {
+  return this.http.get<any>(`${BASE_URL}api/be/getPolicies`, {
+    params: searchParams,
+    headers: getDefaultHeaders(),
+  });
+ }
   addAddon(addon: any) {
     let bookingItem = this.currBookingItemValue;
 
