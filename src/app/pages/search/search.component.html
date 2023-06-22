@@ -7,7 +7,7 @@
                     <div class="hotel-field" (click)="focusDestinationFieldInput('hotel')">
                         <p class="field-heading" style="margin-bottom: 5px;">
 
-                            <span (click)="changeSearchType('hotel')" style="font-weight: 500">Hotel/city</span>
+                            <span (click)="changeSearchType('hotel')" style="font-weight: 500">Hotel/City</span>
 
                             <i  style="margin-left: 1px;" (click)="changeSearchType('hotel')"></i>
             
@@ -15,7 +15,7 @@
             
                         <ng-container>
                             <input type="search" autocomplete="off" class="field-content cstm" id="hotel-field-input"
-                                placeholder="Search By Hotel" aria-label="Number" matInput formControlName="hotel"
+                                placeholder="Search By Hotel/City" aria-label="Number" matInput formControlName="hotel"
                                 (keydown)="onHotelFieldEvent('keydown', $event)" (focus)="onHotelFieldEvent('focus')">
             
                             <mat-card class="dropdown-card p-0" style="  scroll-behavior: smooth;
