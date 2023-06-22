@@ -150,7 +150,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     if (!value) value = '';
     let filterValue = value?.toLowerCase();
     let filteredArray = this.locationList.filter((val: any) =>
-      val.key?.toLowerCase().includes(filterValue) && val.type == 'city'
+      val.key?.toLowerCase().includes(filterValue.toLowerCase()) && val.type == 'city'
     );
     this.showDropdown =
       filteredArray.length > 0 ? DropdownType.location : DropdownType.none;
@@ -318,6 +318,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.showDropdown = DropdownType.none;
       this.showFieldWarnings = this.dropdownType.none;
     }, 0);
+    this.showDropdown = this.dropdownType.none;
   }
 
   selectLocation(option: any) {
@@ -337,6 +338,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.showDropdown = DropdownType.none;
       this.showFieldWarnings = this.dropdownType.none;
     }, 0);
+    this.showDropdown = this.dropdownType.none;
   }
 
   async setHotelName(id: number) {

@@ -176,6 +176,7 @@
         <ul>
             <li *ngFor="let amenitie of property.amenities;let i=index">{{amenitie}}</li>
         </ul>
+        <ul><li *ngFor="let key of property?.keyAmenities | keyvalue">{{key.key}}</li></ul>
     </ng-container>
 </ng-template>
 
