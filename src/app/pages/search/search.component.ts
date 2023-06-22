@@ -75,15 +75,10 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.searchTypeControlSubscription =
       this.searchForm.controls.searchType.valueChanges.subscribe((value) => {
         if (value === 'hotel') {
-          this.searchForm.controls.hotel.setValidators([Validators.required]);
+          
           
         }
-        if (value === 'location') {
-         
-          this.searchForm.controls.location.setValidators([
-            Validators.required,
-          ]);
-        }
+     
       });
 
 
@@ -289,8 +284,10 @@ export class SearchComponent implements OnInit, OnDestroy {
     }
     if (type === 'focus') {
       this.filterHotel(this.searchForm.controls.hotel.value);
+      this.filterLocation(this.searchForm.controls.location.value);
     } else if (type === 'keydown') {
       this.filterHotel(this.searchForm.controls.hotel.value);
+      this.filterLocation(this.searchForm.controls.location.value);
     }
   }
 
@@ -326,10 +323,11 @@ export class SearchComponent implements OnInit, OnDestroy {
   selectLocation(option: any) {
     // this.searchForm.controls.status = 'VALID';
     if ((option.type = 'city')) {
+      this.searchForm.controls.hotel.setValue(option.key);
       this.searchForm.controls.cityId.setValue(option.cityId);
-      if(this.searchForm.controls.searchType.value !== "hotel"){
+     
         this.searchForm.controls.searchType.setValue('location')
-      }
+      
     }
     this.searchForm.controls.stateId.setValue(option.stateId);
     this.searchForm.controls.countryId.setValue(option.countryId);
@@ -508,8 +506,11 @@ export class SearchComponent implements OnInit, OnDestroy {
     let searchParams: any = {
       bookingEngineId: BOOKING_ENGINE_ID,
     };
-  
-      searchParams.productId = this.getProductId();
+
+      if(this.getProductId()){
+        searchParams.productId = this.getProductId();
+      } 
+     
  
       if (this.searchForm.controls.cityId.value?.length > 0) {
         searchParams.cityId = this.searchForm.controls.cityId.value;
