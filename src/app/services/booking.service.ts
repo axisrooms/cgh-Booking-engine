@@ -39,8 +39,7 @@ export class BookingService {
           : undefined;
       })
     );
-console.log("444444444444444444444444444")
-console.log( this.currBookingItem$)
+   
     this.bookingCart$.pipe(tap((val) => (this.bookingCartValue = val))).subscribe();
     this.currBookingItem$.pipe(tap((val) => (this.currBookingItemValue = val))).subscribe();
     this.unsetPGLoaderFlag()
@@ -84,12 +83,14 @@ console.log( this.currBookingItem$)
   getTotalAmount(checkIn: string, checkOut: string, room: any) {
     // let diff = this.getNoOfDays(checkIn, checkOut);
     let price =
-      (room.price.discounted ? (room.price.actual-room.price.discounted) : room.price.actual) +
+      (room.price.discounted ? (room.price.actual) : room.price.actual) +
       room.price.taxValue;
     // return diff * price;
-    return  price;
+    return price;
 
   }
+  // (room.price.discounted ? (room.price.actual - room.price.discounted) : room.price.actual) +
+
 
   // getTotalAmtWithAddon(){}
 
@@ -165,9 +166,9 @@ console.log( this.currBookingItem$)
     this.router.navigate(['/book']);
   }
 
-  removeCurrentBookingItemFromList(i:any) {
+  removeCurrentBookingItemFromList(i: any) {
     // let index = this.bookingCartValue.currIndex
-    let index =i
+    let index = i
     if (index != undefined && index != null) {
       let bookingCart = cloneDeep(this.bookingCartValue)
       bookingCart.bookingItems.splice(index, 1)

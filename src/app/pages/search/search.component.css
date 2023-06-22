@@ -21,7 +21,8 @@
   background: rgba(46, 51, 59, 0.8);
   padding: 15px;
   margin-top: 25px;
-  max-width: 1200px;
+  /* max-width: 1200px; */
+  max-width: 1250px;
 }
 
 .search-bar .icon-style {
@@ -53,7 +54,8 @@
   cursor: pointer;
   position: relative;
   padding: 2px 20px;
-  min-width: 220px;
+  /* min-width: 220px; */
+  min-width: 110px;
   width: 220px;
   display: flex;
   flex-direction: column;

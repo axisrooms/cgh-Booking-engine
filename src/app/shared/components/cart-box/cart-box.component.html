@@ -41,7 +41,7 @@
                 <span class="item-desc">{{(bookingItem.rooms[0]?.price?.actual || 0) / (bookingItem.noOfDays || 0)}}  x {{bookingItem.noOfDays}} nights </span>
                 <span *ngIf="bookingItem.rooms[0]?.price?.actual">
                     <span class="item-amount">{{bookingItem.renderData.currency}}
-                        {{(bookingItem.rooms[0]?.price?.actual || 0) 
+                        {{(bookingItem.rooms[0]?.price?.actual || 0)  + (bookingItem.rooms[0]?.price?.discounted || 0)
                         | number: '1.2-2'}}</span>
                 </span>
             </p>

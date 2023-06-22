@@ -3,7 +3,7 @@
 }
 
 header {
-    background: rgba(46,51,59,.8);
+    background: rgba(46, 51, 59, .8);
     position: fixed;
     top: 0;
     left: 0;
@@ -292,7 +292,7 @@ header {
         margin-top: 6px;
     }
 
-    .navbar-toggler{
+    .navbar-toggler {
         border: none;
     }
 
@@ -308,10 +308,17 @@ header {
     }
 
     .bi-justify {
-        font-size: 25px;
+        font-size: 2rem;
     }
 
 
+    /* hide close when burger shown */
+    .navbar-toggler.collapsed .close-icon {
+        display: none;
+    }
 
+    .navbar-toggler:not(.collapsed) .navbar-toggler-icon_1 {
+        display: none;
+    }
 
 }
