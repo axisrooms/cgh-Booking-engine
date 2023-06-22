@@ -606,7 +606,10 @@ hr {
     text-align: center;
   }
 
-
+  .search-bar .hotel-field .dropdown-card {
+    left: 0;
+    min-width: fit-content;
+  }
   
 
 .main-title{
@@ -614,6 +617,10 @@ hr {
 }
   .contents-section{
     padding: 20px 15px 0px 15px;
+}
+
+.search-bar .date-card.right-card {
+  left: calc(0px);
 }
 
 }
