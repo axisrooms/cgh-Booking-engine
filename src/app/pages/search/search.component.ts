@@ -67,19 +67,12 @@ export class SearchComponent implements OnInit, OnDestroy {
     );
 
     this.filteredLocationList =
-      this.searchForm.controls.location.valueChanges.pipe(
-        startWith(''),
-        map((value) => this.filterLocation(value))
-      );
+    this.searchForm.controls.hotel.valueChanges.pipe(
+      startWith(''),
+      map((value) => this.filterLocation(value))
+    );
 
-    this.searchTypeControlSubscription =
-      this.searchForm.controls.searchType.valueChanges.subscribe((value) => {
-        if (value === 'hotel') {
-          
-          
-        }
-     
-      });
+   
 
 
     this.activateRouteSubscription$ = this.activatedRoute.queryParams.pipe(
@@ -138,8 +131,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     if (!value) value = '';
     let filterValue = value?.toLowerCase();
     let filteredArray = this.hotelsList.filter((val) =>
-      val.hotel_name?.toLowerCase().includes(filterValue)
+      val.hotel_name?.toLowerCase().indexOf(filterValue) > -1
     );
+    
     this.showDropdown =
       filteredArray.length > 0 ? DropdownType.hotel : DropdownType.none;
     return filteredArray;
@@ -150,7 +144,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     if (!value) value = '';
     let filterValue = value?.toLowerCase();
     let filteredArray = this.locationList.filter((val: any) =>
-      val.key?.toLowerCase().includes(filterValue.toLowerCase()) && val.type == 'city'
+      val.key?.toLowerCase().indexOf(filterValue) > -1 
     );
     this.showDropdown =
       filteredArray.length > 0 ? DropdownType.location : DropdownType.none;
@@ -284,10 +278,10 @@ export class SearchComponent implements OnInit, OnDestroy {
     }
     if (type === 'focus') {
       this.filterHotel(this.searchForm.controls.hotel.value);
-      this.filterLocation(this.searchForm.controls.location.value);
+      this.filterLocation(this.searchForm.controls.hotel.value);
     } else if (type === 'keydown') {
       this.filterHotel(this.searchForm.controls.hotel.value);
-      this.filterLocation(this.searchForm.controls.location.value);
+      this.filterLocation(this.searchForm.controls.hotel.value);
     }
   }
 
