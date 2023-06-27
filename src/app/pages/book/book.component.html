@@ -13,8 +13,9 @@
             </div>
         </div>
     </ng-container>
-
+    
     <ng-template #elseBookingTemplate>
+        
         <!-- <ng-container *ngIf="streams.currBookingItem"> -->
         <app-stepper [stepper]="stepper" class="stepper"></app-stepper>
 
@@ -74,8 +75,32 @@
 
                     </div>
                 </div>
-
+      
                 <div class="cart-col col-12 col-md-4 col-lg-4" *ngIf="stepper != eStepper.confirmation">
+                    <span class="view-more-span title" (click)="cancellationpolicy()">Cancellation policy</span>
+                    <div class="tabs-block" *ngIf="expandTabBlock">
+                        
+                            <ng-container>
+
+                                <ul>
+                                    <li *ngFor="let policy of policyresp['cancellationPolicy']">{{policy}}</li>
+                                </ul>
+                            </ng-container>
+                        
+                       
+                    </div>
+                
+                    <span class="view-more-span title" (click)="hotelpolicy()">Hotel policy</span><br>
+                    <div class="tabs-block" *ngIf="expandTabBlock1">
+                        
+                        <ng-container>
+
+                            <ul>
+                                <li *ngFor="let policy of policyresp['hotelPolicy']">{{policy}}</li>
+                            </ul>
+                        </ng-container>
+                    
+                </div>
                     <p class="title">BOOKING DETAILS</p>
                     <app-cart-box></app-cart-box>
                 </div>

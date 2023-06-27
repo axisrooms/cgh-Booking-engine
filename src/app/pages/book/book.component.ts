@@ -33,6 +33,9 @@ export class BookComponent implements OnInit {
   personalDetailsComponent!: PersonalDetailsComponent;
   load:boolean =true;
   addons: any = [];
+  hotelid:any;
+  searchid:any;
+  policyresp:any;
   eStepper = StepperType;
   stepper: StepperType = this.eStepper.addons;
   activateRouteSubscription$!: Subscription;
@@ -40,6 +43,8 @@ export class BookComponent implements OnInit {
   currBookingItem$: Observable<BookingItem | undefined>;
   bookingCart$: Observable<BookingCart>;
   payathotel:any = false;
+  expandTabBlock: boolean =false;
+  expandTabBlock1: any =false;
   constructor(
     public dialog: MatDialog,
     private bookingService: BookingService,
@@ -53,8 +58,22 @@ export class BookComponent implements OnInit {
     this.bookingCart$ = this.bookingService.bookingCart$;
   }
 
-  ngOnInit(): void { }
-
+  ngOnInit(): void {
+    this.currBookingItem$.subscribe(e => {
+     this.hotelid = e?.hotelId;
+     this.searchid = e?.searchId;
+   
+    })
+    this.bookingService.getAddons({
+      hotelId:   this.hotelid ,
+      searchId:  this.searchid,
+    })
+    .subscribe((res) => {
+      this.policyresp = res;
+   
+    });
+}
+   
   openRecommendationsDialog() {
     this.spinner.show();
     let dat = this.currBookingItem$.subscribe(e => { return e?.checkIn})
@@ -178,5 +197,24 @@ console.log(this.stepper, this.eStepper.payment,  this.eStepper.personalDetails)
       width: '600px',
       height: '500px'
     });
+  }
+  
+  cancellationpolicy(){
+  
+      if (this.expandTabBlock) {
+        
+        this.expandTabBlock = false;
+      } else {
+      
+        this.expandTabBlock = true;
+      }
+  }
+  hotelpolicy(){
+    if (this.expandTabBlock1) {
+      this.expandTabBlock1 = false;
+    } else {
+    
+      this.expandTabBlock1 = true;
+    }
   }
 }
