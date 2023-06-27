@@ -100,7 +100,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.searchTypeControlSubscription.unsubscribe();
+    this.searchTypeControlSubscription?.unsubscribe();
   }
 
   getsearchForm() {
