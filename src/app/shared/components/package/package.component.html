@@ -171,9 +171,13 @@
     </ng-container>
 </ng-template>
 <ng-template #amenitesTab let-property="property" style="height: 100% !important;">
-    <p class="room-list-heading">Amenities</p>
+   
     <ng-container >
-      
+        <p class="room-list-heading">Amenities</p>
+        <ul>
+            <li *ngFor="let amenitie of property.amenities;let i=index">{{amenitie}}</li>
+        </ul>
+        <p class="room-list-heading">Key Amenities</p>
         <ul style="list-style: none;">><li *ngFor="let key of property?.keyAmenities | keyvalue"><img [src]="'https://app.axisrooms.com/'+key.value">{{key.key}}</li></ul>
     </ng-container>
 </ng-template>
