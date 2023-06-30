@@ -102,7 +102,7 @@ export class BookingService {
 
   getAgesOfChildrenArray(paxInfo: any[]) {
     let agesArray: number[] = [];
-    paxInfo.forEach((e1: any, index: any) => {
+    paxInfo?.forEach((e1: any, index: any) => {
       if (index > 1) {
         agesArray.push(parseInt(e1));
       }
@@ -117,7 +117,8 @@ export class BookingService {
     checkIn: string,
     checkOut: string,
     paxInfo: any,
-    addons: any
+    addons: any,
+    noOfRooms:any
   ) {
     let room: Room = {
       ratePlanId: selectedRoom.ratePlanId,
@@ -138,11 +139,11 @@ export class BookingService {
       cityId: property.address.cityId,
       checkIn: checkIn,
       checkOut: checkOut,
-      noOfRooms: 1,
-      noOfAdults: parseInt(paxInfo.split('|')[0] ?? 1),
-      noOfChildren: parseInt(paxInfo.split('|')[1] ?? 0),
+      noOfRooms: noOfRooms,
+      noOfAdults: parseInt(paxInfo?.split('|')[0] ?? 1),
+      noOfChildren: parseInt(paxInfo?.split('|')[1] ?? 0),
       paxInfo: paxInfo,
-      agesOfChildren: this.getAgesOfChildrenArray(paxInfo.split('|')),
+      agesOfChildren: this.getAgesOfChildrenArray(paxInfo?.split('|')),
       rooms: [room],
       noOfDays: this.getNoOfDays(checkIn, checkOut),
       totalAmount: this.getTotalAmount(checkIn, checkOut, selectedRoom),

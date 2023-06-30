@@ -18,6 +18,7 @@ export class PaymentService {
   ) {}
 
   async createOrderAndMakePayment(bookingItem: any, personalDetailsForm: any,payathotel: any) {
+    console.log(bookingItem,personalDetailsForm,payathotel,"!!!!!")
     this.createOrder(bookingItem).subscribe((res1) => {
       this.makePayment(bookingItem, personalDetailsForm,payathotel);
     });

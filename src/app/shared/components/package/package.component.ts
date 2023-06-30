@@ -21,6 +21,7 @@ export class PackageComponent implements OnInit, OnDestroy {
   lowestRoomPrice: number | undefined;
   addons: any;
   @Input() id_num:number | undefined
+  noOfRooms: any;
 
   @Input() set property(val) {
     this._property = val
@@ -73,6 +74,8 @@ export class PackageComponent implements OnInit, OnDestroy {
         this.searchType = queryParams['searchType'];
         this.productId = queryParams['productId'];
         this.paxInfo = queryParams['paxInfo'];
+        this.noOfRooms = queryParams['rooms']
+
       }
     );
   }
@@ -127,7 +130,8 @@ export class PackageComponent implements OnInit, OnDestroy {
         this.checkIn,
         this.checkOut,
         this.paxInfo,
-        this.addons
+        this.addons,
+        this.noOfRooms
       );
     } else if (this.buttonActionType === 'ongoingComponent-proceed') {
       this.bookingService.proceedBookingFromOngoingList(this.index)

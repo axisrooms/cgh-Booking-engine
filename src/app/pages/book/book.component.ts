@@ -75,6 +75,7 @@ export class BookComponent implements OnInit {
 }
    
   openRecommendationsDialog() {
+    console.log( this.bookingService,'@@@@@')
     this.spinner.show();
     let dat = this.currBookingItem$.subscribe(e => { return e?.checkIn})
     this.searchService.getAllHotels(dat).subscribe(res => {

@@ -144,25 +144,82 @@
                         <mat-card class="dropdown-card"
                             style="padding: 25px; height: fit-content; min-height: unset; z-index: 1;"
                             *ngIf="showDropdown === dropdownType.rooms">
-                            <div class="content-row mt-0">
+                            <!-- ========================================================================= -->
+
+                            <div class="content-row mt-0"
+                                style="border-bottom: none !important;padding-bottom: 0 !important;">
                                 <div class="text-box">
                                     <p class="field-heading"> {{(searchForm?.controls?.rooms?.value > 0)
                                         ? searchForm?.controls?.rooms?.value + ' Room'
                                         + (searchForm?.controls?.rooms?.value > 1 ? 's' : '')
                                         : 'Add Rooms' }}</p>
-                                    <!-- <p class="field-content">Ages 0 to 5</p> -->
                                 </div>
                                 <div class="control-box">
                                     <i class="bi bi-dash" (click)="updateroomCount('decrement')"></i>
                                     <span>{{searchForm.controls.rooms.value}}</span>
                                     <i class="bi bi-plus" (click)="updateroomCount('increment')"></i>
+
+
                                 </div>
+                                <ng-container *ngFor="let room of [].constructor(searchForm?.controls?.rooms?.value); let i = index">
+                                    <div class="row w-100">
+                                        <div class="col">
+                                            <p
+                                                style="font-size: 16px;font-weight: 600;margin-bottom: 10px;text-align: left;margin-top: 20px;">
+                                                Room #{{i+1}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="w-100 d-flex mb-2">
+
+                                        <div class="text-box">
+                                            <label class="field-heading">Adult(s)</label>
+                                        </div>
+                                        <div class="control-box">
+                                            <i class="bi bi-dash" (click)="updateAdultCount('decrement',i)"></i>
+                                            <span>{{searchForm.controls.paxData.value[i]?.noOfAdults}}</span>
+                                            <i class="bi bi-plus" (click)="updateAdultCount('increment',i)"></i>
+
+
+                                        </div>
+                                    </div>
+                                    <div class="w-100 d-flex mb-2">
+                                        <div class="text-box">
+                                            <label class="field-heading">Children</label>
+                                        </div>
+                                        <div class="control-box">
+                                            <i class="bi bi-dash" (click)="updateChildCount('decrement',i)"></i>
+                                            <span>{{searchForm.controls.paxData.value[i]?.noOfChildren}}</span>
+                                            <i class="bi bi-plus" (click)="updateChildCount('increment',i)"></i>
+
+
+                                        </div>
+                                    </div>
+                                    <div class="row w-100" style="margin-top: 12  px;" *ngIf="searchForm.controls.paxData.value[i]?.noOfChildren>0">
+                                        <div class="col-auto">
+                                            <p style="font-size: 16px;font-weight: 400;">Provide Children's age</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4 mx-1"
+                                            *ngFor="let age of [].constructor(searchForm.controls.paxData.value[i]?.noOfChildren); let childIndex = index"
+                                            style="margin-bottom: 10px;">
+                                            <select class="input childAges" (click)="addAges($event, i)">
+                                                <option selected disabled>Child {{childIndex+1}}</option>
+                                                <option *ngFor="let item of [1,2,3,4,5,6,7,8,9,10]" value="{{item}}" >
+                                                    {{item}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                   
+                                </ng-container>
                             </div>
 
+                            <!-- ====================================================================== -->
                         </mat-card>
                     </div>
 
-                    <div class="pax-field">
+                    <!-- <div class="pax-field" style="display: none;">
                         <div (click)="toggleDropdown(dropdownType.guest)" style="height: 36px;">
                             <p class="field-heading">Guests</p>
                             <p class="field-content" style="margin-top: 1px;" [ngClass]="{'not-selected': searchForm?.controls?.noOfAdults?.value 
@@ -178,46 +235,59 @@
                         <mat-card class="dropdown-card"
                             style="padding: 25px; height: fit-content; min-height: unset; z-index: 1;"
                             *ngIf="showDropdown === dropdownType.guest">
-                            <div class="content-row mt-0">
-                                <div class="text-box">
-                                    <p class="field-heading">Adult</p>
-                                </div>
-                                <div class="control-box">
-                                    <i class="bi bi-dash" (click)="updateAdultCount('decrement')"></i>
-                                    <span>{{searchForm.controls.noOfAdults.value}}</span>
-                                    <i class="bi bi-plus" (click)="updateAdultCount('increment')"></i>
-                                </div>
-                            </div>
-                            <div class="content-row"
-                                [ngClass]="{'content-row-alt': agesOfChildren?.controls?.length === 0}">
-                                <div class="text-box">
-                                    <p class="field-heading">Children</p>
-                                    <p class="field-content"></p>
-                                </div>
-                                <div class="control-box">
-                                    <i class="bi bi-dash" (click)="updateChildCount('decrement')"></i>
-                                    <span>{{agesOfChildren?.controls?.length}}</span>
-                                    <i class="bi bi-plus" (click)="updateChildCount('increment')"></i>
-                                </div>
-                            </div>
+                            <ng-container
+                                *ngFor="let item of [].constructor( this.searchForm.controls.rooms.value);let i=index;">
+                                <div class='card' style="    padding: 13px;
+                                margin-bottom: 12px;">
+                                    <label for=""> Room {{i+1}} : </label>
+                                    <div class="content-row mt-0">
+                                        <div class="text-box">
+                                            <p class="field-heading">Adult</p>
+                                        </div>
+                                        <div class="control-box">
+                                            <i class="bi bi-dash" (click)="updateAdultCount('decrement',i)"></i>
+                                            <span>{{searchForm.controls.noOfAdults.value}}</span>
+                                            <i class="bi bi-plus" (click)="updateAdultCount('increment',i)"></i>
+                                        </div>
+                                    </div>
+                                    <div class="content-row"
+                                        [ngClass]="{'content-row-alt': agesOfChildren?.controls?.length === 0}">
+                                        <div class="text-box">
+                                            <p class="field-heading">Children</p>
+                                            <p class="field-content"></p>
+                                        </div>
+                                        <div class="control-box">
+                                            <i class="bi bi-dash" (click)="updateChildCount('decrement',1)"></i>
+                                            <span>{{agesOfChildren?.controls?.length}}</span>
+                                            <i class="bi bi-plus" (click)="updateChildCount('increment',1)"></i>
+                                        </div>
+                                    </div>
 
-                            <ng-container formArrayName="agesOfChildren"
-                                *ngIf="agesOfChildren?.controls?.length ?? 0 > 0">
-                                <p class="ages-input-heading">Children's age <span>(Required)</span></p>
-                                <div class="ages-row">
-                                    <ng-container [formGroupName]="idx"
-                                        *ngFor="let control of agesOfChildren?.controls; let idx=index; let last=last">
-                                        <div class="age-input"
-                                            [ngClass]="{'error-border': control.invalid && (control.dirty || control.touched)}">
-                                            <select formControlName="age">
-                                                <option *ngFor="let age of agesArray" [value]="age">{{age}}</option>
-                                            </select>
+                                    <ng-container formArrayName="agesOfChildren"
+                                        *ngIf="agesOfChildren?.controls?.length ?? 0 > 0">
+                                        <p class="ages-input-heading">Children's age <span>(Required)</span></p>
+                                        <div class="ages-row">
+                                            <ng-container [formGroupName]="idx"
+                                                *ngFor="let control of agesOfChildren?.controls; let idx=index; let last=last">
+                                                <div class="age-input"
+                                                    [ngClass]="{'error-border': control.invalid && (control.dirty || control.touched)}">
+                                                    <select formControlName="age">
+                                                        <option *ngFor="let age of agesArray" [value]="age">{{age}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </ng-container>
                                         </div>
                                     </ng-container>
                                 </div>
+
                             </ng-container>
+
+
+
+
                         </mat-card>
-                    </div>
+                    </div> -->
 
                     <i class="bi bi-search" (click)="onSubmit()"></i>
                 </div>
