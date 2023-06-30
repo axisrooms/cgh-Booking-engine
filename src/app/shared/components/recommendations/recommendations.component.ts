@@ -15,7 +15,7 @@ export class RecommendationsComponent implements OnInit {
       {
        "id": 54027,
        "Property_Name": "Coconut Lagoon",
-       "Recommendations": ["Marari Beach,Spice Coast Cruises,Brunton Boatyard"]
+       "Recommendations": ["Marari Beach","Spice Coast Cruises","Brunton Boatyard"]
       },
      
       {

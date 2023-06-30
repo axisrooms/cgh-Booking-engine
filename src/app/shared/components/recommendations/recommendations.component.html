@@ -44,19 +44,19 @@
     </div>
     <p class="title">Our Recommendations</p>
     <div class="image-block-wrapper" *ngFor="let item of staticresult.Recommendation_List;let id=index">
-       
-        <div class="image-block" *ngIf="data.HotelId == item.id">
+       <div *ngIf="data.HotelId == item.id">
+        <div class="image-block"  *ngFor="let items of item.Recommendations;let id=index">
             <img src="recommendations.component.ts"
                 onError="this.src='../../../../assets/images/no-image-found.png',style.objectFit='contain'" 
                 alt="">
 
          
-            <div class="image-overlay">
+            <div class="image-overlay" >
                 <p class="promotions-tagline" (click)="viewRecommendationsForSpecific(item.id)"> STAY AT
-                    {{item.Property_Name}} @
+                    {{items}} @
                     Lowest Price
                 </p>
-            </div>
+            </div></div>
         </div>
     </div>
     <button class="btn-main mt-3" (click)="viewRecommendations()">View</button>
