@@ -1,10 +1,10 @@
-<div class="wrapper">
+ <div class="wrapper"*ngIf="!ids.includes(data.HotelId)">
     <div class="close-icon" (click)="closeDialog()">
         <i class="bi bi-x"></i>
     </div>
     <p class="title">Our Recommendations</p>
     <div class="image-block-wrapper" *ngFor="let item of data.searchResult?.Hotel_Details;let id=index">
-        <div class="image-block">
+        <div class="image-block" >
             <!-- <img src="{{item.images[0]}}"
                 onError="this.src='../../../../assets/images/no-image-found.png',style.objectFit='contain'" 
                 alt=""> -->
@@ -31,9 +31,31 @@
             <div class="image-overlay">
                 <p class="promotions-tagline" (click)="viewRecommendationsForSpecific(item.hotel_id)"> STAY AT
                     {{item.hotel_name}} @
-                    {{item.currency}}{{item.price.actual}} PER NIGHT
+                    {{item.currency}}{{item.price?.actual}} PER NIGHT
                 </p>
             </div>
+        </div>
+    </div>
+    <button class="btn-main mt-3" (click)="viewRecommendations()">View</button>
+</div>
+<div class="wrapper"*ngIf="ids.includes(data.HotelId)">
+    <div class="close-icon" (click)="closeDialog()">
+        <i class="bi bi-x"></i>
+    </div>
+    <p class="title">Our Recommendations</p>
+    <div class="image-block-wrapper" *ngFor="let item of staticresult.Recommendation_List;let id=index">
+       <div *ngIf="data.HotelId == item.id">
+        <div class="image-block"  *ngFor="let items of item.Recommendations;let id=index">
+            <img src="recommendations.component.ts"
+                onError="this.src='../../../../assets/images/no-image-found.png',style.objectFit='contain'" 
+                alt="">
+
+         
+            <div class="image-overlay" >
+                <p class="promotions-tagline" (click)="viewRecommendationsForSpecific1(items)"> STAY AT
+                    {{items}} 
+                </p>
+            </div></div>
         </div>
     </div>
     <button class="btn-main mt-3" (click)="viewRecommendations()">View</button>

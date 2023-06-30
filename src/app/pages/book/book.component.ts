@@ -83,7 +83,8 @@ export class BookComponent implements OnInit {
         width: '600px',
         panelClass: ['mat-dialog-custom-dimensions'],
         data: {
-          searchResult: res
+          searchResult: res,
+          HotelId:this.hotelid ,
         },
       });
       this.spinner.hide();
