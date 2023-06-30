@@ -114,8 +114,9 @@ export class RecommendationsComponent implements OnInit {
   }
   viewRecommendationsForSpecific1(id: any) {
     this.staticresult.Recommendation_List.filter((param)=>{return param.Property_Name === id?param.id:null})
+    var id_data = this.staticresult.Recommendation_List.filter((param)=>{return param.Property_Name === id?param.id:null})
     let searchParams: any = this.bookingService.getRecommendationsSearchParams();
-    searchParams['productId'] = id;
+    searchParams['productId'] = id_data[0].id;
     this.dialogRef.close()
     this.router.navigate(['/search'], { queryParams: searchParams })
   }
