@@ -12,7 +12,7 @@
   flex-wrap: nowrap;
 }
 ul {
-   height: calc(190px);
+   height: calc(250px);
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
