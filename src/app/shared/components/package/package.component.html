@@ -175,7 +175,7 @@
     <ng-container >
         <p class="room-list-heading">Amenities</p>
         <ul>
-            <li *ngFor="let amenitie of property.amenities;let i=index">{{amenitie}}</li>
+            <li style="width: 50%;" *ngFor="let amenitie of property.amenities;let i=index">{{amenitie}}</li>
         </ul>
         <p class="room-list-heading">Key Amenities</p>
         <ul style="list-style: none;">><li *ngFor="let key of property?.keyAmenities | keyvalue"><img [src]="'https://app.axisrooms.com/'+key.value">{{key.key}}</li></ul>
