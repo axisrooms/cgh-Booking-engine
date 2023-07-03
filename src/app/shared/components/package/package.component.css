@@ -12,13 +12,14 @@
   flex-wrap: nowrap;
 }
 ul {
-   height: calc(250px);
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    text-decoration: none;
-    background: white;
-}
+   height: calc(430px);
+   display: flex;
+   flex-direction: column;
+   flex-wrap: wrap;
+   width: 98%;
+   text-decoration: none;
+   background: white;
+  }
 .property-image-col {
   width: fit-content;
   padding: 10px;
