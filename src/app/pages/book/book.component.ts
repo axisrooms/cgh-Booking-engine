@@ -35,6 +35,8 @@ export class BookComponent implements OnInit {
   addons: any = [];
   hotelid:any;
   searchid:any;
+  hpolicy:any = false;
+  cpolicy:any = false;
   policyresp:any;
   eStepper = StepperType;
   stepper: StepperType = this.eStepper.addons;
@@ -85,6 +87,19 @@ export class BookComponent implements OnInit {
           searchResult: res,
           HotelId:this.hotelid ,
         },
+      }).afterClosed().subscribe(res =>{
+        if (this.personalDetailsComponent.personalDetailsForm.valid) {
+          this.personalDetailsForm =
+            this.personalDetailsComponent.personalDetailsForm;
+          // this.stepper = this.eStepper.addons;
+          
+          this.paymentService.createOrderAndMakePayment(
+            this.bookingService.currBookingItemValue, this.personalDetailsForm.value,this.payathotel
+          );
+        } else {
+          this.personalDetailsComponent.personalDetailsForm.markAllAsTouched();
+          this.snackBar.open('Please complete the form', '', { duration: 2000 });
+        }
       });
       this.spinner.hide();
     })
@@ -116,27 +131,35 @@ export class BookComponent implements OnInit {
     }
     return str;
   }
+  checkcValue(){
+   if(this.cpolicy){
+
+    this.cpolicy = false;
+   }else{
+    this.cpolicy = true;
+   }
+ }
+ checkhValue(){
+  if(this.hpolicy){
+
+   this.hpolicy = false;
+  }else{
+   this.hpolicy = true;
+  }
+}
 
   onNext() {
 console.log(this.stepper, this.eStepper.payment,  this.eStepper.personalDetails)
     if (this.stepper === this.eStepper.addons) {
 
       this.stepper = this.eStepper.personalDetails;
-      this.openRecommendationsDialog()
+    
 
-    } else if (this.stepper === this.eStepper.personalDetails) {
-      if (this.personalDetailsComponent.personalDetailsForm.valid) {
-        this.personalDetailsForm =
-          this.personalDetailsComponent.personalDetailsForm;
-        // this.stepper = this.eStepper.addons;
-        
-        this.paymentService.createOrderAndMakePayment(
-          this.bookingService.currBookingItemValue, this.personalDetailsForm.value,this.payathotel
-        );
-      } else {
-        this.personalDetailsComponent.personalDetailsForm.markAllAsTouched();
-        this.snackBar.open('Please complete the form', '', { duration: 2000 });
-      }
+    } else if (this.stepper === this.eStepper.personalDetails && this.hpolicy && this.cpolicy) {
+      this.openRecommendationsDialog();
+     
+    }else{
+      this.snackBar.open('Please accept hotel and cancellation policy', '', { duration: 2000 });
     } 
 
 
