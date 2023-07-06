@@ -136,6 +136,7 @@ export class BookComponent implements OnInit {
 
     this.cpolicy = false;
    }else{
+    
     this.cpolicy = true;
    }
  }
@@ -229,7 +230,7 @@ console.log(this.stepper, this.eStepper.payment,  this.eStepper.personalDetails)
         
         this.expandTabBlock = false;
       } else {
-      
+        this.expandTabBlock1 = false;
         this.expandTabBlock = true;
       }
   }
@@ -237,7 +238,7 @@ console.log(this.stepper, this.eStepper.payment,  this.eStepper.personalDetails)
     if (this.expandTabBlock1) {
       this.expandTabBlock1 = false;
     } else {
-    
+      this.expandTabBlock = false;
       this.expandTabBlock1 = true;
     }
   }
