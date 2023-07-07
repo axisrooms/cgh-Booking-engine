@@ -193,7 +193,7 @@ export class RecommendationsComponent implements OnInit {
   viewRecommendations() {
     let searchParams: any = this.bookingService.getRecommendationsSearchParams();
     searchParams['searchType'] = 'location';
-    this.dialogRef.close()
+   
     this.router.navigate(['/search'], { queryParams: searchParams })
   }
 
@@ -201,18 +201,18 @@ export class RecommendationsComponent implements OnInit {
   viewRecommendationsForSpecific(id: any) {
     let searchParams: any = this.bookingService.getRecommendationsSearchParams();
     searchParams['productId'] = id;
-    this.dialogRef.close()
+    
     this.router.navigate(['/search'], { queryParams: searchParams })
-    location.reload();
+  
   }
   viewRecommendationsForSpecific1(id: any) {
     this.staticresult.Recommendation_List.filter((param)=>{return param.Property_Name === id?param.id:null})
     var id_data = this.staticresult.Recommendation_List.filter((param)=>{return param.Property_Name === id?param.id:null})
     let searchParams: any = this.bookingService.getRecommendationsSearchParams();
     searchParams['productId'] = id_data[0].id;
-    this.dialogRef.close()
+  
     this.router.navigate(['/search'], { queryParams: searchParams })
-    location.reload();
+    
   }
  
   images(id: any){
