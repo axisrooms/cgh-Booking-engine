@@ -187,13 +187,13 @@ export class RecommendationsComponent implements OnInit {
   }
 
   closeDialog() {
-    this.dialogRef.close()
+    this.dialogRef.close({event:true}) 
   }
 
   viewRecommendations() {
     let searchParams: any = this.bookingService.getRecommendationsSearchParams();
     searchParams['searchType'] = 'location';
-   
+    this.dialogRef.close({event:false}) 
     this.router.navigate(['/search'], { queryParams: searchParams })
   }
 
@@ -201,7 +201,7 @@ export class RecommendationsComponent implements OnInit {
   viewRecommendationsForSpecific(id: any) {
     let searchParams: any = this.bookingService.getRecommendationsSearchParams();
     searchParams['productId'] = id;
-    
+    this.dialogRef.close({event:false}) 
     this.router.navigate(['/search'], { queryParams: searchParams })
   
   }
@@ -210,7 +210,7 @@ export class RecommendationsComponent implements OnInit {
     var id_data = this.staticresult.Recommendation_List.filter((param)=>{return param.Property_Name === id?param.id:null})
     let searchParams: any = this.bookingService.getRecommendationsSearchParams();
     searchParams['productId'] = id_data[0].id;
-  
+    this.dialogRef.close({event:false}) 
     this.router.navigate(['/search'], { queryParams: searchParams })
     
   }
