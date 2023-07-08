@@ -88,7 +88,7 @@ export class BookComponent implements OnInit {
           HotelId:this.hotelid ,
         },
       }).afterClosed().subscribe(res =>{
-        if(res.event){
+        if(res.event == true){
         if (this.personalDetailsComponent.personalDetailsForm.valid) {
           this.personalDetailsForm =
             this.personalDetailsComponent.personalDetailsForm;
