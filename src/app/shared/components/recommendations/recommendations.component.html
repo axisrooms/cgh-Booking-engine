@@ -1,44 +1,4 @@
- <div class="wrapper"*ngIf="!ids.includes(data.HotelId)">
-    <div class="close-icon" title="Close and continue to the payment" (click)="closeDialog()">
-        <i class="bi bi-x"></i>
-    </div>
-    <p class="title">Our Recommendations</p>
-    <div class="image-block-wrapper" *ngFor="let item of data.searchResult?.Hotel_Details;let id=index">
-        <div class="image-block" >
-            <!-- <img src="{{item.images[0]}}"
-                onError="this.src='',style.objectFit='contain'" 
-                alt=""> -->
 
-            <div id="carouselExampleControls" class="carousel slide" [id]="'slider'+ id" data-ride="carousel">
-                <div class="carousel-inner">
-                    <ng-container *ngFor="let item of item.images;let i=index">
-                        <div class="carousel-item" *ngIf="i>=1" [ngClass]="i == 1 ? 'active' : ''" [id]="'slide'+ i">
-                            <img class="d-block w-100" [src]="item[0]">
-                        </div>
-                       
-                    </ng-container>
-
-
-                </div>
-                <a class="carousel-control-prev" [href]="'#slider'+ id" role="button" data-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" [href]="'#slider'+ id" role="button" data-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                </a>
-            </div>
-            <div class="image-overlay">
-                <p class="promotions-tagline" (click)="viewRecommendationsForSpecific(item.hotel_id)"> STAY AT
-                    {{item.hotel_name}} @
-                    {{item.currency}}{{item.price?.actual}} PER NIGHT
-                </p>
-            </div>
-        </div>
-    </div>
-    <button class="btn-main mt-3" (click)="viewRecommendations()">View</button>
-</div>
 <div class="wrapper"*ngIf="ids.includes(data.HotelId)">
     <div class="close-icon" (click)="closeDialog()">
         <i class="bi bi-x"></i>
