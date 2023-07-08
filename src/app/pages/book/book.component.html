@@ -32,11 +32,11 @@
 
                     </div>
 
-                    <div class="btn-row" style="display: block;text-align: center;"*ngIf="stepper === eStepper.personalDetails">
+                    <div class="btn-row" style="display: inline;text-align: center;"*ngIf="stepper === eStepper.personalDetails">
                         <div>
-                        <span class="view-more-span title" ><input type="checkbox"  (change)="checkcValue()" /> <span (click)="cancellationpolicy()"> Cancellation policy</span>&nbsp;&nbsp;
-                        <span class="view-more-span title"  ><input type="checkbox"  (change)="checkhValue()" /><span (click)="hotelpolicy()"> Hotel policy</span> </span></span>
-                        <br> <br><div class="tabs-block" *ngIf="expandTabBlock">
+                        <span class="view-more-span title" ><input type="checkbox"  (change)="checkcValue()" /> <span (click)="cancellationpolicy()">&nbsp; I agree to the hotel’s Cancellation policy and other Terms & Conditions
+
+</span></span>&nbsp;&nbsp;                        <br> <br><div class="tabs-block" *ngIf="expandTabBlock">
                         
                           
 
@@ -46,7 +46,11 @@
                           
                         
                        
-                    </div><div class="tabs-block" *ngIf="expandTabBlock1">
+                    </div>
+                        <span class="view-more-span title"  ><input type="checkbox"  (change)="checkhValue()" /><span (click)="hotelpolicy()"> &nbsp; I agree to the hotel’s Hotel policy and other Terms & Conditions
+
+</span> </span><br><br>
+<div class="tabs-block" *ngIf="expandTabBlock1">
                         
                       
 
