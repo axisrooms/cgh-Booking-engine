@@ -88,6 +88,7 @@ export class BookComponent implements OnInit {
           HotelId:this.hotelid ,
         },
       }).afterClosed().subscribe(res =>{
+        if(res.event){
         if (this.personalDetailsComponent.personalDetailsForm.valid) {
           this.personalDetailsForm =
             this.personalDetailsComponent.personalDetailsForm;
@@ -100,7 +101,7 @@ export class BookComponent implements OnInit {
           this.personalDetailsComponent.personalDetailsForm.markAllAsTouched();
           this.snackBar.open('Please complete the form', '', { duration: 2000 });
         }
-      });
+      }});
       this.spinner.hide();
     })
   }
