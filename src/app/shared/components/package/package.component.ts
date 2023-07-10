@@ -127,7 +127,7 @@ export class PackageComponent implements OnInit, OnDestroy {
         this.checkIn,
         this.checkOut,
         this.paxInfo,
-        this.addons
+        this.addons,
       );
     } else if (this.buttonActionType === 'ongoingComponent-proceed') {
       this.bookingService.proceedBookingFromOngoingList(this.index)

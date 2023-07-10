@@ -47,6 +47,7 @@ export class BookComponent implements OnInit {
   payathotel:any = false;
   expandTabBlock: boolean =false;
   expandTabBlock1: any =false;
+  payflag: any;
   constructor(
     public dialog: MatDialog,
     private bookingService: BookingService,
@@ -64,6 +65,7 @@ export class BookComponent implements OnInit {
     this.currBookingItem$.subscribe(e => {
      this.hotelid = e?.hotelId;
      this.searchid = e?.searchId;
+     this.payflag =e?.payathotel;
    
     })
     this.bookingService.getAddons({
@@ -190,6 +192,7 @@ console.log(this.stepper, this.eStepper.payment,  this.eStepper.personalDetails)
         searchParams['paxInfo'] = e?.paxInfo;
         searchParams['rooms'] = e?.rooms;
         searchParams['searchType'] = 'hotel';
+        
       })
       this.router.navigate(['/search'], { queryParams: searchParams })
 

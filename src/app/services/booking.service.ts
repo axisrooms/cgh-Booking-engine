@@ -117,7 +117,7 @@ export class BookingService {
     checkIn: string,
     checkOut: string,
     paxInfo: any,
-    addons: any
+    addons: any,
   ) {
     let room: Room = {
       ratePlanId: selectedRoom.ratePlanId,
@@ -147,6 +147,7 @@ export class BookingService {
       noOfDays: this.getNoOfDays(checkIn, checkOut),
       totalAmount: this.getTotalAmount(checkIn, checkOut, selectedRoom),
       renderData: { ...property, rooms: [selectedRoom] },
+      payathotel:property.payAtHotel
     };
 
     this.initializeNewBooking(bookingItem);
