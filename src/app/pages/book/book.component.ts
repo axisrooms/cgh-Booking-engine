@@ -133,22 +133,14 @@ export class BookComponent implements OnInit {
     return str;
   }
   checkcValue(){
-   if(this.cpolicy){
-
+   if(this.cpolicy && this.hpolicy){
+    this.hpolicy = false;
     this.cpolicy = false;
    }else{
-    
+    this.hpolicy = true;
     this.cpolicy = true;
    }
  }
- checkhValue(){
-  if(this.hpolicy){
-
-   this.hpolicy = false;
-  }else{
-   this.hpolicy = true;
-  }
-}
 
   onNext() {
 console.log(this.stepper, this.eStepper.payment,  this.eStepper.personalDetails)
