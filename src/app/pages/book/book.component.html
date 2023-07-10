@@ -75,8 +75,8 @@
                         " checked="true"class="btn-main" name="pay" (click)="payhotel();"  ></label>
                            
                         </ng-container>
-                        <ng-container *ngIf="stepper == eStepper.personalDetails && payflag">
-                            <label style="font-weight:bolder"> Pay At Hotel 
+                        <ng-container *ngIf="stepper == eStepper.personalDetails && payflag == true">
+                            <label style="font-weight:bolder"> Pay At Hotel {{payflag}}
                              <input type="radio" style="
                             margin-top: 15px;margin-left: -60px;
                          " class="btn-main" name="pay"(click)="payhotel();"  ></label>
