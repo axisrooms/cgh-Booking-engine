@@ -26,7 +26,7 @@
                     <div style="min-height: 480px;">
                         <app-addons *ngIf="stepper === eStepper.addons">
                         </app-addons>
-                        <app-personal-details *ngIf="stepper === eStepper.personalDetails">
+                        <app-personal-details  [payathotel]="payflag"*ngIf="stepper === eStepper.personalDetails">
                         </app-personal-details>
 
 
@@ -34,7 +34,9 @@
 
                     <div class="btn-row" style="display: inline;text-align: center;"*ngIf="stepper === eStepper.personalDetails">
                         <div>
-                        <span class="view-more-span title" ><input type="checkbox"  (change)="checkcValue()" /> <span  style="font-weight:300">&nbsp; I agree to the hotel’s <span (click)="cancellationpolicy()" style="font-weight:bold;text-decoration: underline;
+                        <span style="
+                        margin-left: -98px;
+                    " ><input type="checkbox"  (change)="checkcValue()" /> <span  style="font-weight:300;font-size: 17px;">&nbsp; I agree to the hotel’s <span (click)="cancellationpolicy()" style="font-weight:bold;text-decoration: underline;
 ">Cancellation policy </span> and <span (click)="hotelpolicy()" style="font-weight:bold;text-decoration: underline;
 ">other Terms & Conditions</span>
 
