@@ -67,12 +67,59 @@
             (address.controls.country.dirty || address.controls.country.touched)
         }" />
     </div>
+
+  
+  </ng-container>
+ <p class="title" *ngIf="payathotel == true">Card Details</p>
+  <ng-container formGroupName="address" *ngIf="payathotel == true">
+    <div class="row m-0">
+      <input class="address-input" type="text" name="" placeholder="Cardno" formControlName="cardno" [ngClass]="{
+          'form-input-error':
+            address.controls.lane.invalid &&
+            (address.controls.lane.dirty || address.controls.lane.touched)
+        }" />
+    
+    </div>
+    <div class="row m-0 mb-4">
+      <input class="address-input" type="text" name="" placeholder="Expire Date" formControlName="epdate" [ngClass]="{
+          'form-input-error':
+            address.controls.state.invalid &&
+            (address.controls.state.dirty || address.controls.state.touched)
+        }" />
+      <input class="address-input" type="text" name="" placeholder="Cvv" formControlName="Cvv" [ngClass]="{
+          'form-input-error':
+            address.controls.country.invalid &&
+            (address.controls.country.dirty || address.controls.country.touched)
+        }" />
+    </div>
   </ng-container>
 
   <p class="title">SPECIAL REQUESTS</p>
   <div class="row m-0">
     <textarea class="address-input mx-0" type="text" name="" placeholder="Add any notes here"
       formControlName="specialRequest" style="padding: 10px; height: 100px"></textarea>
+      <div class="row m-0 mb-4">
+        <input class="address-input" type="text" name="" placeholder="purpose of visit"  [ngClass]="{
+            'form-input-error':
+              address.controls.state.invalid &&
+              (address.controls.state.dirty || address.controls.state.touched)
+          }" />
+        <input class="address-input" type="text" name="" placeholder="How did you hear about us" [ngClass]="{
+            'form-input-error':
+              address.controls.country.invalid &&
+              (address.controls.country.dirty || address.controls.country.touched)
+          }" /> &nbsp; &nbsp;
+          <input class="address-input" type="text" name="" placeholder="Veg/Non Veg"  [ngClass]="{
+            'form-input-error':
+              address.controls.state.invalid &&
+              (address.controls.state.dirty || address.controls.state.touched)
+          }" />
+        <input class="address-input" type="text" name="" placeholder="Approximate arrival time"  [ngClass]="{
+            'form-input-error':
+              address.controls.country.invalid &&
+              (address.controls.country.dirty || address.controls.country.touched)
+          }" />
+      </div>
   </div>
   <p class="title" style="display: none;">PRE PAYMENT</p>
   <div class="row m-0" style="display: none;">

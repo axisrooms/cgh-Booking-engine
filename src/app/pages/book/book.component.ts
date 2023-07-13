@@ -35,6 +35,8 @@ export class BookComponent implements OnInit {
   addons: any = [];
   hotelid:any;
   searchid:any;
+  hpolicy:any = false;
+  cpolicy:any = false;
   policyresp:any;
   eStepper = StepperType;
   stepper: StepperType = this.eStepper.addons;
@@ -45,6 +47,7 @@ export class BookComponent implements OnInit {
   payathotel:any = false;
   expandTabBlock: boolean =false;
   expandTabBlock1: any =false;
+  payflag: any;
   constructor(
     public dialog: MatDialog,
     private bookingService: BookingService,
@@ -62,6 +65,7 @@ export class BookComponent implements OnInit {
     this.currBookingItem$.subscribe(e => {
      this.hotelid = e?.hotelId;
      this.searchid = e?.searchId;
+     this.payflag =e?.payathotel;
    
     })
     this.bookingService.getAddons({
@@ -86,7 +90,21 @@ export class BookComponent implements OnInit {
           searchResult: res,
           HotelId:this.hotelid ,
         },
-      });
+      }).afterClosed().subscribe(res =>{
+        if(res.event == true){
+        if (this.personalDetailsComponent.personalDetailsForm.valid) {
+          this.personalDetailsForm =
+            this.personalDetailsComponent.personalDetailsForm;
+          // this.stepper = this.eStepper.addons;
+          
+          this.paymentService.createOrderAndMakePayment(
+            this.bookingService.currBookingItemValue, this.personalDetailsForm.value,this.payathotel
+          );
+        } else {
+          this.personalDetailsComponent.personalDetailsForm.markAllAsTouched();
+          this.snackBar.open('Please complete the form', '', { duration: 2000 });
+        }
+      }});
       this.spinner.hide();
     })
   }
@@ -117,27 +135,28 @@ export class BookComponent implements OnInit {
     }
     return str;
   }
+  checkcValue(){
+   if(this.cpolicy && this.hpolicy){
+    this.hpolicy = false;
+    this.cpolicy = false;
+   }else{
+    this.hpolicy = true;
+    this.cpolicy = true;
+   }
+ }
 
   onNext() {
 console.log(this.stepper, this.eStepper.payment,  this.eStepper.personalDetails)
     if (this.stepper === this.eStepper.addons) {
 
       this.stepper = this.eStepper.personalDetails;
-      this.openRecommendationsDialog()
+    
 
-    } else if (this.stepper === this.eStepper.personalDetails) {
-      if (this.personalDetailsComponent.personalDetailsForm.valid) {
-        this.personalDetailsForm =
-          this.personalDetailsComponent.personalDetailsForm;
-        // this.stepper = this.eStepper.addons;
-        
-        this.paymentService.createOrderAndMakePayment(
-          this.bookingService.currBookingItemValue, this.personalDetailsForm.value,this.payathotel
-        );
-      } else {
-        this.personalDetailsComponent.personalDetailsForm.markAllAsTouched();
-        this.snackBar.open('Please complete the form', '', { duration: 2000 });
-      }
+    } else if (this.stepper === this.eStepper.personalDetails && this.hpolicy && this.cpolicy) {
+      this.openRecommendationsDialog();
+     
+    }else{
+      this.snackBar.open('Please accept hotel and cancellation policy', '', { duration: 2000 });
     } 
 
 
@@ -174,6 +193,7 @@ console.log(this.stepper, this.eStepper.payment,  this.eStepper.personalDetails)
         searchParams['paxInfo'] = e?.paxInfo;
         searchParams['rooms'] = e?.rooms;
         searchParams['searchType'] = 'hotel';
+        
       })
       this.router.navigate(['/search'], { queryParams: searchParams })
 
@@ -207,7 +227,7 @@ console.log(this.stepper, this.eStepper.payment,  this.eStepper.personalDetails)
         
         this.expandTabBlock = false;
       } else {
-      
+        this.expandTabBlock1 = false;
         this.expandTabBlock = true;
       }
   }
@@ -215,7 +235,7 @@ console.log(this.stepper, this.eStepper.payment,  this.eStepper.personalDetails)
     if (this.expandTabBlock1) {
       this.expandTabBlock1 = false;
     } else {
-    
+      this.expandTabBlock = false;
       this.expandTabBlock1 = true;
     }
   }

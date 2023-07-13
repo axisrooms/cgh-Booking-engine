@@ -1,43 +1,4 @@
- <div class="wrapper"*ngIf="!ids.includes(data.HotelId)">
-    <div class="close-icon" (click)="closeDialog()">
-        <i class="bi bi-x"></i>
-    </div>
-    <p class="title">Our Recommendations</p>
-    <div class="image-block-wrapper" *ngFor="let item of data.searchResult?.Hotel_Details;let id=index">
-        <div class="image-block" >
-            <!-- <img src="{{item.images[0]}}"
-                onError="this.src='../../../../assets/images/no-image-found.png',style.objectFit='contain'" 
-                alt=""> -->
 
-            <div id="carouselExampleControls" class="carousel slide" [id]="'slider'+ id" data-ride="carousel">
-                <div class="carousel-inner">
-                    <ng-container *ngFor="let item of item.images;let i=index">
-                        <div class="carousel-item" *ngIf="i>=1" [ngClass]="i == 1 ? 'active' : ''" [id]="'slide'+ i">
-                            <img class="d-block w-100" [src]="item">
-                        </div>
-                    </ng-container>
-
-
-                </div>
-                <a class="carousel-control-prev" [href]="'#slider'+ id" role="button" data-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" [href]="'#slider'+ id" role="button" data-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                </a>
-            </div>
-            <div class="image-overlay">
-                <p class="promotions-tagline" (click)="viewRecommendationsForSpecific(item.hotel_id)"> STAY AT
-                    {{item.hotel_name}} @
-                    {{item.currency}}{{item.price?.actual}} PER NIGHT
-                </p>
-            </div>
-        </div>
-    </div>
-    <button class="btn-main mt-3" (click)="viewRecommendations()">View</button>
-</div>
 <div class="wrapper"*ngIf="ids.includes(data.HotelId)">
     <div class="close-icon" (click)="closeDialog()">
         <i class="bi bi-x"></i>
@@ -46,17 +7,33 @@
     <div class="image-block-wrapper" *ngFor="let item of staticresult.Recommendation_List;let id=index">
        <div *ngIf="data.HotelId == item.id">
         <div class="image-block"  *ngFor="let items of item.Recommendations;let id=index">
-            <img src="recommendations.component.ts"
-                onError="this.src='../../../../assets/images/no-image-found.png',style.objectFit='contain'" 
-                alt="">
+            <img src="../../../../assets/images/no-image-found.png'"
+    
+            alt="" *ngIf="!images(items);">
+            <div id="carouselExampleControls" class="carousel slide" [id]="'slider'+ id" data-ride="carousel" >
+                <div class="carousel-inner">
+                
+                        
+                    <ng-container  *ngFor="let item of images(items);let i=index">
+                       
+                        <div class="carousel-item" *ngIf="i>=1" [ngClass]="i == 1 ? 'active' : ''" [id]="'slide'+ i">
+                            <img class="d-block w-100" [src]="item">
+                        </div>
+                    </ng-container>
 
-         
+     
+                </div>
+
+                
+
             <div class="image-overlay" >
                 <p class="promotions-tagline" (click)="viewRecommendationsForSpecific1(items)"> STAY AT
                     {{items}} 
                 </p>
-            </div></div>
+            </div>
+         </div>
         </div>
-    </div>
-    <button class="btn-main mt-3" (click)="viewRecommendations()">View</button>
+        
+       </div>
+    <button class="btn-main mt-3" *ngIf="data.HotelId == item.id" (click)="viewRecommendations()">View</button>
 </div>

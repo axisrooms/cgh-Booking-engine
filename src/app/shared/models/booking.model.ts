@@ -22,7 +22,8 @@ export interface BookingItem {
     noOfChildren:number,
     agesOfChildren: number[],
     rooms: Room[],
-    renderData?: any
+    renderData?: any,
+    payathotel:any
 
 }
 

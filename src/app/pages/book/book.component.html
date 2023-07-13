@@ -26,13 +26,48 @@
                     <div style="min-height: 480px;">
                         <app-addons *ngIf="stepper === eStepper.addons">
                         </app-addons>
-                        <app-personal-details *ngIf="stepper === eStepper.personalDetails">
+                        <app-personal-details  [payathotel]="payflag"*ngIf="stepper === eStepper.personalDetails">
                         </app-personal-details>
 
 
                     </div>
 
+                    <div class="btn-row" style="display: inline;text-align: center;"*ngIf="stepper === eStepper.personalDetails">
+                        <div>
+                        <span style="
+                        margin-left: -98px;
+                    " ><input type="checkbox"  (change)="checkcValue()" /> <span  style="font-weight:300;font-size: 17px;">&nbsp; i agree to the hotel’s <span (click)="cancellationpolicy()" style="font-weight:bold;text-decoration: underline;
+">Cancellation policy </span> and <span (click)="hotelpolicy()" style="font-weight:bold;text-decoration: underline;
+">other Terms & Conditions</span>
+
+</span></span>&nbsp;&nbsp;                        <br> <br><div class="tabs-block" *ngIf="expandTabBlock">
+                        
+                          
+
+                                <ul>
+                                    <li style="text-align: start;" *ngFor="let policy of policyresp['cancellationPolicy']">{{policy}}</li><br>
+                                </ul>
+                          
+                        
+                       
+                    </div>
+                        <br><br>
+<div class="tabs-block" *ngIf="expandTabBlock1">
+                        
+                      
+
+                            <ul>
+                                <li style="text-align: start;" *ngFor="let policy of policyresp['hotelPolicy']">{{policy}}</li><br>
+                            </ul>
+                      
                     
+                </div></div><div>                
+                    </div>
+  
+                 
+
+
+                    </div>
                     <div class="btn-row" style="display: flow-root;text-align: center;">
                         
                         <ng-container *ngIf="stepper == eStepper.personalDetails">
@@ -42,8 +77,8 @@
                         " checked="true"class="btn-main" name="pay" (click)="payhotel();"  ></label>
                            
                         </ng-container>
-                        <ng-container *ngIf="stepper == eStepper.personalDetails">
-                            <label style="font-weight:bolder"> Pay At Hotel
+                        <ng-container *ngIf="stepper == eStepper.personalDetails && payflag == true">
+                            <label style="font-weight:bolder"> Pay At Hotel {{payflag}}
                              <input type="radio" style="
                             margin-top: 15px;margin-left: -60px;
                          " class="btn-main" name="pay"(click)="payhotel();"  ></label>
@@ -77,30 +112,9 @@
                 </div>
       
                 <div class="cart-col col-12 col-md-4 col-lg-4" *ngIf="stepper != eStepper.confirmation">
-                    <span class="view-more-span title" (click)="cancellationpolicy()">Cancellation policy</span>
-                    <div class="tabs-block" *ngIf="expandTabBlock">
-                        
-                            <ng-container>
-
-                                <ul>
-                                    <li *ngFor="let policy of policyresp['cancellationPolicy']">{{policy}}</li>
-                                </ul>
-                            </ng-container>
-                        
-                       
-                    </div>
+                  
                 
-                    <span class="view-more-span title" (click)="hotelpolicy()">Hotel policy</span><br>
-                    <div class="tabs-block" *ngIf="expandTabBlock1">
-                        
-                        <ng-container>
-
-                            <ul>
-                                <li *ngFor="let policy of policyresp['hotelPolicy']">{{policy}}</li>
-                            </ul>
-                        </ng-container>
-                    
-                </div>
+                  
                     <p class="title">BOOKING DETAILS</p>
                     <app-cart-box></app-cart-box>
                 </div>
