@@ -78,6 +78,10 @@ export class SearchComponent implements OnInit, OnDestroy {
       debounceTime(300)
     ).subscribe(
       async (queryParams) => {
+        if(!queryParams['checkIn']){
+          localStorage.removeItem('reflectStore');
+
+        }
         if (queryParams['checkIn']) {
 
           this.searchForm.controls.checkIn.setValue(queryParams['checkIn']);
@@ -661,9 +665,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     if (this.searchForm.controls.checkOut.value?.length > 0) {
       searchParams.checkOut = this.searchForm.controls.checkOut.value;
     }
-    // if (this.getPaxInfo()) {
-    //   searchParams.paxInfo = this.getPaxInfo();
-    // }
+     if (this.getPaxInfo()) {
+       searchParams.paxInfo = this.getPaxInfo();
+     }
     // searchParams.paxInfo = '1'
     searchParams.rooms = this.searchForm.controls.rooms.value;
     return searchParams;
@@ -689,26 +693,31 @@ export class SearchComponent implements OnInit, OnDestroy {
     for (let i = 0; i < aFromArray.value.length; i++) {
       paxString += aFromArray.value[i]['noOfAdults'] + '|' + aFromArray.value[i]['noOfChildren'] + '|';
       let agesFormArray: FormArray = this.getChildrenAgeFormArray(i)
+      console.log(agesFormArray.controls)
       for (let x of agesFormArray.controls) {
+        paxString +=  '1|'
         paxString += x.value + '|'
       }
-      paxString += '||';
+      if(agesFormArray.controls.length == 0){
+        paxString +=  '0|0|'
+      }
+      paxString +="|"
     }
     console.log(paxString, "paxstring")
     return paxString;
   }
 
   setPaxInfo(paxInfo: any) {
-    //   let paxArray = paxInfo ? paxInfo.toString().split('|') : []
-    //   this.agesOfChildren.clear()
-    //   paxArray.forEach((e: any, i: number) => {
-    //     if (i === 0) {
-    //       this.searchForm.controls.noOfAdults.setValue(parseInt(e));
-    //     } else if (i > 1) {
-    //       this.agesOfChildren.push(this.getChildrensAgeForm());
-    //       this.agesOfChildren.controls[i - 2].get('age')?.setValue(parseInt(e));
-    //     }
-    //   });
+      let paxArray = paxInfo ? paxInfo.toString().split('|') : []
+      // this.agesOfChildren.clear()
+      // paxArray.forEach((e: any, i: number) => {
+      //   if (i === 0) {
+      //     this.searchForm.controls.noOfAdults.setValue(parseInt(e));
+      //   } else if (i > 1) {
+      //     this.agesOfChildren.push(this.getChildrensAgeForm());
+      //     this.agesOfChildren.controls[i - 2].get('age')?.setValue(parseInt(e));
+      //   }
+      // });
   }
 
   clearFormArray = (formArray: FormArray) => {
