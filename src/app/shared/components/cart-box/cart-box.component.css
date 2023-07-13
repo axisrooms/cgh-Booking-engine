@@ -21,9 +21,10 @@ p {
 }
 
 .tariff-price {
-  font-size: 22px;
+  font-size: 15px;
   font-weight: 500;
   margin-right: 2px;
+  color: #724e37;
 }
 
 .date-row {
@@ -50,26 +51,26 @@ p {
 
 .box .label {
   font-size: 10px;
-    text-transform: uppercase;
-    font-weight: 500;
+  text-transform: uppercase;
+  font-weight: 500;
 }
 
 .guest.box {
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 10px;
   border-top: 0px;
   width: 100%;
 }
 
 .line-item {
-  margin-bottom: 12px;
+  margin-bottom: 2px;
   font-size: 15px;
   display: flex;
   justify-content: space-between;
 }
 
 .item-desc {
-  text-decoration: underline;
+  /* text-decoration: underline; */
 }
 
 .item-amount {
@@ -83,9 +84,50 @@ p {
 .total {
   margin-bottom: -5px;
   text-transform: uppercase;
-  padding: 20px 0 8px 0;
-  border-top: 1px solid #666;
-  margin-top: 24px;
+  padding: 3px 0 3px 0;
+  /* border-top: 1px solid #666; */
+  /* margin-top: 14px; */
   font-weight: 500;
   font-size: 15px;
+}
+
+.wrapper {
+  padding: 50px 15px 50px 15px;
+  /* height: 60vh; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.alert {
+  width: 100%;
+  max-width: 1000px;
+  margin: auto;
+  height: 30vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+  /* margin-top: 20px; */
+  flex-direction: column;
+}
+
+
+@media screen and (min-width:100px) and (max-width: 480px) {
+  .date-row {
+    font-size: 10px;
+
+  }
+  .line-item{
+    font-size: 11px;
+  }
+
+  hr{
+    margin: 9px 0;
+  }
+
+  .total{
+    font-size: 12px;
+  }
 }

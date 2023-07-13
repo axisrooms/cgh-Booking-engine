@@ -1,7 +1,17 @@
+<section class="banner-section"></section>
+
 <div class="wrapper" *ngIf="bookingCart$ | async as bookingCart">
     <p class="title mb-4">MY BOOKING CART</p>
-    <div class="booking-item" *ngFor="let item of bookingCart.bookingItems; let i=index">
+    <div class="booking-item" *ngFor="let item of bookingCart.bookingItems; let i=index" >
+        <i class="bi bi-x-circle-fill" (click)="remove(i)" style="    position: absolute;
+        right: 20px;
+        top: 12px;
+        color: #724e37;
+        cursor: pointer;"></i>
         <app-package [property]="item.renderData" [searchId]="item.searchId" [index]="i"
             [buttonActionType]="'ongoingComponent-proceed'"></app-package>
     </div>
+
+    <app-no-booking class="w-100" *ngIf="bookingCart.bookingItems.length == 0" (btnEvent)="roomBtnEvent()">
+        </app-no-booking>
 </div>

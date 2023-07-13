@@ -24,9 +24,10 @@
             <span class="line-detail">{{item.bookingDetails?.startDate}} to {{item.bookingDetails?.endDate}} </span>
         </p>
         <div class="hotels-container">
-            <div class="hotel-row" *ngFor="let item of item.products;">
-                <p class="m-0 hotel-title">{{item.name}}</p>
-                <button class="btn-main">View Details</button>
+            <div class="hotel-row" *ngFor="let prod of item.products;">
+                <p class="m-0 hotel-title">{{prod.name}}</p>
+                <br [ngClass]="'col-12'">
+                <button class="btn-main" (click)="openDialog(item)">View Details</button>
             </div>
         </div>
     </div>

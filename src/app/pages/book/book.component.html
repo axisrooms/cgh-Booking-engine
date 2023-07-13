@@ -3,7 +3,7 @@
 <ng-container *ngIf="{bookingCart: bookingCart$ | async, 
     currBookingItem: currBookingItem$ | async} as streams">
 
-    <ng-container *ngIf="streams.bookingCart?.loadingPaymentGateway; else elseBookingTemplate">
+    <ng-container *ngIf="streams.bookingCart?.loadingPaymentGateway && load ; else elseBookingTemplate">
         <div class="pg-alert-wrapper">
             <div class="alert alert-secondary" role="alert">
                 Loading Payment Gateway
@@ -13,49 +13,126 @@
             </div>
         </div>
     </ng-container>
-
+    
     <ng-template #elseBookingTemplate>
-        <ng-container *ngIf="streams.currBookingItem">
-            <app-stepper [stepper]="stepper"></app-stepper>
+        
+        <!-- <ng-container *ngIf="streams.currBookingItem"> -->
+        <app-stepper [stepper]="stepper" class="stepper"></app-stepper>
 
-            <section class="contents-section">
-                <div class="contents-wrapper" [ngStyle]="stepper === eStepper.confirmation ? 
+        <section class="contents-section ">
+            <div class="contents-wrapper row" [ngStyle]="stepper === eStepper.confirmation ? 
                     {'max-width': '1050px'} : {'max-width': '1150px'}">
-                    <div class="content-col">
-                        <div style="min-height: 480px;">
-                            <app-personal-details *ngIf="stepper === eStepper.personalDetails">
-                            </app-personal-details>
+                <div class="content-col col-12 col-md-8 col-lg-8">
+                    <div style="min-height: 480px;">
+                        <app-addons *ngIf="stepper === eStepper.addons">
+                        </app-addons>
+                        <app-personal-details  [payathotel]="payflag"*ngIf="stepper === eStepper.personalDetails">
+                        </app-personal-details>
 
-                            <app-addons *ngIf="stepper === eStepper.addons">
-                            </app-addons>
-                        </div>
 
-                        <div class="btn-row">
-                            <button class="btn-main" (click)="goBack()">
-                                {{ stepper != eStepper.confirmation ? 'Back' : 'Download PDF'}}
-                            </button>
-                            <button class="btn-main" (click)="onNext()">
-                                {{ stepper != eStepper.confirmation ? 'Proceed' : 'Continue browsing'}}
-                            </button>
-                        </div>
                     </div>
 
-                    <div class="cart-col" *ngIf="stepper != eStepper.confirmation">
-                        <p class="title">BOOKING DETAILS</p>
-                        <app-cart-box></app-cart-box>
+                    <div class="btn-row" style="display: inline;text-align: center;"*ngIf="stepper === eStepper.personalDetails">
+                        <div>
+                        <span style="
+                        margin-left: -98px;
+                    " ><input type="checkbox"  (change)="checkcValue()" /> <span  style="font-weight:300;font-size: 17px;">&nbsp; i agree to the hotel’s <span (click)="cancellationpolicy()" style="font-weight:bold;text-decoration: underline;
+">Cancellation policy </span> and <span (click)="hotelpolicy()" style="font-weight:bold;text-decoration: underline;
+">other Terms & Conditions</span>
+
+</span></span>&nbsp;&nbsp;                        <br> <br><div class="tabs-block" *ngIf="expandTabBlock">
+                        
+                          
+
+                                <ul>
+                                    <li style="text-align: start;" *ngFor="let policy of policyresp['cancellationPolicy']">{{policy}}</li><br>
+                                </ul>
+                          
+                        
+                       
+                    </div>
+                        <br><br>
+<div class="tabs-block" *ngIf="expandTabBlock1">
+                        
+                      
+
+                            <ul>
+                                <li style="text-align: start;" *ngFor="let policy of policyresp['hotelPolicy']">{{policy}}</li><br>
+                            </ul>
+                      
+                    
+                </div></div><div>                
+                    </div>
+  
+                 
+
+
+                    </div>
+                    <div class="btn-row" style="display: flow-root;text-align: center;">
+                        
+                        <ng-container *ngIf="stepper == eStepper.personalDetails">
+                           <label style="font-weight:bolder"> Pay Now
+                            <input type="radio" style="
+                           margin-top: 15px;margin-left: -60px;
+                        " checked="true"class="btn-main" name="pay" (click)="payhotel();"  ></label>
+                           
+                        </ng-container>
+                        <ng-container *ngIf="stepper == eStepper.personalDetails && payflag == true">
+                            <label style="font-weight:bolder"> Pay At Hotel {{payflag}}
+                             <input type="radio" style="
+                            margin-top: 15px;margin-left: -60px;
+                         " class="btn-main" name="pay"(click)="payhotel();"  ></label>
+                            
+                         </ng-container>
+                        
+                 
+
+
+                    </div>
+                    <div class="btn-row">
+                        <button class="btn-main" (click)="goBack()">
+                            {{ stepper != eStepper.confirmation ? 'BACK' : 'Download PDF'}}
+                        </button>
+                        
+                        
+                        <ng-container *ngIf="stepper != eStepper.addons">
+                            <button class="btn-main" (click)="onNext()"  *ngIf="stepper == eStepper.confirmation">
+                                CONTINUE
+                            </button>
+                        </ng-container>
+                        <button *ngIf="stepper == eStepper.addons" class="btn-main" (click)="onNext()">
+                            PROCEED
+                        </button>
+                        <button *ngIf="stepper == eStepper.personalDetails" class="btn-main" (click)="onNext()">
+                            CONTINUE&nbsp; YOUR&nbsp; HOLIDAY &nbsp;WITH&nbsp; CGH&nbsp; EARTH
+                        </button>
+
+
                     </div>
                 </div>
-            </section>
-        </ng-container>
+      
+                <div class="cart-col col-12 col-md-4 col-lg-4" *ngIf="stepper != eStepper.confirmation">
+                  
+                
+                  
+                    <p class="title">BOOKING DETAILS</p>
+                    <app-cart-box></app-cart-box>
+                </div>
+            </div>
+        </section>
+        <!-- </ng-container> -->
 
-        <app-no-booking *ngIf="!streams.currBookingItem && 
+        <!-- <app-no-booking *ngIf="!streams.currBookingItem && 
             !(streams.bookingCart?.bookingItems?.length ?? 0 > 0)">
         </app-no-booking>
 
         <app-ongoing-bookings *ngIf="!streams.currBookingItem && 
             (streams.bookingCart?.bookingItems?.length ?? 0 > 0)">
-        </app-ongoing-bookings>
+        </app-ongoing-bookings> -->
     </ng-template>
 
     <hr class="contents-section-seperator">
 </ng-container>
+<!-- <ng-template #template>
+    <h1>This is a message</h1>
+   </ng-template> -->

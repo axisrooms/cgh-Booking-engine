@@ -1,6 +1,134 @@
 <div class="addon-col">
     <p class="title">ADDONS</p>
     <ng-container *ngIf="addons.length > 0; else elseTemplate">
+        <div class="row">
+            <div [ngClass]="openAddon == true ? 'col-6' : 'col-12'">
+                <div class="row">
+                    <ng-container *ngFor="let item of addons | paginate: config; let i=index ">
+                        <div class="col-12 col-md-6 col-lg-6" [ngClass]="openAddon == true ? 'col-12' : 'col-12  col-md-6 col-lg6'">
+                            <div class="card">
+                                <img class="addon-img" [src]='item.policy_image_url' alt="">
+                                <div style="padding:15px">
+                                    <div class="row">
+                                        <div class="col-12 d-flex justify-content-between">
+                                            <p class="addon-title">{{item?.policy_name}}</p>
+                                            <i *ngIf="item.count == false" class="bi bi-plus-square-fill" style="cursor: pointer;"
+                                                (click)="addAddon(item, i);"></i>
+                                            <i *ngIf="item.count == true" class="bi bi-dash-square-fill" style="cursor: pointer;"
+                                                (click)="removeAddon(item, i);"></i>
+
+
+                                        </div>
+                                    </div>
+                                    <p class="addon-desc">{{item?.policy_description}}</p>
+                                    <a (click)="openAddon = true; getDetails(item)"
+                                        style="font-size: 12px;cursor: pointer;color: #595b62;">View
+                                        Details</a>
+                                    <div class="row mt-1">
+                                        <div class="col-4 d-flex justify-content-between align-items-around">
+                                            <button class="btn-main"
+                                                (click)="item.qty = (item.qty>0?item.qty-1:0);calAmt(item ,i)">-</button>
+                                            <span class="btn-num">{{item?.qty}}</span>
+                                            <button class="btn-main"
+                                                (click)="item.qty = item.qty+1;calAmt(item ,i)">+</button>
+
+
+                                        </div>
+                                        <div class="col-8 addon-price-div">
+                                            <p class="addon-price" *ngIf="item.qty>0">{{item?.currency}}
+                                                {{item?.cost}} x {{item.qty}}
+                                            </p>
+                                            <p class="addon-price"> Total : {{item?.currency}}
+                                                <span *ngIf="item.qty == 0">
+                                                    {{item?.cost}}
+                                                </span>
+                                                <span *ngIf="item.qty > 0">
+                                                    {{item?.cost * item.qty}}
+                                                </span>
+
+                                            </p>
+                                        </div>
+                                        <!-- <div class="col-12">
+                                            <button class="price-btn" (click)="addAddon(item)">
+                                                Add
+                                            </button>
+                                        </div> -->
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="col-6" *ngIf="openAddon == true">
+                <div class="card-wrapper">
+                    <i class="bi bi-x-circle-fill" (click)="openAddon = false"></i>
+                    <img class="w-100" style="    max-height: 40vh; position: relative;
+                object-fit: cover;
+                object-position: center;" [src]="addonDetail.policy_image_url" alt=""
+                      >
+                        <i class="bi bi-arrows-angle-expand"   (click)="expandImg(addonDetail.policy_image_url)" ></i>
+                    <div class="content">
+                        <p class="addon-title">{{addonDetail.policy_name}}</p>
+                        <p class="desc">{{addonDetail.policy_description}}</p>
+
+                    </div>
+                    <div class="content">
+                        <p class="addon-title">{{addonDetail.currency}} {{addonDetail.cost}}</p>
+                        <!-- <p class="addon-title">Duration: <span class="desc">1-2 hours </span> </p>
+
+                    <p class="addon-title">Inclusions:</p>
+                    <ul class="desc">
+                        <li>Instructor fee</li>
+                        <li>Paddle, board, and life jacket</li>
+                    </ul>
+                    <p class="addon-title">Exclusions:</p>
+                    <ul class="desc">
+                        <li>Food/snacks</li>
+                        <li>Photos/videos</li>
+                        <li>Transfers from and to the resort </li>
+
+                    </ul> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <ng-template #elseTemplate>
+        <div class="no-content">
+            No addons available
+        </div>
+    </ng-template>
+    <pagination-template *ngIf="(addons.length > 0)" #p="paginationApi" [id]="config.id"
+        (pageChange)="config.currentPage = $event">
+
+        <div class="custom-pagination">
+
+            <div class="pagination-previous" [class.disabled]="p.isFirstPage()">
+                <span *ngIf="!p.isFirstPage()" (click)="p.previous()">
+                    <i class="bi bi-chevron-left"></i>
+                </span>
+            </div>
+
+            <div class="page-number" *ngFor="let page of p.pages" [class.current]="p.getCurrent() === page.value">
+                <span (click)="p.setCurrent(page.value)" *ngIf="p.getCurrent() !== page.value">{{ page.label }}</span>
+                <div *ngIf="p.getCurrent() === page.value">
+                    <span>{{ page.label }}</span>
+                </div>
+            </div>
+
+            <div class="pagination-next" [class.disabled]="p.isLastPage()">
+                <span *ngIf="!p.isLastPage()" (click)="p.next()">
+                    <i class="bi bi-chevron-right"></i>
+                </span>
+            </div>
+
+        </div>
+
+    </pagination-template>
+
+    <!-- <ng-container *ngIf="addons.length > 0; else elseTemplate">
         <ng-container *ngFor="let addon of addons; let first=first;">
             <div class="row m-0 mt-2 addon-block">
                 <div class="addon-image-col">
@@ -23,7 +151,7 @@
         <div class="no-content">
             No addons available
         </div>
-    </ng-template>
-    
+    </ng-template> -->
+
 
 </div>

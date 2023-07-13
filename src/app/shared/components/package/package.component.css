@@ -11,11 +11,20 @@
   flex-direction: row;
   flex-wrap: nowrap;
 }
-
+ul {
+   height: calc(430px);
+   display: flex;
+   flex-direction: column;
+   flex-wrap: wrap;
+   width: 98%;
+   text-decoration: none;
+   background: white;
+  }
 .property-image-col {
   width: fit-content;
   padding: 10px;
   padding-right: 0px;
+  padding-left: 20px;
 }
 
 .property-image-col img {
@@ -272,6 +281,7 @@
 /* Deals */
 .deals-wrapper {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .deal-card {
@@ -286,6 +296,7 @@
   flex-direction: column;
   margin: 10px;
   min-width: 200px;
+  max-width: 230px;
   flex: 1;
 }
 
@@ -321,3 +332,63 @@
 .deal-bottom-section {
   padding: 15px;
 }
+
+
+
+
+.bi-arrows-angle-expand{
+  position: absolute;
+  font-size: 11px;
+  top: 8px;
+  left: 174px;
+  cursor: pointer;
+  z-index: 200;
+  background-color: antiquewhite;
+  padding: 4px 5px;
+  border-radius: 3px;
+}
+
+
+@media (min-width: 200px) and (max-width: 480px){
+
+  
+  .property-row {
+    justify-content: center;
+    align-items: center;
+    flex-direction: row; 
+     flex-wrap: wrap;
+    display: flex;
+    text-align: center;
+}
+
+.property-text-col{
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+}
+.higlight-points-row {
+  display: flex;
+  font-weight: 400;
+  margin: 0px;
+  flex-wrap: wrap;
+  margin-left: -5px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.property-image-col {
+  width: fit-content;
+  padding: 10px;
+  padding-right: 0px;
+  padding-left: 0px;
+}
+
+.highlight-btn{
+  width: 100%;
+}
+}
+

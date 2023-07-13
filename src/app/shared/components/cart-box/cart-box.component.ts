@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { async, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { BookingService } from 'src/app/services/booking.service';
-import { BookingItem } from '../../models/booking.model';
+import { Reflector } from 'src/app/services/reflector';
+import { BookingCart, BookingItem } from '../../models/booking.model';
 
 @Component({
   selector: 'app-cart-box',
@@ -10,11 +11,61 @@ import { BookingItem } from '../../models/booking.model';
   styleUrls: ['./cart-box.component.css'],
 })
 export class CartBoxComponent implements OnInit {
-  bookingItem$: Observable<BookingItem | undefined>;
-
-  constructor(private bookingService: BookingService) {
-    this.bookingItem$ = this.bookingService.currBookingItem$
+  bookingCart$: Observable<BookingCart | undefined>;
+  bookingItems: BookingItem[] | undefined = []
+  currency: any;
+  constructor(private bookingService: BookingService,
+    private bookingCartReflect: Reflector<BookingCart>,
+  ) {
+    this.bookingCart$ = this.bookingService.bookingCart$
+    this.bookingCart$.subscribe(res => {
+      this.bookingItems = res?.bookingItems
+      this.currency = res?.bookingItems[0]?.renderData?.currency
+    })
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log("===========================================")
+    console.log(this.bookingCart$, this.bookingItems)
+  }
+
+  getTotal(item: BookingItem[] | undefined = []) {
+    const grandTotal = item.reduce((total, item) => {
+      let addonTotal = item.addonTotalPrice ? item.addonTotalPrice : 0
+      return item.totalAmount + addonTotal + total
+    }, 0)
+    console.log(grandTotal, "#####")
+    return grandTotal;
+  }
+
+  remove(i: number) {
+    this.bookingService.removeCurrentBookingItemFromList(i)
+
+    console.log(this.bookingItems, this.bookingService)
+  }
+
+  getRoomName(roomList: any, roomID: any) {
+    let roomName
+    roomList.forEach((element: any) => {
+      if (element.roomId == roomID) {
+        roomName = element.roomName;
+      }
+    });
+    console.log("@@@", roomName)
+
+    return roomName;
+
+  }
+
+  getRatePlan(roomList: any, roomID: any, rtID: any) {
+    let ratePlan
+    roomList.forEach((element: any) => {
+      if (element.roomId == roomID && element.ratePlanId == rtID) {
+        ratePlan = element.ratePlanName;
+      }
+    });
+    console.log("@@@", ratePlan)
+
+    return ratePlan;
+  }
 }

@@ -1,14 +1,39 @@
-<div class="room-details">
-    <div class="room-desc-col">
-        <div class="room-header">
+<div class="room-details row">
+    <div class="room-desc-col col-12 col-md-8 col-lg-8">
+        <div class="room-header row">
             <!-- <div class="room-header-image-col"  *ngIf="property.images && property.images[0]">
                     <img src="../../../../assets/temp/images/room-1.jpg" alt="">
                 </div> -->
-            <div class="room-header-image-col">
-                <img src="../../../../assets/temp/images/room-1.jpg" alt="">
+
+            <div class="room-header-image-col  col-12 col-md-4 col-lg-4">
+
+                <div id="carouselExampleControls" class="carousel slide" [id]="'slider'+ id" data-ride="carousel"
+                    style="width: 200px;">
+                    <div class="carousel-inner">
+                        <div class="carousel-item" *ngFor="let item of room.images;let i=index"
+                            [ngClass]="i == 0 ? 'active' : ''" [id]="'slide'+ i">
+                            <img class="d-block w-100" [src]="item" style="position: relative;">
+
+                            <i class="bi bi-arrows-angle-expand" (click)="expandImg(item)"></i>
+                        </div>
+                    </div>
+                    <a class="carousel-control-prev" [href]="'#slider'+ id" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" [href]="'#slider'+ id" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+
+
+
+
+
+                </div>
             </div>
-            <div class="room-header-text-col">
-                <p class="room-title">Room: {{room.roomName}}</p>
+            <div class="room-header-text-col col-12 col-md-8 col-lg-8">
+                <p class="room-title">{{room.roomName}}</p>
                 <p *ngIf="room.description && room.description != ''"
                     style="height: 80px; overflow: hidden; margin-bottom: 0;">{{room.description}}</p>
                 <div>
@@ -21,10 +46,28 @@
                             </span>
                         </p>
                     </ng-container>
+                    <ng-container *ngIf="room.inclusions">
+                        <p class="room-title mb-1">Inclusions:</p>
+                        <p>{{room.inclusions[0]}}
+                            <!-- <span *ngFor="let item of room.inclusions; let last=last">
+                                {{item}}
+                                {{!last ? ', ' : ''}}
+                            </span> -->
+                        </p>
+                    </ng-container>
+                    <ng-container *ngIf="room.cancellationPolicy?.length > 0">
+                        <p class="room-title mb-1">Cancellation Policy:</p>
+                        <p>
+                            <span *ngFor="let item of room.cancellationPolicy; let last=last">
+                                {{item}}
+                                {{!last ? ', ' : ''}}
+                            </span>
+                        </p>
+                    </ng-container>
                     <div class="higlight-points-row">
                         <p class="higlight-point style-x">
                             <i class="bi bi-door-open"></i>
-                            Max Adults: {{room.maxAdult}}
+                            Max Person: {{room.maxAdult}}
                         </p>
                         <p class="higlight-point style-x">
                             <i class="bi bi-door-closed"></i>
@@ -32,30 +75,38 @@
                         </p>
                         <p class="higlight-point style-x">
                             <i class="bi bi-door-closed"></i>
-                            Max Occupancy: {{room.maxOccupancy}}
+                            Base Occupancy: {{room.maxOccupancy}}
                         </p>
+
+                        <p class="higlight-point style-x">
+                            <i class="bi bi-egg-fried"></i>
+                            Meal Plan: {{room.mealPlan}}
+                        </p>
+                        <!-- <p class="higlight-point style-x">
+                            <i class="bi bi-tags"></i>
+                            Rate Plan: {{room.ratePlanName}} <br>
+                            (ID: {{room.roomId}})
+                        </p> -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="room-col">
-        <p class="mb-1">
+    <div class="room-col col-12 col-md-4 col-lg-4">
+        <p class="mb-1" *ngIf="room.price.discounted ">
             <span class="price-before">{{property.currency}} {{room.price.discounted ?
-                (room.price.actual | number : '1.2' ) : ''}}</span>
+                ((room.price.actual + room.price.discounted) | number : '1.2' ) : ''}}</span>
         </p>
         <p class="mb-0">
             <span class="price">
                 {{property.currency}}
-                {{room.price.discounted ?
-                (room.price.discounted | number : '1.2' ):
-                (room.price.actual | number : '1.2' )}}
+                {{room.price.actual | number : '1.2' }}
             </span>
         </p>
         <p class="mb-0">
-            <span class="per-unit">including taxes and charges</span>
+            <span class="per-unit">plus taxes and charges</span>
         </p>
         <div class="spacer" style="flex: 1;"></div>
-        <button class="btn-main" (click)="onBookNow()">Book Now</button>
+        <button class="btn-main" (click)="onBookNow()">Add to Cart</button>
     </div>
 </div>

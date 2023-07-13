@@ -5,7 +5,10 @@
         <div class="image-block" *ngIf="i < 5" (click)="goToDeals(i)" >
             <img src="{{imagesArray[i]}}" alt="">
             <div class="image-overlay">
-                <p class="deals-tagline">{{item.name}}</p>
+                <p class="deals-tagline">Hotel Name : {{item.products[0].name}}</p>
+
+                <p class="deals-tagline">Deal Name : {{item.name}}</p>
+
             </div>
         </div>
         <button class="btn-main" *ngIf="i===5" (click)="goToDeals()">View All</button>

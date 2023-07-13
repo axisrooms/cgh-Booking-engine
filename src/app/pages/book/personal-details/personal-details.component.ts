@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -8,7 +8,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class PersonalDetailsComponent implements OnInit {
   personalDetailsForm!: FormGroup;
-
+  @Input() payathotel:any
   constructor(private formBuilder: FormBuilder) {}
 
   ngOnInit(): void {
@@ -36,6 +36,7 @@ export class PersonalDetailsComponent implements OnInit {
       emailId: ['', [Validators.required, Validators.email]],
       mobileNo: ['', [Validators.required, Validators.pattern('^[0-9]*$'), Validators.minLength(10)]],
       specialRequest: [''],
+      prepayment:['', Validators.pattern('^[0-9]*$')],
       address: this.formBuilder.group({
         lane: ['', Validators.required],
         city: ['', Validators.required],

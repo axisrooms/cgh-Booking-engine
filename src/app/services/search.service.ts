@@ -12,7 +12,7 @@ import {
   providedIn: 'root',
 })
 export class SearchService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   private getHotels(params: any): Observable<any> {
     return this.http.get<any>(`${BASE_URL}api/be/search`, {
@@ -28,8 +28,17 @@ export class SearchService {
     });
   }
 
+  getRoomPrices(params: any) {
+    return this.http.get<any>(`${BASE_URL}api/be/finalPrices`, {
+      params: params,
+      headers: getDefaultHeaders(),
+    });
+  }
+
+
+
   searchRooms(params: any) {
-      return this.getHotels(params).pipe(
+    return this.getHotels(params).pipe(
       mergeMap((data) => this.getRoomData(data))
     );
   }
@@ -55,8 +64,8 @@ export class SearchService {
         })
       );
     });
-    
-    if(roomObservables) {
+
+    if (roomObservables) {
       await forkJoin(roomObservables).toPromise();
       data['Hotel_Details'] = data['Hotel_Details'].filter(
         (e: any) => e['rooms'] != undefined
@@ -66,9 +75,9 @@ export class SearchService {
     return data;
   }
 
-  getAllHotels(): Observable<any> {
+  getAllHotels(date: any): Observable<any> {
     return this.http.get<any>(`${BASE_URL}api/be/search`, {
-      params: { bookingEngineId: BOOKING_ENGINE_ID },
+      params: { bookingEngineId: BOOKING_ENGINE_ID ,checkin:date,},
       headers: getDefaultHeaders(),
     });
   }

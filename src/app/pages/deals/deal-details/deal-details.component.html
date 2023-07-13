@@ -1,0 +1,51 @@
+<div class="row">
+    <div class="col-12 d-flex justify-content-end ">
+        <div class="close-icon" (click)="closeDialog()">
+            <i class="bi bi-x"></i>
+        </div>
+    </div>
+</div>
+
+
+<div class="deals">
+    <p class="deal-title">{{data.name}}</p>
+    <p>
+        <span class="line-title">Deal: </span>
+        <span class="line-detail">{{data.name}}</span>
+    </p>
+    <p>
+        <span class="line-title">Description: </span>
+        <span class="line-detail">{{data.description}}</span>
+    </p>
+    <p>
+        <span class="line-title">Applicable to: </span>
+        <span class="line-detail">{{data.booking_type}}</span>
+    </p>
+    <p>
+        <span class="line-title">For Bookings Made Between: </span>
+        <span class="line-detail">{{data.checkinDetails.startDate}} to {{data.checkinDetails.endDate}}</span>
+    </p>
+    <p>
+        <span class="line-title">Applicable Days: </span>
+        <span class="line-detail"><span *ngFor="let item of data.checkinDetails.applicableDays;let i=index">
+                {{item}} <span *ngIf="i<(data.checkinDetails.applicableDays.length -1)">,</span>
+            </span> </span>
+    </p>
+    <p>
+        <span class="line-title">Discount : </span>
+        <span class="line-detail">{{data.value}}<span *ngIf="data.discount_type == 'Fixed'">Flat</span> <span
+                *ngIf="data.discount_type == 'Percentage'">%</span> </span>
+    </p>
+    <p>
+        <span class="line-title">Rate Plans Included : </span>
+        <span class="line-detail"><span *ngFor="let item of data.rate_plans;let i=index">
+                {{item.name}} <span *ngIf="i<(data.rate_plans.length -1)">,</span>
+            </span> </span>
+    </p>
+    <p>
+        <span class="line-title">Applicable Rooms : </span>
+        <span class="line-detail"><span *ngFor="let item of data.rooms;let i=index">
+                {{item.name}} <span *ngIf="i<(data.rooms.length -1)">,</span>
+            </span> </span>
+    </p>
+</div>

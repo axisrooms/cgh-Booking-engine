@@ -121,3 +121,62 @@ body {
   font-size: 16px;
   padding-left: 5px;
 }
+
+/*================================================
+1.5 Pagination - For  UI 
+=================================================*/
+
+.custom-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 14px;
+}
+
+.custom-pagination .page-number {
+  background: white;
+  height: 32px;
+  width: 32px;
+  line-height: 32px;
+  padding: 0 12px;
+  border-radius: 10px;
+  margin: 0 5px;
+  cursor: pointer;
+  transition: all 100ms ease-in;
+  font-weight: 300;
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 1px;
+}
+
+.custom-pagination .page-number.current {
+  color: white !important;
+  background: #222 !important;
+  border: 1px solid #222 !important;
+  transition: all 100ms ease-in;
+}
+
+.custom-pagination .page-number span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  width: 28px;
+  min-width: 28px;
+  height: 28px;
+  min-height: 28px;
+  cursor: pointer;
+}
+
+.custom-pagination .pagination-previous,
+.custom-pagination .pagination-next {
+  cursor: pointer;
+  margin: 0 10px;
+}
+
+button,
+button:focus {
+  outline: 0px;
+}

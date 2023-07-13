@@ -6,7 +6,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { debounce, debounceTime, distinctUntilChanged, map, startWith, take } from 'rxjs/operators';
 import { SearchService } from 'src/app/services/search.service';
@@ -18,7 +18,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { DropdownType } from 'src/app/shared/models/dropdown-type';
 import { DealsService } from 'src/app/services/deals.service';
-
+import { formatDate, NgIf } from '@angular/common';
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
@@ -28,12 +28,13 @@ export class SearchComponent implements OnInit, OnDestroy {
   dropdownType = DropdownType;
   showDropdown!: DropdownType;
   showFieldWarnings!: DropdownType;
-
+  minDate: Date | undefined;
   searchId!: any;
+  flag: any;
   activateRouteSubscription$!: Subscription;
 
   searchForm!: FormGroup;
-  agesArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  agesArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
 
   hotelsList: HotelDetails[] = [];
   filteredHotelsList!: Observable<HotelDetails[]>;
@@ -53,110 +54,291 @@ export class SearchComponent implements OnInit, OnDestroy {
     private router: Router,
     private spinner: NgxSpinnerService,
     private dealsService: DealsService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
+    
+    this.minDate = new Date();
     this.searchForm = this.getsearchForm();
-
+    console.log(this.searchForm.value,
+      this.searchForm.controls.paxData.value[0].noOfAdults)
+    this.getWithExpiry();
+    console.log(this.searchForm, "searchform")
     this.filteredHotelsList = this.searchForm.controls.hotel.valueChanges.pipe(
       startWith(''),
       map((value) => this.filterHotel(value))
     );
 
     this.filteredLocationList =
-      this.searchForm.controls.location.valueChanges.pipe(
+      this.searchForm.controls.hotel.valueChanges.pipe(
         startWith(''),
         map((value) => this.filterLocation(value))
       );
 
-    this.searchTypeControlSubscription =
-      this.searchForm.controls.searchType.valueChanges.subscribe((value) => {
-        if (value === 'hotel') {
-          this.searchForm.controls.hotel.setValidators([Validators.required]);
-          this.searchForm.controls.location.setValidators(null);
-        }
-        if (value === 'location') {
-          this.searchForm.controls.hotel.setValidators(null);
-          this.searchForm.controls.location.setValidators([
-            Validators.required,
-          ]);
-        }
-      });
-      
-
     this.activateRouteSubscription$ = this.activatedRoute.queryParams.pipe(
-      debounceTime(500)
+      debounceTime(300)
     ).subscribe(
       async (queryParams) => {
-        this.searchForm.controls.checkIn.setValue(queryParams['checkIn']);
-        this.searchForm.controls.checkOut.setValue(queryParams['checkOut']);
-        this.searchForm.controls.cityId.setValue(queryParams['cityId'] || '');
-        this.searchForm.controls.stateId.setValue(queryParams['stateId']);
-        this.searchForm.controls.countryId.setValue(queryParams['countryId']);
-        this.searchForm.controls.searchType.setValue(
-          queryParams['searchType'] || 'hotel'
-        );
-        await this.setHotelName(parseInt(queryParams['productId']));
-        this.setLocation(queryParams['cityId'], queryParams['stateId']);
-        this.setPaxInfo(queryParams['paxInfo']);
-        this.fetchSearchResult();
+        if(!queryParams['checkIn']){
+          localStorage.removeItem('reflectStore');
+
+        }
+        if (queryParams['checkIn']) {
+
+          this.searchForm.controls.checkIn.setValue(queryParams['checkIn']);
+          this.searchForm.controls.checkOut.setValue(queryParams['checkOut']);
+          this.searchForm.controls.cityId.setValue(queryParams['cityId'] || '');
+          this.searchForm.controls.stateId.setValue(queryParams['stateId']);
+          this.searchForm.controls.countryId.setValue(queryParams['countryId']);
+          this.searchForm.controls.searchType.setValue(
+            queryParams['searchType'] || 'hotel'
+          );
+          await this.setHotelName(parseInt(queryParams['productId']));
+          this.setLocation(queryParams['cityId'], queryParams['stateId']);
+          this.setPaxInfo(queryParams['paxInfo']);
+          this.fetchSearchResult();
+        }
+
       }
     );
   }
+  roomCount = 1
+  // increment() {
+  //   // this.roomCount++
+  //   // this.roomCountChanged()
+  //   let current = this.searchForm.controls.rooms.value;
+  //   this.searchForm.controls.rooms.setValue(current + 1);
+  //   this.roomCount = this.searchForm.controls.rooms.value
+  // }
+
+  // decrement() {
+  //   // if (this.roomCount > 1) {
+  //   //   this.roomCount--
+  //   //   this.roomCountChanged()
+  //   // }
+  //   let current = this.searchForm.controls.rooms.value;
+  //   if (current > 1) {
+  //     this.searchForm.controls.rooms.setValue(current - 1);
+  //     this.roomCount = this.searchForm.controls.rooms.value
+  //   }
+  // }
+  // roomCountChanged() {
+  //   this.data = []
+  //   for (var i = 0; i < this.roomCount; i++) {
+  //     this.data.push({
+  //       numOfAdults: 0,
+  //       numOfChildren: 0,
+  //       childAges: []
+  //     })
+  //   }
+  // }
+
+  // adultCountChanged(index: number, value: any) {
+  //   this.data[index].numOfAdults = parseFloat(value)
+  // }
+  // childCountChanged(index: number, value: any) {
+  //   this.data[index].numOfChildren = parseFloat(value)
+  //   this.data[index].childAges = []
+  //   for (var i = 0; i < value; i++) {
+  //     this.data[index].childAges.push(0)
+  //   }
+  // }
+  // onChildAgeChange(roomIndex: any, childIndex: any, value: any) {
+  //   //console.log(roomIndex, childIndex, value)
+  //   this.data[roomIndex].childAges[childIndex] = parseFloat(value)
+  //   //console.log(this.data)
+  // }
+  // incrementAdult(room: { numOfAdults: number; }) {
+  //   room.numOfAdults++
+  // }
+  // decrementAdult(room: { numOfAdults: number; }) {
+  //   if (room.numOfAdults > 1) {
+  //     room.numOfAdults--
+  //   }
+  // }
+  // incrementChild(room: { numOfChildren: number; childAges: number[]; }) {
+  //   room.numOfChildren++
+  //   room.childAges = []
+  //   for (var i = 0; i < room.numOfChildren; i++) {
+  //     room.childAges.push(0)
+  //   }
+  // }
+  // decrementChild(room: { numOfChildren: number; childAges: number[]; }) {
+  //   if (room.numOfChildren > 0) {
+  //     room.numOfChildren--
+  //     room.childAges = []
+  //     for (var i = 0; i < room.numOfChildren; i++) {
+  //       room.childAges.push(0)
+  //     }
+  //   }
+  // }
 
   ngOnDestroy(): void {
-    this.searchTypeControlSubscription.unsubscribe();
+    this.searchTypeControlSubscription?.unsubscribe();
   }
 
   getsearchForm() {
+    let dt = formatDate(new Date(), 'dd/MM/yyyy', 'en')
+
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    let dtTom = formatDate(tomorrow, 'dd/MM/yyyy', 'en')
+
+    console.log(dtTom)
     return this.formBuilder.group({
-      searchType: ['hotel'],
+      searchType: [],
       hotel: [''],
       location: [''],
       cityId: [''],
       stateId: [''],
       countryId: [''],
-      checkIn: ['', Validators.required],
-      checkOut: ['', Validators.required],
+      checkIn: [dt, Validators.required],
+      checkOut: [dtTom, Validators.required],
       noOfAdults: [1],
       agesOfChildren: this.formBuilder.array([]),
+      rooms: [1],
+      paxData: this.formBuilder.array([{
+        noOfAdults: 1,
+        noOfChildren: 0,
+        agesOfChildren: this.formBuilder.array([])
+      }]),
+
     });
+
+
   }
 
+  addAges(i: any, index: number) {
+    let txt = this.getChildrenAgeFormArray_1()
+    txt.setValue(i.target.value)
+    this.getChildrenAgeFormArray(index).push(txt)
+
+    console.log(this.searchForm.value, "agess")
+  }
+  getChildrenAgeFormArray(index: number): FormArray {
+    return this.getTablesFormArray().at(index).value.agesOfChildren as FormArray;
+  }
+
+  getChildrenAgeFormArray_1() {
+    return this.formBuilder.control('')
+  }
+
+  removeAge(i: number, ind: number) {
+    this.getChildrenAgeFormArray(i).removeAt(ind)
+
+  }
+
+  getTablesFormArray(): FormArray {
+    return this.searchForm.get("paxData") as FormArray;
+  }
+
+  addTablesForm() {
+    console.log(this.getTablesForm())
+    this.getTablesFormArray().push(this.getTablesForm().at(0));
+  }
+  removeTable(index: number) {
+    this.getTablesFormArray().removeAt(index)
+  }
+  getTablesForm() {
+    return this.formBuilder.array([{
+      noOfAdults: 1,
+      noOfChildren: 0,
+      agesOfChildren: this.formBuilder.array([])
+    }]);
+  }
+
+  // getChildrenAgeFormArray(i: number): FormArray {
+  //   return this.searchForm.controls.paxData.value[i].get('agesOfChildren') as FormArray;
+  // }
+
+  // addAge(data: any, i: number) {
+  //   console.log(data)
+  //   // this.getChildrenAgeFormArray(i).push(data)
+  // }
+
+
+
   filterHotel(value: any): any[] {
+    this.getWithExpiry();
     if (!value) value = '';
     let filterValue = value?.toLowerCase();
     let filteredArray = this.hotelsList.filter((val) =>
-      val.hotel_name?.toLowerCase().includes(filterValue)
+      val.hotel_name?.toLowerCase().indexOf(filterValue) > -1
     );
+
     this.showDropdown =
       filteredArray.length > 0 ? DropdownType.hotel : DropdownType.none;
     return filteredArray;
   }
 
   filterLocation(value: any): any[] {
+    this.getWithExpiry();
     if (!value) value = '';
     let filterValue = value?.toLowerCase();
     let filteredArray = this.locationList.filter((val: any) =>
-      val.key?.toLowerCase().includes(filterValue)
+      val.key?.toLowerCase().indexOf(filterValue) > -1
     );
     this.showDropdown =
       filteredArray.length > 0 ? DropdownType.location : DropdownType.none;
+
+    console.log(this.locationList, filteredArray, "########")
     return filteredArray;
+  }
+
+  setWithExpiry(value: any) {
+    const now = new Date()
+
+    // `item` is an object which contains the original value
+    // as well as the time when it's supposed to expire
+    const item = {
+      value: value,
+      expiry: now.getTime(),
+    }
+    localStorage.setItem('hotel', JSON.stringify(item))
   }
 
   async getAllHotels() {
     await this.searchService
-      .getAllHotels()
+      .getAllHotels(this.searchForm.controls.checkIn.value)
       .toPromise()
       .then((res) => {
-        this.hotelsList = res['Hotel_Details'];
-        this.getLocationList(res['Hotel_Details']);
-        this.isHotelListLoaded = true;
+        this.setWithExpiry(res['Hotel_Details'])
+        this.getWithExpiry();
       })
       .catch((err) => console.log(err));
   }
+  getWithExpiry() {
+    const itemStr = localStorage.getItem('hotel')
+    if (this.flag == null) {
+      this.flag = true;
+    }
 
+    // if the item doesn't exist, return null
+    if (!itemStr && this.flag == true) {
+      this.getAllHotels();
+      this.flag = false;
+    }
+    let item
+    if (itemStr && this.flag == true) {
+      item = JSON.parse(itemStr)
+      const now = new Date()
+      // compare the expiry time of the item with the current time
+      if (now.getTime() > item.expiry) {
+        // If the item is expired, delete the item from storage
+        // and return null
+        localStorage.removeItem('hotel');
+
+        this.getAllHotels();
+        this.flag = false;
+
+      }
+      this.hotelsList = item.value;
+      this.getLocationList(item.value);
+      this.isHotelListLoaded = true;
+      return;
+    }
+
+  }
   getLocationList(val: any) {
     val.forEach((e1: any) => {
       //Push city if available
@@ -208,21 +390,36 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   changeSearchType(val: string) {
+    console.log(val)
     this.searchForm.controls.searchType.setValue(val);
+    if (val === 'hotel') {
+      this.searchForm.controls.hotel.setValidators([Validators.required]);
+      this.searchForm.controls.location.setValidators([]);
+    }
+    if (val === 'location') {
+      this.searchForm.controls.hotel.setValidators([]);
+      this.searchForm.controls.location.setValidators([Validators.required]);
+    }
+
   }
 
   async onHotelFieldEvent(type: string, event?: any) {
     if (!this.isHotelListLoaded) {
-      await this.getAllHotels();
+      this.getWithExpiry();
     }
     if (type === 'focus') {
       this.filterHotel(this.searchForm.controls.hotel.value);
+      this.filterLocation(this.searchForm.controls.hotel.value);
     } else if (type === 'keydown') {
       this.filterHotel(this.searchForm.controls.hotel.value);
+      this.filterLocation(this.searchForm.controls.hotel.value);
     }
   }
 
   onLocationFieldEvent(type: string, event?: any) {
+    if (!this.isHotelListLoaded) {
+      this.getWithExpiry();
+    }
     if (type === 'focus') {
       this.filterLocation(this.searchForm.controls.location.value);
     } else if (type === 'keydown') {
@@ -230,8 +427,8 @@ export class SearchComponent implements OnInit, OnDestroy {
     }
   }
 
-  focusDestinationFieldInput() {
-    if (this.searchForm.controls.searchType.value === 'hotel') {
+  focusDestinationFieldInput(type: string) {
+    if (type === 'hotel') {
       document.getElementById('hotel-field-input')?.focus();
     } else {
       document.getElementById('location-field-input')?.focus();
@@ -246,11 +443,17 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.showDropdown = DropdownType.none;
       this.showFieldWarnings = this.dropdownType.none;
     }, 0);
+    this.showDropdown = this.dropdownType.none;
   }
 
   selectLocation(option: any) {
+    // this.searchForm.controls.status = 'VALID';
     if ((option.type = 'city')) {
+      this.searchForm.controls.hotel.setValue(option.key);
       this.searchForm.controls.cityId.setValue(option.cityId);
+
+      this.searchForm.controls.searchType.setValue('location')
+
     }
     this.searchForm.controls.stateId.setValue(option.stateId);
     this.searchForm.controls.countryId.setValue(option.countryId);
@@ -260,11 +463,12 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.showDropdown = DropdownType.none;
       this.showFieldWarnings = this.dropdownType.none;
     }, 0);
+    this.showDropdown = this.dropdownType.none;
   }
 
   async setHotelName(id: number) {
     if (!this.isHotelListLoaded) {
-      await this.getAllHotels();
+      this.getWithExpiry();
     }
     let hotelName = '';
     for (let i = 0; i < this.hotelsList.length; i++) {
@@ -293,59 +497,91 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   //Ages Methods
-  get agesOfChildren() {
-    return this.searchForm.get('agesOfChildren') as FormArray;
-  }
+  // get agesOfChildren() {
+  //   return this.searchForm.get('agesOfChildren') as FormArray;
+  // }
 
-  getChildrensAgeForm() {
-    return this.formBuilder.group({
-      age: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(/^[0-9]\d*$/),
-          Validators.min(1),
-          Validators.max(12),
-        ],
-      ],
-    });
-  }
+  // getChildrensAgeForm() {
+  //   return this.formBuilder.group({
+  //     age: [
+  //       '',
+  //       [
+  //         Validators.required,
+  //         Validators.pattern(/^[0-9]\d*$/),
+  //         Validators.min(1),
+  //         Validators.max(12),
+  //       ],
+  //     ],
+  //   });
+  // }
 
-  updateChildrensAgeForm(type: string) {
-    if (type === 'add') {
-      this.agesOfChildren.push(this.getChildrensAgeForm());
-    } else if (type === 'remove') {
-      this.agesOfChildren.removeAt(this.agesOfChildren.length - 1);
-    }
-  }
+  // updateChildrensAgeForm(type: string) {
+  //   if (type === 'add') {
+  //     this.agesOfChildren.push(this.getChildrensAgeForm());
+  //   } else if (type === 'remove') {
+  //     this.agesOfChildren.removeAt(this.agesOfChildren.length - 1);
+  //   }
+  // }
 
-  updateAdultCount(type: string) {
+
+  updateroomCount(type: string) {
     if (type === 'decrement') {
-      let current = this.searchForm.controls.noOfAdults.value;
+      let current = this.searchForm.controls.rooms.value;
       if (current > 1) {
-        this.searchForm.controls.noOfAdults.setValue(current - 1);
+        this.searchForm.controls.rooms.setValue(current - 1);
+        this.removeTable(this.searchForm.controls.rooms.value)
       }
     } else if (type === 'increment') {
-      let current = this.searchForm.controls.noOfAdults.value;
-      this.searchForm.controls.noOfAdults.setValue(current + 1);
+      let current = this.searchForm.controls.rooms.value;
+      this.searchForm.controls.rooms.setValue(current + 1);
+      this.addTablesForm()
+      console.log(this.searchForm.value)
     }
   }
 
-  updateChildCount(type: string) {
+  updateAdultCount(type: string, i: number) {
     if (type === 'decrement') {
-      let current = this.agesOfChildren?.controls?.length;
-      if (current > 0) {
-        this.updateChildrensAgeForm('remove');
+      let current = this.searchForm.controls.paxData.value[i].noOfAdults;
+      if (current > 1) {
+        this.searchForm.controls.paxData.value[i].noOfAdults = current - 1;
+
       }
     } else if (type === 'increment') {
-      this.updateChildrensAgeForm('add');
+      let current = this.searchForm.controls.paxData.value[i].noOfAdults;
+      this.searchForm.controls.paxData.value[i].noOfAdults = current + 1;
+
     }
   }
+
+  updateChildCount(type: string, i: number) {
+    if (type === 'decrement') {
+      let current = this.searchForm.controls.paxData.value[i].noOfChildren;
+      if (current > 0) {
+        // this.searchForm.controls.paxData.value[i].noOfChildren.setValue(current - 1);
+        this.searchForm.controls.paxData.value[i].noOfChildren = current - 1;
+        this.removeAge(i, this.searchForm.controls.paxData.value[i].noOfChildren)
+      }
+    } else if (type === 'increment') {
+      let current = this.searchForm.controls.paxData.value[i].noOfChildren;
+      // this.searchForm.controls.paxData.value[i].noOfChildren.setValue(current + 1);
+      this.searchForm.controls.paxData.value[i].noOfChildren = current + 1;
+
+
+    }
+
+    console.log(this.searchForm.value, "@#$%^&*(")
+  }
+
+
 
   onSubmit() {
+    console.log(this.searchForm, this.searchForm.valid)
     this.searchForm.markAllAsTouched();
     this.showDropdown = this.dropdownType.none;
-    if (this.searchForm.valid) {
+    // if(      this.searchForm.controls.searchType.status== "VALID" ){
+    //   this.searchForm.valid
+    // }
+    if (this.searchForm.controls.searchType.status == "VALID") {
       let prevUrl = this.router.url.toString();
       let searchParams: any = this.getSearchParams();
       searchParams['searchType'] = this.searchForm.controls.searchType.value;
@@ -381,14 +617,19 @@ export class SearchComponent implements OnInit, OnDestroy {
     if (this.searchForm.valid) {
       this.spinner.show();
       let searchParams: any = this.getSearchParams();
+      console.log(searchParams, "searchparams")
       this.searchService.searchRooms(searchParams).subscribe((res) => {
         this.searchResponse = res;
+
         this.searchId = this.searchResponse['search_id'];
         this.scrollToSearchView();
         this.spinner.hide();
+
+        console.log(this.searchResponse)
       });
     }
   }
+
 
   scrollToSearchView() {
     var element = document.getElementById('searchTitleId');
@@ -407,24 +648,29 @@ export class SearchComponent implements OnInit, OnDestroy {
     let searchParams: any = {
       bookingEngineId: BOOKING_ENGINE_ID,
     };
-    if (this.searchForm.controls.searchType.value === 'hotel') {
+
+    if (this.getProductId()) {
       searchParams.productId = this.getProductId();
-    } else {
-      if (this.searchForm.controls.cityId.value?.length > 0) {
-        searchParams.cityId = this.searchForm.controls.cityId.value;
-      }
-      searchParams.stateId = this.searchForm.controls.stateId.value;
-      searchParams.countryId = this.searchForm.controls.countryId.value;
     }
+
+
+    if (this.searchForm.controls.cityId.value?.length > 0) {
+      searchParams.cityId = this.searchForm.controls.cityId.value;
+    }
+    // searchParams.stateId = this.searchForm.controls.stateId.value;
+    // searchParams.countryId = this.searchForm.controls.countryId.value;
+
     if (this.searchForm.controls.checkIn.value?.length > 0) {
       searchParams.checkIn = this.searchForm.controls.checkIn.value;
     }
     if (this.searchForm.controls.checkOut.value?.length > 0) {
       searchParams.checkOut = this.searchForm.controls.checkOut.value;
     }
-    if (this.getPaxInfo()) {
-      searchParams.paxInfo = this.getPaxInfo();
-    }
+     if (this.getPaxInfo()) {
+       searchParams.paxInfo = this.getPaxInfo();
+     }
+    // searchParams.paxInfo = '1'
+    searchParams.rooms = this.searchForm.controls.rooms.value;
     return searchParams;
   }
 
@@ -442,32 +688,37 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   getPaxInfo() {
-    let paxString =
-      this.searchForm.controls.noOfAdults.value +
-      '|' +
-      this.agesOfChildren?.controls?.length;
 
-
-    if (this.agesOfChildren?.controls?.length > 0) {
-      for (let i = 0; i < this.agesOfChildren?.controls?.length; i++) {
-        paxString += '|' + this.agesOfChildren.controls[i].get('age')?.value;
+    let paxString = ''
+    let aFromArray: FormArray = this.getTablesFormArray();
+    for (let i = 0; i < aFromArray.value.length; i++) {
+      paxString += aFromArray.value[i]['noOfAdults'] + '|' + aFromArray.value[i]['noOfChildren'] + '|';
+      let agesFormArray: FormArray = this.getChildrenAgeFormArray(i)
+      console.log(agesFormArray.controls)
+      for (let x of agesFormArray.controls) {
+        paxString +=  '1|'
+        paxString += x.value + '|'
       }
+      if(agesFormArray.controls.length == 0){
+        paxString +=  '0|0|'
+      }
+      paxString +="|"
     }
-
+    console.log(paxString, "paxstring")
     return paxString;
   }
 
   setPaxInfo(paxInfo: any) {
-    let paxArray = paxInfo ? paxInfo.toString().split('|') : []
-    this.agesOfChildren.clear()
-    paxArray.forEach((e: any, i: number) => {
-      if (i === 0) {
-        this.searchForm.controls.noOfAdults.setValue(parseInt(e));
-      } else if (i > 1) {
-        this.agesOfChildren.push(this.getChildrensAgeForm());
-        this.agesOfChildren.controls[i - 2].get('age')?.setValue(parseInt(e));
-      } 
-    });
+      let paxArray = paxInfo ? paxInfo.toString().split('|') : []
+      // this.agesOfChildren.clear()
+      // paxArray.forEach((e: any, i: number) => {
+      //   if (i === 0) {
+      //     this.searchForm.controls.noOfAdults.setValue(parseInt(e));
+      //   } else if (i > 1) {
+      //     this.agesOfChildren.push(this.getChildrensAgeForm());
+      //     this.agesOfChildren.controls[i - 2].get('age')?.setValue(parseInt(e));
+      //   }
+      // });
   }
 
   clearFormArray = (formArray: FormArray) => {

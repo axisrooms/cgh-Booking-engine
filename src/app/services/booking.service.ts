@@ -27,6 +27,9 @@ export class BookingService {
     this.bookingCart$ = this.bookingCartReflect.observe(
       this.bookingCartReflect.HOOKS.BOOKING_CART
     );
+    console.log(this.bookingCart$, this.bookingCartReflect.observe(
+      this.bookingCartReflect.HOOKS.BOOKING_CART
+    ))
     this.currBookingItem$ = this.bookingCart$.pipe(
       map((bookingCart) => {
         return bookingCart &&
@@ -36,7 +39,7 @@ export class BookingService {
           : undefined;
       })
     );
-
+   
     this.bookingCart$.pipe(tap((val) => (this.bookingCartValue = val))).subscribe();
     this.currBookingItem$.pipe(tap((val) => (this.currBookingItemValue = val))).subscribe();
     this.unsetPGLoaderFlag()
@@ -78,12 +81,18 @@ export class BookingService {
   }
 
   getTotalAmount(checkIn: string, checkOut: string, room: any) {
-    let diff = this.getNoOfDays(checkIn, checkOut);
+    // let diff = this.getNoOfDays(checkIn, checkOut);
     let price =
-      (room.price.discounted ? room.price.discounted : room.price.actual) +
+      (room.price.discounted ? (room.price.actual) : room.price.actual) +
       room.price.taxValue;
-    return diff * price;
+    // return diff * price;
+    return price;
+
   }
+  // (room.price.discounted ? (room.price.actual - room.price.discounted) : room.price.actual) +
+
+
+  // getTotalAmtWithAddon(){}
 
   getNoOfDays(checkIn: string, checkOut: string) {
     let startDate = moment(checkIn, 'DD.MM.YYYY');
@@ -93,7 +102,7 @@ export class BookingService {
 
   getAgesOfChildrenArray(paxInfo: any[]) {
     let agesArray: number[] = [];
-    paxInfo.forEach((e1: any, index: any) => {
+    paxInfo?.forEach((e1: any, index: any) => {
       if (index > 1) {
         agesArray.push(parseInt(e1));
       }
@@ -107,11 +116,14 @@ export class BookingService {
     searchId: number,
     checkIn: string,
     checkOut: string,
-    paxInfo: any
+    paxInfo: any,
+    addons: any,
+    noOfRooms:any
   ) {
     let room: Room = {
       ratePlanId: selectedRoom.ratePlanId,
       roomId: selectedRoom.roomId,
+      currency: selectedRoom.currency,
       price: {
         actual: selectedRoom.price.actual,
         discounted: selectedRoom.price.discounted,
@@ -119,24 +131,29 @@ export class BookingService {
       },
     };
     let bookingItem: BookingItem = {
+      property: property,
+      addons: [],
+      addonTotalPrice: 0,
       searchId: searchId,
       hotelId: property.hotel_id,
       cityId: property.address.cityId,
       checkIn: checkIn,
       checkOut: checkOut,
-      noOfRooms: 1,
-      noOfAdults: parseInt(paxInfo.split('|')[0] ?? 1),
-      noOfChildren: parseInt(paxInfo.split('|')[1] ?? 0),
+      noOfRooms: noOfRooms,
+      noOfAdults: parseInt(paxInfo?.split('|')[0] ?? 1),
+      noOfChildren: parseInt(paxInfo?.split('|')[1] ?? 0),
       paxInfo: paxInfo,
-      agesOfChildren: this.getAgesOfChildrenArray(paxInfo.split('|')),
+      agesOfChildren: this.getAgesOfChildrenArray(paxInfo?.split('|')),
       rooms: [room],
       noOfDays: this.getNoOfDays(checkIn, checkOut),
       totalAmount: this.getTotalAmount(checkIn, checkOut, selectedRoom),
       renderData: { ...property, rooms: [selectedRoom] },
+      payathotel:property.payAtHotel
     };
 
     this.initializeNewBooking(bookingItem);
   }
+
 
   proceedBookingFromOngoingList(index: number) {
     let bookingCart: BookingCart = {
@@ -148,20 +165,25 @@ export class BookingService {
       this.bookingCartReflect.HOOKS.BOOKING_CART,
       bookingCart
     );
+    this.router.navigate(['/book']);
   }
 
-  removeCurrentBookingItemFromList() {
-    let index = this.bookingCartValue.currIndex
-  
-    if(index != undefined && index != null) {
-       let bookingCart = cloneDeep(this.bookingCartValue)
-       bookingCart.bookingItems.splice(index, 1)
-       bookingCart.currIndex = undefined
-       this.bookingCartReflect.set(
+  removeCurrentBookingItemFromList(i: any) {
+    // let index = this.bookingCartValue.currIndex
+    let index = i
+    if (index != undefined && index != null) {
+      let bookingCart = cloneDeep(this.bookingCartValue)
+      bookingCart.bookingItems.splice(index, 1)
+      bookingCart.currIndex = undefined
+      this.bookingCartReflect.set(
         this.bookingCartReflect.HOOKS.BOOKING_CART,
         bookingCart
       );
     }
+
+    // this.router.routeReuseStrategy.shouldReuseRoute = () => true;
+
+
   }
 
   //
@@ -174,16 +196,35 @@ export class BookingService {
       headers: getDefaultHeaders(),
     });
   }
-
+ getpolicy(searchParams: any): Observable<any> {
+  return this.http.get<any>(`${BASE_URL}api/be/getPolicies`, {
+    params: searchParams,
+    headers: getDefaultHeaders(),
+  });
+ }
   addAddon(addon: any) {
     let bookingItem = this.currBookingItemValue;
+
     if (bookingItem) {
       let addonFound;
+      bookingItem.addonTotalPrice = 0
+      console.log(bookingItem, "check")
+
       if (bookingItem.addons) {
         for (let index = 0; index < bookingItem.addons?.length || 0; index++) {
           if (addon['policy_id'] === bookingItem.addons[index]['policy_id']) {
-            bookingItem.addons[index]['qty'] += 1;
+            // bookingItem.addons[index]['qty'] += 1;
+            // bookingItem.addons[index]['totalCost']  =  parseInt(bookingItem.addons[index]['cost']) * bookingItem.addons[index]['qty']
             addonFound = true;
+            // bookingItem.addonTotalPrice += (parseInt(addon.cost) * addon.qty)
+
+            bookingItem.addons.forEach(e => {
+              if (bookingItem) {
+                bookingItem.addonTotalPrice += (e.cost * e.qty)
+              }
+
+            })
+            console.log(bookingItem, "hii")
             break;
           }
         }
@@ -194,6 +235,14 @@ export class BookingService {
           bookingItem.addons = [];
         }
         bookingItem.addons.push(addon);
+        // bookingItem.addonTotalPrice += (parseInt(addon.cost) * addon.qty)
+        bookingItem.addons.forEach(e => {
+          if (bookingItem) {
+            bookingItem.addonTotalPrice += (e.cost * e.qty)
+          }
+        })
+        console.log(bookingItem, "bye")
+
       }
 
       let bookingCart = this.bookingCartValue;
@@ -210,12 +259,26 @@ export class BookingService {
   removeAddon(addon: any) {
     let bookingItem = this.currBookingItemValue;
     if (bookingItem) {
+      bookingItem.addonTotalPrice = 0
+
       if (bookingItem.addons) {
         for (let index = 0; index < bookingItem?.addons?.length; index++) {
           if (addon['policy_id'] === bookingItem?.addons[index]['policy_id']) {
             if (bookingItem.addons[index].qty > 1) {
-              bookingItem.addons[index].qty -= 1;
-            } else if (bookingItem.addons[index].qty === 1) {
+              // bookingItem.addons[index].qty -= 1;
+              bookingItem.addons.forEach(e => {
+                if (bookingItem) {
+                  bookingItem.addonTotalPrice += (e.cost * e.qty)
+                }
+              })
+              bookingItem?.addons.splice(index, 1);
+
+            } else if (bookingItem.addons[index].qty === 1 || bookingItem.addons[index].qty === 0) {
+              bookingItem.addons.forEach(e => {
+                if (bookingItem) {
+                  bookingItem.addonTotalPrice += (e.cost * e.qty)
+                }
+              })
               bookingItem?.addons.splice(index, 1);
             }
             break;
@@ -245,11 +308,12 @@ export class BookingService {
     searchParams.countryId = bookingItem?.renderData.address.countryId;
     searchParams.checkIn = bookingItem?.checkOut;
 
-    let checkOut = moment(bookingItem?.checkOut, "DD-MM-YYYY") 
-    checkOut.add(2, 'days') 
+    let checkOut = moment(bookingItem?.checkOut, "DD-MM-YYYY")
+    checkOut.add(2, 'days')
 
     searchParams.checkOut = checkOut.format('DD/MM/YYYY');
-    searchParams.paxInfo = bookingItem?.paxInfo; 
+    searchParams.paxInfo = bookingItem?.paxInfo;
+    searchParams.rooms = bookingItem?.rooms;
 
     return searchParams;
   }

@@ -2,127 +2,128 @@
   <p class="title">PERSONAL DETAILS</p>
 
   <div class="row m-0">
-    <input
-      class="first-name"
-      type="text"
-      name=""
-      placeholder="First Name"
-      formControlName="firstName"
-      [ngClass]="{
+    <input class="first-name" type="text" name="" placeholder="First Name" formControlName="firstName" [ngClass]="{
         'form-input-error':
           personalDetailsForm.controls.firstName.invalid &&
           (personalDetailsForm.controls.firstName.dirty ||
             personalDetailsForm.controls.firstName.touched)
-      }"
-    />
-    <input
-      class="last-name"
-      type="text"
-      name=""
-      placeholder="Last Name"
-      formControlName="lastName"
-      [ngClass]="{
+      }" />
+    <input class="last-name" type="text" name="" placeholder="Last Name" formControlName="lastName" [ngClass]="{
         'form-input-error':
           personalDetailsForm.controls.lastName.invalid &&
           (personalDetailsForm.controls.lastName.dirty ||
             personalDetailsForm.controls.lastName.touched)
-      }"
-    />
+      }" />
   </div>
   <div class="row m-0 mb-4">
-    <input
-      class="phone"
-      type="text"
-      name=""
-      placeholder="Phone"
-      formControlName="mobileNo"
-      [ngClass]="{
+    <div class="col-6" style="padding: 0 5px 0 0;">
+      <input class="phone w-100"  type="text" name="" placeholder="Phone" formControlName="mobileNo" [ngClass]="{
         'form-input-error':
           personalDetailsForm.controls.mobileNo.invalid &&
           (personalDetailsForm.controls.mobileNo.dirty ||
             personalDetailsForm.controls.mobileNo.touched)
-      }"
-    />
-    <input
-      class="email"
-      type="text"
-      name=""
-      placeholder="Email Address"
-      formControlName="emailId"
-      [ngClass]="{
+      }" />
+      <label class="err-txt" *ngIf=" personalDetailsForm.controls.mobileNo.invalid &&
+    (personalDetailsForm.controls.mobileNo.dirty ||
+      personalDetailsForm.controls.mobileNo.touched)">*Please enter valid phone number</label>
+    </div>
+    <div class="col-6" style="padding: 0 0 0 5px;">
+      <input class="email w-100"  type="text" name="" placeholder="Email Address" formControlName="emailId" [ngClass]="{
         'form-input-error':
           personalDetailsForm.controls.emailId.invalid &&
           (personalDetailsForm.controls.emailId.dirty ||
             personalDetailsForm.controls.emailId.touched)
-      }"
-    />
+      }" />
+      <label class="err-txt" *ngIf=" personalDetailsForm.controls.emailId.invalid &&
+    (personalDetailsForm.controls.emailId.dirty ||
+      personalDetailsForm.controls.emailId.touched)">*Please enter valid email</label>
+    </div>
+
   </div>
 
   <p class="title">ADDRESS</p>
   <ng-container formGroupName="address">
     <div class="row m-0">
-      <input
-        class="address-input"
-        type="text"
-        name=""
-        placeholder="Lane Address"
-        formControlName="lane"
-        [ngClass]="{
+      <input class="address-input" type="text" name="" placeholder="Lane Address" formControlName="lane" [ngClass]="{
           'form-input-error':
             address.controls.lane.invalid &&
             (address.controls.lane.dirty || address.controls.lane.touched)
-        }"
-      />
-      <input
-        class="address-input"
-        type="text"
-        name=""
-        placeholder="City"
-        formControlName="city"
-        [ngClass]="{
+        }" />
+      <input class="address-input" type="text" name="" placeholder="City" formControlName="city" [ngClass]="{
           'form-input-error':
             address.controls.city.invalid &&
             (address.controls.city.dirty || address.controls.city.touched)
-        }"
-      />
+        }" />
     </div>
     <div class="row m-0 mb-4">
-      <input
-        class="address-input"
-        type="text"
-        name=""
-        placeholder="State"
-        formControlName="state"
-        [ngClass]="{
+      <input class="address-input" type="text" name="" placeholder="State" formControlName="state" [ngClass]="{
           'form-input-error':
             address.controls.state.invalid &&
             (address.controls.state.dirty || address.controls.state.touched)
-        }"
-      />
-      <input
-        class="address-input"
-        type="text"
-        name=""
-        placeholder="Country"
-        formControlName="country"
-        [ngClass]="{
+        }" />
+      <input class="address-input" type="text" name="" placeholder="Country" formControlName="country" [ngClass]="{
           'form-input-error':
             address.controls.country.invalid &&
             (address.controls.country.dirty || address.controls.country.touched)
-        }"
-      />
+        }" />
+    </div>
+
+  
+  </ng-container>
+ <p class="title" *ngIf="payathotel == true">Card Details</p>
+  <ng-container formGroupName="address" *ngIf="payathotel == true">
+    <div class="row m-0">
+      <input class="address-input" type="text" name="" placeholder="Cardno" formControlName="cardno" [ngClass]="{
+          'form-input-error':
+            address.controls.lane.invalid &&
+            (address.controls.lane.dirty || address.controls.lane.touched)
+        }" />
+    
+    </div>
+    <div class="row m-0 mb-4">
+      <input class="address-input" type="text" name="" placeholder="Expire Date" formControlName="epdate" [ngClass]="{
+          'form-input-error':
+            address.controls.state.invalid &&
+            (address.controls.state.dirty || address.controls.state.touched)
+        }" />
+      <input class="address-input" type="text" name="" placeholder="Cvv" formControlName="Cvv" [ngClass]="{
+          'form-input-error':
+            address.controls.country.invalid &&
+            (address.controls.country.dirty || address.controls.country.touched)
+        }" />
     </div>
   </ng-container>
 
   <p class="title">SPECIAL REQUESTS</p>
   <div class="row m-0">
-    <textarea
-      class="address-input mx-0"
-      type="text"
-      name=""
-      placeholder="Add any notes here"
-      formControlName="specialRequest"
-      style="padding: 10px; height: 100px"
-    ></textarea>
+    <textarea class="address-input mx-0" type="text" name="" placeholder="Add any notes here"
+      formControlName="specialRequest" style="padding: 10px; height: 100px"></textarea>
+      <div class="row m-0 mb-4">
+        <input class="address-input" type="text" name="" placeholder="purpose of visit"  [ngClass]="{
+            'form-input-error':
+              address.controls.state.invalid &&
+              (address.controls.state.dirty || address.controls.state.touched)
+          }" />
+        <input class="address-input" type="text" name="" placeholder="How did you hear about us" [ngClass]="{
+            'form-input-error':
+              address.controls.country.invalid &&
+              (address.controls.country.dirty || address.controls.country.touched)
+          }" /> &nbsp; &nbsp;
+          <input class="address-input" type="text" name="" placeholder="Veg/Non Veg"  [ngClass]="{
+            'form-input-error':
+              address.controls.state.invalid &&
+              (address.controls.state.dirty || address.controls.state.touched)
+          }" />
+        <input class="address-input" type="text" name="" placeholder="Approximate arrival time"  [ngClass]="{
+            'form-input-error':
+              address.controls.country.invalid &&
+              (address.controls.country.dirty || address.controls.country.touched)
+          }" />
+      </div>
+  </div>
+  <p class="title" style="display: none;">PRE PAYMENT</p>
+  <div class="row m-0" style="display: none;">
+    <input type="number" class="address-input "  name="" 
+      formControlName="prepayment" style="padding: 10px; height: 50px">
   </div>
 </div>

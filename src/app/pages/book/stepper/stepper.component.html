@@ -1,31 +1,36 @@
 <section class="stepper-section">
     <div class="stepper-row">
-        <div class="stepper-block" 
-            [ngClass]="{'active': stepper === eStepper.personalDetails}">
+        <div class="stepper-block">
             <div class="stepper-icon">
                 <div class="stepper-dot"></div>
             </div>
-            <div class="stepper-text">Personal Details</div>
+            <!-- <div class="stepper-text">Personal Details</div> -->
+            <div class="stepper-text">Hotels & Resorts</div>
+
         </div>
 
-        <div class="stepper-block" 
-            [ngClass]="{'active': stepper === eStepper.addons}">
+        <div class="stepper-block" [ngClass]="{'active': stepper === eStepper.addons}">
             <div class="stepper-icon">
                 <div class="stepper-dot"></div>
             </div>
             <div class="stepper-text">Addons</div>
         </div>
+        <div class="stepper-block" [ngClass]="{'active': stepper === eStepper.personalDetails}">
+            <div class="stepper-icon">
+                <div class="stepper-dot"></div>
+            </div>
+            <div class="stepper-text">Personal Details</div>
 
-        <div class="stepper-block" 
-            [ngClass]="{'active': stepper === eStepper.payment}">
+        </div>
+
+        <div class="stepper-block" [ngClass]="{'active': stepper === eStepper.payment}">
             <div class="stepper-icon">
                 <div class="stepper-dot"></div>
             </div>
             <div class="stepper-text">Payment</div>
         </div>
 
-        <div class="stepper-block" 
-            [ngClass]="{'active': stepper === eStepper.confirmation}">
+        <div class="stepper-block" [ngClass]="{'active': stepper === eStepper.confirmation}">
             <div class="stepper-icon">
                 <div class="stepper-dot"></div>
             </div>

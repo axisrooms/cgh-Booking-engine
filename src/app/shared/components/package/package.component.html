@@ -1,18 +1,40 @@
 <div class="wrapper">
-    <div class="property-row" [ngStyle]="expandTabBlock ? { background: 'white' } : {}">
-        <div class="property-image-col" *ngIf="property.images && property.images[0]">
-            <img src="{{property.images[0]}}"  alt="">
-        </div>
+    <div class="property-row row" [ngStyle]="expandTabBlock ? { background: 'white' } : {}">
+        <div class="property-image-col  col-12 col-md-4 col-lg-4" >
+            <!-- <img src="{{property.images[1]}}" alt=""> -->
 
-        <div class="property-text-col">
-            <p class="package-title">{{ property.hotel_name }}</p>
-            
+            <div id="carouselExampleControls" class="carousel slide" [id]="'slider_hotel'+ id_num" data-ride="carousel"
+            style="width: 200px;">
+            <div class="carousel-inner">
+                <div class="carousel-item" *ngFor="let item of property.images;let i=index"
+                    [ngClass]="i == 1 ? 'active' : ''" [id]="'slide'+ i">
+                    <img class="d-block w-100" [src]="item" style="position: relative;">
+                    <i class="bi bi-arrows-angle-expand" (click)="expandImg(item)" ></i>
+                </div>
+            </div>
+            <a class="carousel-control-prev" [href]="'#slider_hotel'+ id_num" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" [href]="'#slider_hotel'+ id_num" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+        </div>
+        <!-- <img src="{{property.images[0]}}"  alt=""> -->
+
+
+        <div class="property-text-col  col-12 col-md-8 col-lg-8">
+            <p class="package-title">{{ property.hotel_name}}</p>
+
             <p class="higlight-point" style="margin-bottom: 5px" *ngIf="3 > 0">
-                <ng-container *ngFor="let star of [1, 2, 3, 4, 5, 6, 7, 8]">
-                    <i class="bi bi-star-fill" *ngIf="star <= 3"
-                        [ngStyle]="star === 3 ? { 'margin-right': '5px' } : {}"></i>
+                <ng-container *ngFor="let star of starrate">
+                    <i class="bi bi-star-fill" *ngIf="star <= 5"
+                        [ngStyle]="star === 5 ? { 'margin-right': '5px' } : {}"></i>
                 </ng-container>
-                <span>Hotel</span>
+                <span>{{property.property_type}}</span><br>
+                <span class="view-more-span"(click)="onExpandTab('amenities')">Click to view Hotel Amenities</span>
             </p>
 
             <p class="higlight-point" style="margin-top: 2px; margin-bottom: 18px">
@@ -54,13 +76,14 @@
                     <span class="text-col-span">
                         <span class="highlight-btn-type">Our lowest price</span>
                         <span>
-                            <span class="highlight-btn-text">$1200</span>
+                            <span class="highlight-btn-text">{{property.currency}} {{lowestRoomPrice}}</span>
                             <span class="view-more-span">View more</span>
                         </span>
                     </span>
                     <span><i class="bi bi-chevron-down"></i></span>
                 </button>
-            </div>
+            </div><br>
+          
         </div>
     </div>
 
@@ -68,6 +91,13 @@
         <ng-container *ngIf="selectedTab === 'overview'">
             <ng-container *ngTemplateOutlet="
                 overviewTab;
+                context: { property: property }
+                ">
+            </ng-container>
+        </ng-container>
+        <ng-container *ngIf="selectedTab === 'amenities'">
+            <ng-container *ngTemplateOutlet="
+            amenitesTab;
                 context: { property: property }
                 ">
             </ng-container>
@@ -99,6 +129,9 @@
     <div class="mb-3" *ngIf="property?.address">
         <p class="overview-title">Address</p>
         <p class="description">
+            <span class="me-1" *ngIf="property.address?.address_Line">{{
+                property.address.address_Line + ", "
+                }}</span>
             <span class="me-1" *ngIf="property.address?.city">{{
                 property.address.city + ", "
                 }}</span>
@@ -110,6 +143,12 @@
                 }}</span>
         </p>
     </div>
+    <div class="mb-3" *ngIf="property?.coordinates">
+        <p class="overview-title">Latitude : <span class="description">{{property.coordinates.latitude}}</span> </p>
+        </div>
+        <div class="mb-3" *ngIf="property?.coordinates">
+            <p class="overview-title"> Longitude :  <span class="description">{{property.coordinates.longitude}}</span></p>
+            </div>
     <div class="mb-3" *ngIf="property?.goodToKnow?.length > 0">
         <p class="overview-title">Good to know</p>
         <p class="description">{{property.description}}</p>
@@ -125,25 +164,40 @@
 
 <ng-template #roomsTab let-property="property">
     <p class="room-list-heading">Rooms Starting from</p>
-    <ng-container *ngFor="let room of property.rooms">
-        <app-room [room]="room" [property]="property" (btnEvent)="roomBtnEvent(property, room)">
+    <ng-container *ngFor="let room of property.rooms;let i=index">
+        <app-room [room]="room" [id]="i" [property]="property" (btnEvent)="roomBtnEvent(property, room)"
+        [checkIn]="checkIn" [checkOut]="checkOut" [paxInfo]="paxInfo" [productId]="productId">
         </app-room>
+    </ng-container>
+</ng-template>
+<ng-template #amenitesTab let-property="property" style="height: 180% !important;">
+   
+    <ng-container >
+        <p class="room-list-heading">Amenities</p>
+        <ul>
+            <li style="width: 50%;" *ngFor="let amenitie of property.amenities;let i=index">{{amenitie}}</li>
+        </ul>
+        <p class="room-list-heading">Key Amenities</p>
+        <ul style="list-style: none;"><li *ngFor="let key of property?.keyAmenities | keyvalue"><img [src]="'https://app.axisrooms.com/'+key.value">{{key.key}}</li></ul>
     </ng-container>
 </ng-template>
 
 <ng-template #dealsTab>
     <div class="deals-wrapper">
-        <ng-container  *ngFor="let item of property.rooms">
+        <ng-container *ngFor="let item of property.rooms">
             <div class="deal-card" *ngIf="item.deal">
                 <div class="deal-room-section">
                     <p class="deal-title mb-0">{{item.roomName}}</p>
+                    <p class="deal-title mb-0">Rate Plan: {{item.ratePlanName}}</p>
+
                 </div>
                 <div class="deal-top-section">
                     <p class="deal-title">Deal Name: {{item.deal.title}}</p>
                     <p class="deal-desc">Description: {{item.deal.description}}</p>
+
                 </div>
                 <div class="deal-bottom-section">
-                    <p class="deal-value">Value: 
+                    <p class="deal-value">Value:
                         <span style="font-weight: 400;">{{item.deal.value}} {{item.deal.type}}</span>
                     </p>
                 </div>

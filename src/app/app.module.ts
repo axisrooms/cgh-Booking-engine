@@ -37,6 +37,10 @@ import { OngoingBookingsComponent } from './pages/book/ongoing-bookings/ongoing-
 import { NoBookingComponent } from './pages/book/no-booking/no-booking.component';
 import { RoomComponent } from './shared/components/room/room.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { NgxPaginationModule } from "ngx-pagination";
+import { ImagePopupComponent } from './shared/components/image-popup/image-popup.component';
+import { DealDetailsComponent } from './pages/deals/deal-details/deal-details.component';
+
 
 @NgModule({
   declarations: [
@@ -58,7 +62,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     PackageComponent,
     RoomComponent,
     DealsComponent,
-    BookingNotificationComponent
+    BookingNotificationComponent,
+    ImagePopupComponent,
+    DealDetailsComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
@@ -80,6 +86,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     ReactiveFormsModule,
     NgxSpinnerModule,
     MatSnackBarModule,
+    NgxPaginationModule
+
   ],
   providers: [],
   bootstrap: [AppComponent],

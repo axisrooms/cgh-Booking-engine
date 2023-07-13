@@ -17,9 +17,10 @@ export class PaymentService {
     private bookingService: BookingService
   ) {}
 
-  async createOrderAndMakePayment(bookingItem: any, personalDetailsForm: any) {
+  async createOrderAndMakePayment(bookingItem: any, personalDetailsForm: any,payathotel: any) {
+    console.log(bookingItem,personalDetailsForm,payathotel,"!!!!!")
     this.createOrder(bookingItem).subscribe((res1) => {
-      this.makePayment(bookingItem, personalDetailsForm);
+      this.makePayment(bookingItem, personalDetailsForm,payathotel);
     });
   }
 
@@ -41,16 +42,17 @@ export class PaymentService {
     });
   }
 
-  makePayment(bookingItem: any, personalDetails: any) {
+  makePayment(bookingItem: any, personalDetails: any,payathotel: any) {
     this.bookingService.setPGLoaderFlag()
     let item = cloneDeep(bookingItem)
-    this.bookingService.removeCurrentBookingItemFromList()
+    let postpayment =personalDetails.prepayment?bookingItem.totalAmount-personalDetails.prepayment:0;
+    // this.bookingService.removeCurrentBookingItemFromList()
     let url1 = `https://app.axisrooms.com/beV2/hotelBooking.html?currency=1&`;
     let url2 = `searchId=${item.searchId}&promoCodeApplied=&promoCode=&`;
     let url3 = `tokenvalues=&master_pax_first_name=${personalDetails.firstName}&master_pax_last_name=${personalDetails.lastName}&`;
     let url4 = `contactEmail=${personalDetails.emailId}&contactMobile=${personalDetails.mobileNo}&`;
-    let url5 = `additional_request=${personalDetails.specialRequest}&payAtHotel=false&cardType=4&cardNO=&`;
-    let url6 = `cardValidity_month=&cardValidity_year=&cardHolderName=&cardValidity_cvv=`;
+    let url5 = `additional_request=${personalDetails.specialRequest}&payAtHotelWithoutCC=${payathotel}&cardType=4&cardNO=&`;
+    let url6 = `cardValidity_month=&cardValidity_year=&cardHolderName=&cardValidity_cvv=&postAmountValue=`+postpayment;
     let finalUrl = url1 + url2 + url3 + url4 + url5 + url6;
     window.open(finalUrl, '_self');
   }

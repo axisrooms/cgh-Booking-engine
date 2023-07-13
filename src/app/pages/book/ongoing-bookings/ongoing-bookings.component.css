@@ -9,4 +9,17 @@
 .booking-item {
   max-width: 900px;
   width: 100%;
+  position: relative;
+}
+
+.banner-section {
+  background-image: url(https://www.cghearth.com/uploads/banner/20170519203337PMbanneraerial1.jpg);
+  background-position: center;
+  background-size: cover;
+  height: 40vh;
+  width: 100%;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

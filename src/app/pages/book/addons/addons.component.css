@@ -84,9 +84,19 @@ hr {
   letter-spacing: 0.1em;
   text-align: left;
   color: #000;
-  line-height: 1.4rem;
+  line-height: 1.2rem;
   flex: 1;
-  margin-bottom: 5px;
+  margin-bottom: 0px;
+}
+
+.addon-desc {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  /* number of lines to show */
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .addon-price {
@@ -98,7 +108,7 @@ hr {
   font-size: 14px;
   font-weight: 600;
   line-height: 14px;
-  margin-bottom: 0px;
+  margin-bottom: 2px;
 }
 
 .btn-main {
@@ -109,14 +119,97 @@ hr {
   text-decoration: none;
   border: 2px solid #000;
   text-transform: uppercase;
-  padding: 12px 24px 8px;
+  padding: 12px 12px 8px;
   font-size: 12px;
   line-height: 15px;
-  min-width: 150px;
+  min-width: 25px;
 }
 
+.btn-num{
+  height: 100%;
+  width: 100%;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .btn-main:hover {
   color: #000;
   text-decoration: none;
   background: #fff;
+}
+
+.addon-img{
+  min-height: 28vh;
+  max-height: 28vh;
+  object-fit: cover;
+  object-position: center;
+}
+
+.addon-price-div{
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.card{
+  margin: 10px 0;
+}
+
+.card-wrapper {
+  background: #eae3d1;
+  width: 100%;
+  border-radius: 2px;
+  margin-top: 2px;
+  letter-spacing: 0.75px;
+  border: 1px solid rgb(221, 221, 221);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: rgb(0 0 0 / 12%) 0px 6px 16px;
+  position: relative;
+}
+
+.content{
+  background: #fff;
+  padding: 10px;
+  margin: 7px 0;
+}
+
+.desc{
+  font-weight: normal;
+  font-size: 12px;
+  text-align: justify;
+}
+
+.bi-x-circle-fill{
+  font-size: 1.5rem;
+  position: absolute;
+  top: -2%;
+  left: 94%;
+  cursor:pointer;
+}
+
+
+.price-btn{
+  width: 100%;
+  margin-top: 10px;
+  background-color: black;
+  color: #fff;
+  border: none;
+  padding: 9px;
+  cursor: pointer;
+}
+.bi-arrows-angle-expand{
+  position: absolute;
+  font-size: 11px;
+  top: 30px;
+  left: 281px;
+  cursor: pointer;
+  z-index: 200;
+  background-color: antiquewhite;
+  padding: 4px 5px;
+  border-radius: 3px;
 }

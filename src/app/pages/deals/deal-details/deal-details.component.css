@@ -1,0 +1,43 @@
+.deals {
+    background: #eae3d1;
+    margin: 10px 0 25px;
+    padding: 20px 30px;
+    font-weight: 300;
+    letter-spacing: 0.6px;
+}
+
+.deal-title {
+    font-size: 26px;
+    text-align: center;
+    margin-bottom: 30px;
+    margin-top: 5px;
+    font-weight: 500;
+    font-family: ITCKabelStd-Demi;
+    border-bottom: 1px dashed;
+    padding-bottom: 15px;
+    text-transform: capitalize;
+}
+
+.line-title {
+    color: #000;
+  }
+  
+  .line-detail {
+    font-weight: 500;
+  }
+  
+  .close-icon {
+    background: #111;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    color: white;
+    display: flex;
+    text-align: end;
+    align-items: end;
+    justify-content: center;
+    font-size: 16px;
+    padding-top: 1px;
+    cursor: pointer;
+    /* margin-right: 14px; */
+}

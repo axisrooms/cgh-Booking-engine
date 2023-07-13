@@ -1,32 +1,94 @@
-<div class="cart-wrapper"  *ngIf="bookingItem$|async as bookingItem">
-    <p class="tariff-text">
-        <span class="tariff-price">Rs{{bookingItem.rooms[0]?.price?.actual}}</span>/night</p>
-    <div class="date-row">
-        <div class="box" style="border-right: 0px;">
-            <p class="label">Check-in</p>
-            <p class="date">{{bookingItem.checkIn}}</p>
+<ng-container>
+    <div class="cart-wrapper">
+        <div *ngFor="let bookingItem of bookingItems;let i=index" style="position: relative;">
+            <i class="bi bi-x-circle-fill" (click)="remove(i)" style=" 
+            right: 0px;
+    top: 0px;
+    color: #724e37;
+    cursor: pointer;
+    position: absolute;"></i>
+           <p class="tariff-text">
+            <span>{{i+1}}.&nbsp;</span>
+            <span class="tariff-price">{{bookingItem.renderData.currency}}
+                {{bookingItem.rooms[0]?.price?.actual}}</span>/night
+        </p>
+        <p class="guest box" style="border-top: 1px solid;
+        margin-bottom: 0;
+        border-bottom: 0;"> Hotel Name  - {{bookingItem.property.hotel_name}}</p>
+
+        <div class="date-row" style="    margin-bottom: 10px;">
+            <div class="box" style="border-right:0">
+                <p class="label">Room Name</p>
+                <p class="date">{{getRoomName(bookingItem.property.rooms, bookingItem.rooms[0].roomId)}}</p>
+            </div>
+            <div class="box" >
+                <p class="label">Rate Plan </p>
+                <p class="date">{{getRatePlan(bookingItem.property.rooms, bookingItem.rooms[0].roomId,  bookingItem.rooms[0].ratePlanId)}}</p>
+            </div>
         </div>
-        <div class="box">
-            <p class="label">Check-out</p>
-            <p class="date">{{bookingItem.checkOut}}</p>
+            <div class="date-row">
+                <div class="box" style="border-right: 0px;">
+                    <p class="label">Check-in</p>
+                    <p class="date">{{bookingItem.checkIn}}</p>
+                </div>
+                <div class="box">
+                    <p class="label">Check-out</p>
+                    <p class="date">{{bookingItem.checkOut}}</p>
+                </div>
+            </div>
+            <p class="guest box">No of Guests - {{bookingItem.noOfAdults + bookingItem.noOfChildren}}
+                <br>No of Rooms - {{bookingItem.noOfRooms}}
+            </p>
+            <p class="line-item">
+                <span class="item-desc">{{(bookingItem.rooms[0]?.price?.actual || 0) / (bookingItem.noOfDays || 0)}}  x {{bookingItem.noOfDays}} nights </span>
+                <span *ngIf="bookingItem.rooms[0]?.price?.actual">
+                    <span class="item-amount">{{bookingItem.renderData.currency}}
+                        {{(bookingItem.rooms[0]?.price?.actual || 0)  + (bookingItem.rooms[0]?.price?.discounted || 0)
+                        | number: '1.2-2'}}</span>
+                </span>
+            </p>
+            <p class="line-item" *ngIf="bookingItem.rooms[0]?.price?.discounted">
+                <span class="item-desc">Discount</span>
+                <span class="item-amount">{{bookingItem.renderData.currency}}
+                    {{(bookingItem.rooms[0]?.price?.discounted || 0) | number:
+                    '1.2-2'}}</span>
+            </p>
+            <p class="line-item">
+                <span class="item-desc">Tax (per night)</span>
+                <span class="item-amount">{{bookingItem.renderData.currency}} {{bookingItem.rooms[0]?.price?.taxValue |
+                    number:
+                    '1.2-2'}}</span>
+            </p>
+            <h6 *ngIf="bookingItem.addons?.length != 0" style="margin: 10px 0;    font-size: 18px;
+            color: #724e37;">Addons</h6>
+            <ng-container *ngFor="let item of bookingItem.addons">
+                <p class="line-item">
+                    <span class="item-desc">{{item.policy_name}} - {{item.qty}} Qty</span>
+                    <span class="item-amount">{{item.currency}} {{((item.cost || 0) * item.qty) | number:
+                        '1.2-2'}}</span>
+                </p>
+
+            </ng-container>
+
+
+            <hr>
+            <p class="total">Total <span class="item-amount">{{currency}} {{(bookingItem.totalAmount + bookingItem.addonTotalPrice) | number:
+                    '1.2-2'}}</span></p>
+                    <hr>
+
         </div>
+        <hr>
+        <p class="total" *ngIf="bookingItems?.length != 0">Grand Total <span class="item-amount">{{currency}}
+                {{getTotal(bookingItems)| number: '1.2-2'}}</span></p>
+
+        <!-- <app-no-booking class="w-100" *ngIf="bookingItems?.length == 0" (click)="gotoHomepage()">
+                </app-no-booking> -->
+
+        <div class="wrapper" *ngIf="bookingItems?.length == 0">
+            <div class="alert alert-secondary" role="alert">
+                You have not selected any room for booking!
+            </div>
+        </div>
+
     </div>
-    <p class="guest box">No of Guests - {{bookingItem.noOfAdults + bookingItem.noOfChildren}}</p>
-    <p class="line-item">
-        <span class="item-desc">{{bookingItem.rooms[0]?.price?.actual}} x {{bookingItem.noOfDays}} nights</span>
-        <span *ngIf="bookingItem.rooms[0]?.price?.actual">
-            <span class="item-amount" >Rs {{((bookingItem.rooms[0]?.price?.actual || 0) * bookingItem.noOfDays) | number: '1.2-2'}}</span>
-        </span>
-    </p>
-    <p class="line-item">
-        <span class="item-desc">Discount</span>
-        <span *ngIf="bookingItem.rooms[0]?.price?.actual">
-            <span class="item-amount" >Rs {{(((bookingItem.rooms[0]?.price?.actual || 0) - (bookingItem.rooms[0]?.price?.discounted || 0))* bookingItem.noOfDays) | number: '1.2-2'}}</span>
-        </span>
-    </p>
-    <p class="line-item">
-        <span class="item-desc">Tax</span>
-        <span class="item-amount">Rs {{bookingItem.rooms[0]?.price?.taxValue | number: '1.2-2'}}</span>
-    </p>
-    <p class="total">Total <span class="item-amount">Rs {{bookingItem.totalAmount | number: '1.2-2'}}</span></p>
-</div>
+</ng-container>
