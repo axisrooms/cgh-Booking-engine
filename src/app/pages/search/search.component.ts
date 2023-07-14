@@ -563,9 +563,11 @@ export class SearchComponent implements OnInit, OnDestroy {
       }
     } else if (type === 'increment') {
       let current = this.searchForm.controls.paxData.value[i].noOfChildren;
+
+      if (current < 3) {
       // this.searchForm.controls.paxData.value[i].noOfChildren.setValue(current + 1);
       this.searchForm.controls.paxData.value[i].noOfChildren = current + 1;
-
+      }
 
     }
 
