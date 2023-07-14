@@ -112,28 +112,45 @@
           
       </div>
       <div class="row m-0 mb-4">
+        <p class="title">How did you hear about us</p>
         <select class="address-input" class="veg"formControlName="age" placeholder="Veg/Non-Veg">
-          <option selected > How did you hear about us
-          </option><option  value="Facebook"> Facebook
+          <option  value="Facebook"> Facebook
           </option>
           <option  value="Instagram"> Instagram 
           </option>
           <option  value="Other"> Other 
           </option>
       </select>
-      <div style="padding: 10px;"></div>
+    <br><div style="padding: 10px;"></div><br>
+      
+      <p class="title">Meal preference</p>
           <select class="address-input" class="veg"formControlName="age" placeholder="Veg/Non-Veg">
-            <option selected > Meal preference
+            <option selected > 
             </option><option  value="Veg"> Veg
             </option>
             <option  value="Non-Veg"> Non-Veg 
             </option>
-        </select><br><div style="padding: 10px;"></div>
-        <input class="address-input" type="time" name="" id="timepicker"  [ngClass]="{
-            'form-input-error':
-              address.controls.country.invalid &&
-              (address.controls.country.dirty || address.controls.country.touched)
-          }" />
+        </select><br><div style="padding: 10px;"></div><br>
+
+      <p class="title">Approximate Arrival time</p>
+          <select class="address-input" >
+            <option value="" disabled="" selected="">Please select</option>
+            <option value="-1">I don't know</option>
+            <option value="13">13:00 – 14:00 </option>
+            <option value="14">14:00 – 15:00 </option>
+            <option value="15">15:00 – 16:00 </option>
+            <option value="16">16:00 – 17:00 </option>
+            <option value="17">17:00 – 18:00 </option>
+            <option value="18">18:00 – 19:00 </option>
+            <option value="19">19:00 – 20:00 </option>
+            <option value="20">20:00 – 21:00 </option>
+            <option value="21">21:00 – 22:00 </option>
+            <option value="22">22:00 – 23:00 </option>
+            <option value="23">23:00 – 00:00 </option>
+            <option value="24">00:00 – 01:00 (the next day)</option>
+            <option value="25">01:00 – 02:00 (the next day)</option>
+            
+        </select>
       </div>
 
   </div>

@@ -130,6 +130,7 @@ export class BookingService {
         taxValue: selectedRoom.price.taxValue,
       },
     };
+    console.log(noOfRooms);
     let bookingItem: BookingItem = {
       property: property,
       addons: [],

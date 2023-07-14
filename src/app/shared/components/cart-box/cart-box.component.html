@@ -37,7 +37,7 @@
                 </div>
             </div>
             <p class="guest box">No of Guests - {{bookingItem.noOfAdults + bookingItem.noOfChildren}}
-                <br>No of Rooms - {{bookingItem.noOfRooms}}
+                <br>No of Rooms - {{bookingItem.noOfRooms | json}}
             </p>
             <p class="line-item">
                 <span class="item-desc">{{(bookingItem.rooms[0]?.price?.actual || 0) / (bookingItem.noOfDays || 0)}}  x {{bookingItem.noOfDays}} nights </span>
