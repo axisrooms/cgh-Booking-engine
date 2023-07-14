@@ -99,7 +99,7 @@
     <textarea class="address-input mx-0" type="text" name="" placeholder="Add any notes here"
       formControlName="specialRequest" style="padding: 10px; height: 100px"></textarea>
       <div class="row m-0 mb-4">
-        <input class="address-input" type="text" name="" placeholder="purpose of visit"  [ngClass]="{
+        <input class="address-input" type="text" name="" placeholder="Purpose of visit"  [ngClass]="{
             'form-input-error':
               address.controls.state.invalid &&
               (address.controls.state.dirty || address.controls.state.touched)
@@ -123,7 +123,7 @@
       </select>
       <div style="padding: 10px;"></div>
           <select class="address-input" class="veg"formControlName="age" placeholder="Veg/Non-Veg">
-            <option selected > Veg / Non-Veg
+            <option selected > Meal preference
             </option><option  value="Veg"> Veg
             </option>
             <option  value="Non-Veg"> Non-Veg 
