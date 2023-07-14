@@ -14,7 +14,17 @@
   font-size: 16px;
   padding-left: 5px;
 }
+input[type="time"]:before {
+  content: 'Approximate Arrival time:';
+  margin-right: .6em;
+  color: #9d9d9d;
+}
 
+.veg:before {
+  content: 'Approximate arrival time:';
+  margin-right: .6em;
+  color: #9d9d9d;
+}
 .person-title {
   width: fit-content;
 }
