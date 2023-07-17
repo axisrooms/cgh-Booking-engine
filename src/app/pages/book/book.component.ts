@@ -136,12 +136,17 @@ export class BookComponent implements OnInit {
     return str;
   }
   checkcValue(){
-   if(this.cpolicy && this.hpolicy){
-    this.hpolicy = false;
+   if(this.cpolicy){
     this.cpolicy = false;
    }else{
-    this.hpolicy = true;
     this.cpolicy = true;
+   }
+ }
+ checkhValue(){
+  if(this.hpolicy){
+    this.hpolicy = false;
+   }else{
+    this.hpolicy = true;
    }
  }
 
