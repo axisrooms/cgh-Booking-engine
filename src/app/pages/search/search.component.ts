@@ -46,6 +46,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   searchResponse: any;
   searchTypeControlSubscription!: Subscription;
   isCurrentCalendarInputCheckout!: boolean;
+  roomCount: any;
 
   constructor(
     private searchService: SearchService,
@@ -84,7 +85,8 @@ export class SearchComponent implements OnInit, OnDestroy {
 
         }
         if (queryParams['checkIn']) {
-
+          this.roomCount = queryParams['rooms']
+          
           this.searchForm.controls.checkIn.setValue(queryParams['checkIn']);
           this.searchForm.controls.checkOut.setValue(queryParams['checkOut']);
           this.searchForm.controls.cityId.setValue(queryParams['cityId'] || '');
@@ -97,12 +99,12 @@ export class SearchComponent implements OnInit, OnDestroy {
           this.setLocation(queryParams['cityId'], queryParams['stateId']);
           this.setPaxInfo(queryParams['paxInfo']);
           this.fetchSearchResult();
+          this.searchForm.controls.rooms.setValue(localStorage.getItem('rooms'))
         }
 
       }
     );
   }
-  roomCount = 1
   // increment() {
   //   // this.roomCount++
   //   // this.roomCountChanged()
@@ -537,6 +539,9 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.addTablesForm()
       console.log(this.searchForm.value)
     }
+    localStorage.removeItem('rooms')
+    localStorage.setItem('rooms',this.searchForm.controls.rooms.value)
+
   }
 
   updateAdultCount(type: string, i: number) {
@@ -544,6 +549,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       let current = this.searchForm.controls.paxData.value[i].noOfAdults;
       if (current > 1) {
         this.searchForm.controls.paxData.value[i].noOfAdults = current - 1;
+        console.log(this.searchForm.controls.paxData)
 
       }
     } else if (type === 'increment') {
@@ -622,7 +628,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       console.log(searchParams, "searchparams")
       this.searchService.searchRooms(searchParams).subscribe((res) => {
         this.searchResponse = res;
-
+        console.log(this.searchResponse)
         this.searchId = this.searchResponse['search_id'];
         this.scrollToSearchView();
         this.spinner.hide();
@@ -690,22 +696,26 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   getPaxInfo() {
-
+   let guests = 0;
     let paxString = ''
     let aFromArray: FormArray = this.getTablesFormArray();
     for (let i = 0; i < aFromArray.value.length; i++) {
       paxString += aFromArray.value[i]['noOfAdults'] + '|' + aFromArray.value[i]['noOfChildren'] + '|';
+      guests = Number(guests + aFromArray.value[i]['noOfAdults'] + aFromArray.value[i]['noOfChildren']) 
       let agesFormArray: FormArray = this.getChildrenAgeFormArray(i)
       console.log(agesFormArray.controls)
       for (let x of agesFormArray.controls) {
         paxString +=  '1|'
         paxString += x.value + '|'
       }
+      
       if(agesFormArray.controls.length == 0){
         paxString +=  '0|0|'
       }
       paxString +="|"
     }
+    localStorage.removeItem('guests')
+    localStorage.setItem('guests',guests.toString());
     console.log(paxString, "paxstring")
     return paxString;
   }

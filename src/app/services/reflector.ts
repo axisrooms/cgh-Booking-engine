@@ -39,6 +39,8 @@ export class Reflector<T>{
         if (this.reactions[key] == undefined) {
             this.reactions[key] = new BehaviorSubject(value)
         }
+        localStorage.removeItem('reflectStore');
+
         localStorage.setItem('reflectStore', JSON.stringify(this.model))
         this.reactions[key].next(value)
     }
@@ -63,6 +65,7 @@ export class Reflector<T>{
         if (this.reactions[key] == undefined) {
             this.reactions[key] = new BehaviorSubject<T>(this.model[key])
         }
+        localStorage.removeItem('reflectStore');
         localStorage.setItem('reflectStore', JSON.stringify(this.model))
         this.reactions[key].next({})
     }

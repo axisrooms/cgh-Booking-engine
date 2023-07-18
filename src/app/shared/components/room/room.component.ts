@@ -54,6 +54,8 @@ export class RoomComponent implements OnInit {
   }
 
   onBookNow() {
+    localStorage.removeItem('reflectStore');
+
     this.btnEvent.emit('button clicked');
   }
 

@@ -21,6 +21,9 @@ export class PackageComponent implements OnInit, OnDestroy {
   lowestRoomPrice: number | undefined;
   addons: any;
   @Input() id_num:number | undefined
+  @Input() pax:any
+   | undefined
+
   noOfRooms: any;
 
   @Input() set property(val) {
@@ -50,7 +53,8 @@ export class PackageComponent implements OnInit, OnDestroy {
   activateRouteSubscription$!: Subscription;
   expandTabBlock = false;
   selectedTab!: 'overview' | 'rooms' | 'deals' | 'amenities' | undefined;
-
+  adults:any;
+  child:any;
   constructor(
     private activatedRoute: ActivatedRoute,
     private bookingService: BookingService,
@@ -61,6 +65,8 @@ export class PackageComponent implements OnInit, OnDestroy {
        for (let i =1; i <= this.property['star_rating']; i++) {
       this.starrate.push(i);
       localStorage.setItem('policy', JSON.stringify(this.property))
+
+      this.pax.filter((data:any)=>{this.child = this.child + data.noOfChildren; this.adults = this.adults + data.noOfAdults})
     }
     
   console.log( )

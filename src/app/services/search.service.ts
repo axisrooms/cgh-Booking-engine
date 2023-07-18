@@ -15,6 +15,8 @@ export class SearchService {
   constructor(private http: HttpClient) { }
 
   private getHotels(params: any): Observable<any> {
+    localStorage.removeItem('reflectStore');
+
     return this.http.get<any>(`${BASE_URL}api/be/search`, {
       params: params,
       headers: getDefaultHeaders(),

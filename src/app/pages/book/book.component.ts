@@ -13,6 +13,7 @@ import { SearchService } from 'src/app/services/search.service';
 import { Router } from '@angular/router';
 import { BOOKING_ENGINE_ID } from 'src/app/shared/constants/url.constants';
 import { ComponentType } from '@angular/cdk/portal';
+import { json } from 'express';
 // import { Router } from 'express';
 
 export enum StepperType {
@@ -192,11 +193,12 @@ console.log(this.stepper, this.eStepper.payment,  this.eStepper.personalDetails)
         bookingEngineId: BOOKING_ENGINE_ID,
       };
       this.currBookingItem$.subscribe(e => {
+        console.log(e)
         searchParams['productId'] = e?.hotelId;
         searchParams['checkIn'] = e?.checkIn;
         searchParams['checkOut'] = e?.checkOut;
         searchParams['paxInfo'] = e?.paxInfo;
-        searchParams['rooms'] = e?.rooms;
+        searchParams['rooms'] = JSON.stringify(e?.rooms);
         searchParams['searchType'] = 'hotel';
         
       })

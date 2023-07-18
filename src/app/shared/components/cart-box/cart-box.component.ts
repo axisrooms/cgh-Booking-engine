@@ -23,10 +23,17 @@ export class CartBoxComponent implements OnInit {
       this.currency = res?.bookingItems[0]?.renderData?.currency
     })
   }
+  guest:any = localStorage.getItem('guests');
+  rooms:any = localStorage.getItem('rooms');
+   bookinglength :any;
 
   ngOnInit(): void {
     console.log("===========================================")
     console.log(this.bookingCart$, this.bookingItems)
+    console.log(this.guest)
+    console.log()
+   this.bookinglength = this.bookingItems?.length;
+
   }
 
   getTotal(item: BookingItem[] | undefined = []) {
