@@ -708,7 +708,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         paxString +=  '1|'
         paxString += x.value + '|'
       }
-      
+      console.log(agesFormArray.controls.length)
       if(agesFormArray.controls.length == 0){
         paxString +=  '0|0|'
       }
