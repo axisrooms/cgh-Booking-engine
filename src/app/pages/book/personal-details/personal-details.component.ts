@@ -13,6 +13,7 @@ export class PersonalDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.personalDetailsForm = this.getDetailsForm();
+    
   }
 
   getDetailsForm() {
