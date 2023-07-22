@@ -31,7 +31,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   minDate: Date | undefined;
   searchId!: any;
   flag: any;
-  age:any= [];
+  age:any= new Map();
   activateRouteSubscription$!: Subscription;
 
   searchForm!: FormGroup;
@@ -211,15 +211,14 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   }
 
-  addAges(i: any, index: number) {
-    let txt = this.getChildrenAgeFormArray_1()
-    txt.setValue(i.target.value)
-   console.log(i.target.value)
+  addAges(i: any, index: number,index1: number) {
+    
+   console.log(i.target.value,index,index1)
+   var title = index+index1;
+   this.age.delete(index+index1)
+   this.age.set(title,i.target.value)
 
-    this.searchForm.controls.agesFormArray
-    this.getChildrenAgeFormArray(index).push(txt)
-
-    console.log(this.searchForm.value, "agess")
+    console.log(this.age)
   }
   getChildrenAgeFormArray(index: number): FormArray {
     return this.getTablesFormArray().at(index).value.agesOfChildren as FormArray;
@@ -573,10 +572,13 @@ export class SearchComponent implements OnInit, OnDestroy {
       }
     } else if (type === 'increment') {
       let current = this.searchForm.controls.paxData.value[i].noOfChildren;
-
+     
       if (current < 3) {
       // this.searchForm.controls.paxData.value[i].noOfChildren.setValue(current + 1);
       this.searchForm.controls.paxData.value[i].noOfChildren = current + 1;
+      var title = i+current.length+1;
+      this.age.set(title,1)
+   
       }
 
     }
@@ -708,15 +710,16 @@ export class SearchComponent implements OnInit, OnDestroy {
       guests = Number(guests + aFromArray.value[i]['noOfAdults'] + aFromArray.value[i]['noOfChildren']) 
       let agesFormArray: FormArray = this.getChildrenAgeFormArray(i)
       console.log(agesFormArray.controls)
-      for (let x of agesFormArray.controls) {
-        paxString +=  '1|'
-        paxString += x.value + '|'
+      for (let ii =0; ii < aFromArray.value[i]['noOfChildren'];ii++) {
+        paxString +=  +this.age.get(i+ii);
+        paxString += '|'
       }
       console.log(agesFormArray.controls.length)
-      if(agesFormArray.controls.length == 0){
-        paxString +=  '||'
+      if(aFromArray.value[i]['noOfChildren']){
+        paxString +=  '0|'
       }
-      paxString +="|"
+      if(aFromArray.value.length > 0){
+      paxString +="|"}
     }
     localStorage.removeItem('guests')
     localStorage.setItem('guests',guests.toString());

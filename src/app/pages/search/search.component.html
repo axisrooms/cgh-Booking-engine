@@ -201,9 +201,9 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-4 mx-1"
-                                            *ngFor="let age of [].constructor(searchForm.controls.paxData.value[i]?.noOfChildren); let childIndex = index"
+                                            *ngFor="let age of [].constructor(searchForm.controls.paxData.value[i]?.noOfChildren); let childIndex = index;" (change)="addAges($event, i, childIndex)"
                                             style="margin-bottom: 10px;">
-                                            <select class="input childAges" (click)="addAges($event, i)">
+                                            <select class="input childAges" >
                                                 
                                                 <option *ngFor="let item of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]" value="{{item}}" >
                                                     {{item}}</option>
