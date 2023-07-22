@@ -31,6 +31,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   minDate: Date | undefined;
   searchId!: any;
   flag: any;
+  age:any= [];
   activateRouteSubscription$!: Subscription;
 
   searchForm!: FormGroup;
@@ -213,6 +214,9 @@ export class SearchComponent implements OnInit, OnDestroy {
   addAges(i: any, index: number) {
     let txt = this.getChildrenAgeFormArray_1()
     txt.setValue(i.target.value)
+   console.log(i.target.value)
+
+    this.searchForm.controls.agesFormArray
     this.getChildrenAgeFormArray(index).push(txt)
 
     console.log(this.searchForm.value, "agess")
@@ -710,7 +714,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       }
       console.log(agesFormArray.controls.length)
       if(agesFormArray.controls.length == 0){
-        paxString +=  '0|0|'
+        paxString +=  '||'
       }
       paxString +="|"
     }
