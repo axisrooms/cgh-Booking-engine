@@ -68,9 +68,8 @@ body {
 }
 
 .mat-dialog-custom-dimensions {
-  /* max-width: calc(100vw - 10px) !important; */
+  max-width: calc(100vw - 10px) !important; 
   max-height: calc(100vh - 10px) !important;
-  width: 100% !important;
 }
 
 .mat-dialog-custom-dimensions .mat-dialog-container {

@@ -14,6 +14,7 @@ import * as moment from 'moment';
 import { HotelDetails } from 'src/app/shared/models/hotel-details.model';
 import { DateRange } from '@angular/material/datepicker';
 import { BOOKING_ENGINE_ID } from 'src/app/shared/constants/url.constants';
+import { BookingService } from 'src/app/services/booking.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { DropdownType } from 'src/app/shared/models/dropdown-type';
@@ -55,11 +56,12 @@ export class SearchComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private spinner: NgxSpinnerService,
-    private dealsService: DealsService
+    private dealsService: DealsService,
+    public bookingService: BookingService,
   ) { }
 
   ngOnInit(): void {
-    
+    this.bookingService.cartflag = false;
     this.minDate = new Date();
     this.searchForm = this.getsearchForm();
     console.log(this.searchForm.value,

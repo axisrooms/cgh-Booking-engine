@@ -18,6 +18,7 @@ export class BookingService {
 
   bookingCartValue: BookingCart = { bookingItems: [] };
   currBookingItemValue: BookingItem | undefined;
+  cartflag:boolean | undefined ;
 
   constructor(
     private http: HttpClient,
