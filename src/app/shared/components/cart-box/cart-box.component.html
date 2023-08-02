@@ -78,7 +78,7 @@
 
         </div>
         <hr>
-        <p class="total" *ngIf="bookingItems?.length != 0">Grand Total <span class="item-amount">{{currency}}
+        <p class="total" *ngIf="bookingItems?.length != 0 && getTotal(bookingItems) != 0.0">Grand Total <span class="item-amount">{{currency}}
                 {{getTotal(bookingItems)| number: '1.2-2'}}</span><br> <button style="
                 margin-left: 38%;
                 background: darkblue;
