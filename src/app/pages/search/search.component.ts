@@ -20,6 +20,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { DropdownType } from 'src/app/shared/models/dropdown-type';
 import { DealsService } from 'src/app/services/deals.service';
 import { formatDate, NgIf } from '@angular/common';
+import { BookingCart, BookingItem } from '../../shared/models/booking.model';
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
@@ -49,6 +50,8 @@ export class SearchComponent implements OnInit, OnDestroy {
   searchTypeControlSubscription!: Subscription;
   isCurrentCalendarInputCheckout!: boolean;
   roomCount: any;
+  bookingItems: BookingItem[] | undefined = [];
+  bookingCart$: Observable<BookingCart | undefined> | undefined;
 
   constructor(
     private searchService: SearchService,
@@ -61,6 +64,11 @@ export class SearchComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.bookingCart$ = this.bookingService.bookingCart$
+    this.bookingCart$.subscribe(res => {
+      this.bookingItems = res?.bookingItems
+   
+    })
     this.bookingService.cartflag = false;
     this.minDate = new Date();
     this.searchForm = this.getsearchForm();
