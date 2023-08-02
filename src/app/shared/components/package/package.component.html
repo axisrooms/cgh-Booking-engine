@@ -165,7 +165,7 @@
 <ng-template #roomsTab let-property="property">
     <p class="room-list-heading">Rooms Starting from</p>
     <ng-container *ngFor="let room of property.rooms;let i=index">
-        <app-room [room]="room" [id]="i" [property]="property" (btnEvent)="roomBtnEvent(property, room)"
+        <app-room [room]="room" [id]="i" [property]="property" (btnEvent)="roombtnEvent(property, room)"
         [checkIn]="checkIn" [checkOut]="checkOut" [paxInfo]="paxInfo" [productId]="productId">
         </app-room>
     </ng-container>
