@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,Input } from '@angular/core';
 import { async, Observable } from 'rxjs';
+import { Router } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { BookingService } from 'src/app/services/booking.service';
 import { Reflector } from 'src/app/services/reflector';
@@ -14,8 +15,10 @@ export class CartBoxComponent implements OnInit {
   bookingCart$: Observable<BookingCart | undefined>;
   bookingItems: BookingItem[] | undefined = []
   currency: any;
+  @Input() type:number | undefined
   constructor(private bookingService: BookingService,
     private bookingCartReflect: Reflector<BookingCart>,
+    private router: Router,
   ) {
     this.bookingCart$ = this.bookingService.bookingCart$
     this.bookingCart$.subscribe(res => {

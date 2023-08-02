@@ -59,7 +59,7 @@ export class BookingService {
       this.bookingCartReflect.HOOKS.BOOKING_CART,
       bookingCart
     );
-    this.router.navigate(['/book']);
+    
   }
 
   navigateToBookingWithoutSpecifyingIndex() {
