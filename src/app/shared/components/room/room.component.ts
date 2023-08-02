@@ -55,7 +55,7 @@ export class RoomComponent implements OnInit {
 
   onBookNow() {
     localStorage.removeItem('reflectStore');
-
+  this.bookingService.cartflag = true;
     this.btnEvent.emit('button clicked');
   }
 
