@@ -80,13 +80,13 @@ export class BookComponent implements OnInit {
 }
    
   openRecommendationsDialog() {
-    console.log( this.bookingService,'@@@@@')
     this.spinner.show();
     let dat = this.currBookingItem$.subscribe(e => { return e?.checkIn})
     this.searchService.getAllHotels(dat).subscribe(res => {
       this.dialog.open(RecommendationsComponent, {
         width: '600px',
         panelClass: ['mat-dialog-custom-dimensions'],
+        position: {bottom:'0px'} ,
         data: {
           searchResult: res,
           HotelId:this.hotelid ,
