@@ -17,7 +17,7 @@ export class DealsBar implements OnInit {
     this.deals$ = this.dealsService.deals$
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {this.deals$ = this.dealsService.deals$}
 
   goToDeals(index?: number) {
     if(index != undefined) {
