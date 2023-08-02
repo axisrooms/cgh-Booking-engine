@@ -15,10 +15,10 @@ export class CartBoxComponent implements OnInit {
   bookingCart$: Observable<BookingCart | undefined>;
   bookingItems: BookingItem[] | undefined = []
   currency: any;
-  @Input() type:number | undefined
+  @Input() type:string | undefined
   constructor(private bookingService: BookingService,
     private bookingCartReflect: Reflector<BookingCart>,
-    private router: Router,
+    public router: Router,
   ) {
     this.bookingCart$ = this.bookingService.bookingCart$
     this.bookingCart$.subscribe(res => {
