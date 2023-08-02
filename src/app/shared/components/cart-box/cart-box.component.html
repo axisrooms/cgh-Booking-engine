@@ -79,7 +79,7 @@
         </div>
         <hr>
         <p class="total" *ngIf="bookingItems?.length != 0">Grand Total <span class="item-amount">{{currency}}
-                {{getTotal(bookingItems)| number: '1.2-2'}}</span><br> <button (click)="router.navigate(['/book']);" *ngIf="Type === 'searchComponent-newBooking'"></button></p>
+                {{getTotal(bookingItems)| number: '1.2-2'}}</span><br> <button (click)="router.navigate(['/book']);" *ngIf="type === 'searchComponent-newBooking'"></button></p>
 
 
                  
