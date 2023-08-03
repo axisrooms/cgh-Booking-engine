@@ -201,6 +201,7 @@ export class RecommendationsComponent implements OnInit {
   viewRecommendationsForSpecific(id: any) {
     let searchParams: any = this.bookingService.getRecommendationsSearchParams();
     searchParams['productId'] = id;
+    searchParams['paxInfo'] = '1|0|0|0|';
     this.dialogRef.close({event:false}) 
     this.router.navigate(['/search'], { queryParams: searchParams })
   
