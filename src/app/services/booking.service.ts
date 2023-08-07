@@ -305,9 +305,9 @@ export class BookingService {
       bookingEngineId: BOOKING_ENGINE_ID,
     };
 
-    searchParams.cityId = bookingItem?.renderData.address.cityId;
-    searchParams.stateId = bookingItem?.renderData.address.stateId;
-    searchParams.countryId = bookingItem?.renderData.address.countryId;
+    // searchParams.cityId = bookingItem?.renderData.address.cityId;
+    // searchParams.stateId = bookingItem?.renderData.address.stateId;
+    // searchParams.countryId = bookingItem?.renderData.address.countryId;
     searchParams.checkIn = bookingItem?.checkOut;
 
     let checkOut = moment(bookingItem?.checkOut, "DD-MM-YYYY")
