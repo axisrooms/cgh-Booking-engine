@@ -20,6 +20,7 @@ export class RoomComponent implements OnInit {
   @Input() checkOut:any
   @Input() productId:any
   @Input() paxInfo:any
+  flag = false;
 
 
   constructor(
@@ -54,9 +55,20 @@ export class RoomComponent implements OnInit {
   }
 
   onBookNow() {
+    if(this.flag){
+      if(confirm("Are you Want add one more Room?")){
+
+        localStorage.removeItem('reflectStore');
+        this.bookingService.cartflag = true;
+          this.btnEvent.emit('button clicked');
+          this.flag = true;
+      }
+
+    }else{
     localStorage.removeItem('reflectStore');
-  this.bookingService.cartflag = true;
+     this.bookingService.cartflag = true;
     this.btnEvent.emit('button clicked');
+    }
   }
 
   expandImg(img: any) {
