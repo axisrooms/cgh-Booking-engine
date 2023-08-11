@@ -33,7 +33,7 @@ export class RoomComponent implements OnInit {
 
   ngOnInit(): void {
     console.log(this.room, this.property)
-
+    localStorage.removeItem('reflectStore');
     // this.getPrices()
 
   }
@@ -55,22 +55,22 @@ export class RoomComponent implements OnInit {
   }
 
   onBookNow() {
-    console.log(this.flag)
+    
     if(this.flag){
       if(confirm("Are you Want add one more Room?")){
-
-        localStorage.removeItem('reflectStore');
+     localStorage.removeItem('reflectStore');
         this.bookingService.cartflag = true;
           this.btnEvent.emit('button clicked');
          
       }
 
     }else{
-      this.flag = true;
-    localStorage.removeItem('reflectStore');
+     
+   
      this.bookingService.cartflag = true;
     this.btnEvent.emit('button clicked');
     }
+    this.flag = true;
   }
 
   expandImg(img: any) {
