@@ -31,6 +31,7 @@ export class SearchService {
   }
 
   getRoomPrices(params: any) {
+    params.rooms=1;
     return this.http.get<any>(`${BASE_URL}api/be/finalPrices`, {
       params: params,
       headers: getDefaultHeaders(),
