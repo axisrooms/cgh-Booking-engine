@@ -55,6 +55,7 @@ export class RoomComponent implements OnInit {
   }
 
   onBookNow() {
+    console.log(this.flag)
     if(this.flag){
       if(confirm("Are you Want add one more Room?")){
 
