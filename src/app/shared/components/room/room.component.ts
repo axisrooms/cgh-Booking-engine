@@ -61,10 +61,11 @@ export class RoomComponent implements OnInit {
         localStorage.removeItem('reflectStore');
         this.bookingService.cartflag = true;
           this.btnEvent.emit('button clicked');
-          this.flag = true;
+         
       }
 
     }else{
+      this.flag = true;
     localStorage.removeItem('reflectStore');
      this.bookingService.cartflag = true;
     this.btnEvent.emit('button clicked');
