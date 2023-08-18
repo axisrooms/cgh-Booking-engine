@@ -86,7 +86,6 @@ export class BookComponent implements OnInit {
       this.dialog.open(RecommendationsComponent, {
         width: '600px',
         panelClass: ['mat-dialog-custom-dimensions'],
-        position: {bottom:'0px'} ,
         data: {
           searchResult: res,
           HotelId:this.hotelid ,
@@ -157,6 +156,7 @@ console.log(this.stepper, this.eStepper.payment,  this.eStepper.personalDetails)
 
       this.stepper = this.eStepper.personalDetails;
     
+      this.openRecommendationsDialog();
 
     } else if (this.stepper === this.eStepper.personalDetails && this.hpolicy && this.cpolicy) {
       this.openRecommendationsDialog();
