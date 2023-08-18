@@ -717,7 +717,7 @@ export class SearchComponent implements OnInit, OnDestroy {
    let guests = 0;
     let paxString = ''
     let aFromArray: FormArray = this.getTablesFormArray();
-    for (let i = 0; i < aFromArray.value.length; i++) {
+    for (let i = 0; i < 1; i++) {
       paxString += aFromArray.value[i]['noOfAdults'] + '|' + aFromArray.value[i]['noOfChildren'] + '|';
       guests = Number(guests + aFromArray.value[i]['noOfAdults'] + aFromArray.value[i]['noOfChildren']) 
       let agesFormArray: FormArray = this.getChildrenAgeFormArray(i)
