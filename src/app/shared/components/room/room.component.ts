@@ -57,7 +57,7 @@ export class RoomComponent implements OnInit {
   onBookNow() {
     
     if(this.flag){
-      if(confirm("you Are Not Allowed  add one more Room?")){
+      if(confirm("You are not allowed to add one more Room.")){
      // localStorage.removeItem('reflectStore');
      //    this.bookingService.cartflag = true;
      //      this.btnEvent.emit('button clicked');
