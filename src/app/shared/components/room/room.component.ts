@@ -57,10 +57,10 @@ export class RoomComponent implements OnInit {
   onBookNow() {
     
     if(this.flag){
-      if(confirm("Are you Want add one more Room?")){
-     localStorage.removeItem('reflectStore');
-        this.bookingService.cartflag = true;
-          this.btnEvent.emit('button clicked');
+      if(confirm("you Are Not Allowed  add one more Room?")){
+     // localStorage.removeItem('reflectStore');
+     //    this.bookingService.cartflag = true;
+     //      this.btnEvent.emit('button clicked');
          
       }
 
@@ -71,7 +71,7 @@ export class RoomComponent implements OnInit {
     this.btnEvent.emit('button clicked');
     }
     this.flag = true;
-    this.isdisbled = true;
+  
   }
 
   expandImg(img: any) {
