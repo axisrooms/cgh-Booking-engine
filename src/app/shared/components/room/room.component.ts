@@ -21,7 +21,7 @@ export class RoomComponent implements OnInit {
   @Input() productId:any
   @Input() paxInfo:any
   flag = false;
-
+  isdisbled = false;
 
   constructor(
     private searchService: SearchService,
@@ -71,6 +71,7 @@ export class RoomComponent implements OnInit {
     this.btnEvent.emit('button clicked');
     }
     this.flag = true;
+    this.isdisbled = true;
   }
 
   expandImg(img: any) {
