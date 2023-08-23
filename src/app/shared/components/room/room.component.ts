@@ -22,7 +22,7 @@ export class RoomComponent implements OnInit {
   @Input() paxInfo:any
   flag = false;
   isdisbled = false;
-
+data:any|null;
   constructor(
     private searchService: SearchService,
     private dialog: MatDialog,
