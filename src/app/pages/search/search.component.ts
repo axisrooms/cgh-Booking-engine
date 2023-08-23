@@ -695,7 +695,7 @@ export class SearchComponent implements OnInit, OnDestroy {
      }
     // searchParams.paxInfo = '1'
     //searchParams.rooms = this.searchForm.controls.rooms.value;
-    searchParams.rooms = 1;
+    //searchParams.rooms = 1;
 
     return searchParams;
   }
