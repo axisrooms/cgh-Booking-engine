@@ -110,9 +110,8 @@ export class SearchComponent implements OnInit, OnDestroy {
           this.setLocation(queryParams['cityId'], queryParams['stateId']);
           this.setPaxInfo(queryParams['paxInfo']);
           this.fetchSearchResult();
-          //this.searchForm.controls.rooms.setValue(localStorage.getItem('rooms'))
+          this.searchForm.controls.rooms.setValue(Number(localStorage.getItem('rooms')))
         }
-this.searchForm.controls.rooms.setValue(1);
       }
     );
   }
