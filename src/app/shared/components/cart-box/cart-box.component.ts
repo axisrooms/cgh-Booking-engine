@@ -50,7 +50,8 @@ export class CartBoxComponent implements OnInit {
 
   remove(i: number) {
     this.bookingService.removeCurrentBookingItemFromList(i)
-
+     this.bookingService.count--;
+     this.bookingService.addflag =false;
     console.log(this.bookingItems, this.bookingService)
   }
 
