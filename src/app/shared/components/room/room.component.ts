@@ -58,35 +58,29 @@ data:any;
   onBookNow() {
     var roomcount = Number(localStorage.getItem('rooms'));
     this.data =  localStorage.getItem('reflectStore');
-   
     this.data =JSON.parse(this.data);
- 
-    
-
-      
-    if(this.flag){
+    if(this.bookingService.addflag){
       if(this.data["BOOKING_CART"]["bookingItems"].length == 0){
           this.bookingService.cartflag = true;
          this.btnEvent.emit('button clicked');
-        this.flag = true;
+       if(this.count == roomcount)
+       this.bookingService.addflag = true;
       }else{
         if(confirm("You are not allowed to add one more Room.")){     
          this.bookingService.cartflag = true;
          this.btnEvent.emit('button clicked');
-         this.flag = true;
+        if(this.count == roomcount)
+       this.bookingService.addflag = true;
       }
       }
     }else{
-     
-   
      this.bookingService.cartflag = true;
     this.btnEvent.emit('button clicked');
-      
       this.count++;
       console.log(this.count)
       console.log(this.count == roomcount)
       if(this.count == roomcount)
-        this.flag = true;
+       this.bookingService.addflag = true;
     }
     
   
