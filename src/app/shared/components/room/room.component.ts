@@ -22,7 +22,7 @@ export class RoomComponent implements OnInit {
   @Input() paxInfo:any
   flag = false;
   isdisbled = false;
-data:any|null;
+data:any;
   constructor(
     private searchService: SearchService,
     private dialog: MatDialog,
@@ -58,7 +58,7 @@ data:any|null;
     this.data =  localStorage.getItem('reflectStore')?localStorage.getItem('reflectStore'):"NA";
     if(this.data !== "NA")
     this.data =JSON.parse(this.data);
-    if(this.data === "NA" && this.flag){
+    if((this.data === "NA" || !this.data["BOOKING_CART"]["bookingItems"]) && this.flag){
     
 
       this.flag = false
