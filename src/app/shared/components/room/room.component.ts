@@ -63,16 +63,16 @@ data:any;
 
       
     if(this.flag){
-      if(!this.data["BOOKING_CART"]["bookingItems"].length == 0){
-      if(confirm("You are not allowed to add one more Room.")){     
+      if(this.data["BOOKING_CART"]["bookingItems"].length == 0){
+          this.bookingService.cartflag = true;
+         this.btnEvent.emit('button clicked');
+        this.flag = true;
+      }else{
+        if(confirm("You are not allowed to add one more Room.")){     
          this.bookingService.cartflag = true;
          this.btnEvent.emit('button clicked');
          this.flag = true;
       }
-      }else{
-         this.bookingService.cartflag = true;
-         this.btnEvent.emit('button clicked');
-        this.flag = true;
       }
     }else{
      
