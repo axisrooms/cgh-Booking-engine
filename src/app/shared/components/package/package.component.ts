@@ -65,7 +65,7 @@ export class PackageComponent implements OnInit, OnDestroy {
        for (let i =1; i <= this.property['star_rating']; i++) {
       this.starrate.push(i);
       localStorage.setItem('policy', JSON.stringify(this.property))
-
+      this.bookingService.count=1;
       this.pax.filter((data:any)=>{this.child = this.child + data.noOfChildren; this.adults = this.adults + data.noOfAdults})
     }
     
