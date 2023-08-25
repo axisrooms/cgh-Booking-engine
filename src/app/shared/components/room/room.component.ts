@@ -55,9 +55,9 @@ data:any|null;
   }
 
   onBookNow() {
-    this.data =  localStorage.getItem('reflectStore');
+    this.data =  localStorage.getItem('reflectStore')?localStorage.getItem('reflectStore'):"NA";
     this.data =JSON.parse(this.data);
-    if(!this.data && this.flag){
+    if(this.data === "NA" && this.flag){
     
 
       this.flag = false
