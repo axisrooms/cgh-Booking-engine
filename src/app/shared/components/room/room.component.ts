@@ -22,7 +22,6 @@ export class RoomComponent implements OnInit {
   @Input() paxInfo:any
   flag = false;
   isdisbled = false;
-  count =0;
 data:any;
   constructor(
     private searchService: SearchService,
@@ -63,23 +62,21 @@ data:any;
       if(this.data["BOOKING_CART"]["bookingItems"].length == 0){
           this.bookingService.cartflag = true;
          this.btnEvent.emit('button clicked');
-       if(this.count == roomcount)
+       if(this.bookingService.count == roomcount)
        this.bookingService.addflag = true;
       }else{
         if(confirm("You are not allowed to add one more Room.")){     
          this.bookingService.cartflag = true;
          this.btnEvent.emit('button clicked');
-        if(this.count == roomcount)
+      if(this.bookingService.count == roomcount)
        this.bookingService.addflag = true;
       }
       }
     }else{
      this.bookingService.cartflag = true;
     this.btnEvent.emit('button clicked');
-      this.count++;
-      console.log(this.count)
-      console.log(this.count == roomcount)
-      if(this.count == roomcount)
+      this.bookingService.count++;
+      if(this.bookingService.count == roomcount)
        this.bookingService.addflag = true;
     }
     
