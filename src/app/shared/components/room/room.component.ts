@@ -83,6 +83,8 @@ data:any;
     this.btnEvent.emit('button clicked');
       
       this.count++;
+      console.log(this.count)
+      console.log(this.count == roomcount)
       if(this.count == roomcount)
         this.flag = true;
     }
