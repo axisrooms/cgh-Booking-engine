@@ -63,7 +63,7 @@ data:any;
 
       
     if(this.flag){
-      if(this.data["BOOKING_CART"]["bookingItems"].length == 0){
+      if(!this.data["BOOKING_CART"]["bookingItems"].length == 0){
       if(confirm("You are not allowed to add one more Room.")){     
          this.bookingService.cartflag = true;
          this.btnEvent.emit('button clicked');
