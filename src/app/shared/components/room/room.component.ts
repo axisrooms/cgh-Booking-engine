@@ -72,8 +72,9 @@ data:any;
    
      this.bookingService.cartflag = true;
     this.btnEvent.emit('button clicked');
+      this.flag = true;
     }
-    this.flag = true;
+    
   
   }
 
