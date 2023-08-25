@@ -22,6 +22,7 @@ export class RoomComponent implements OnInit {
   @Input() paxInfo:any
   flag = false;
   isdisbled = false;
+  count =0;
 data:any;
   constructor(
     private searchService: SearchService,
@@ -55,6 +56,7 @@ data:any;
   }
 
   onBookNow() {
+    var roomcount = Number(localStorage.getItem('rooms'));
     this.data =  localStorage.getItem('reflectStore');
    
     this.data =JSON.parse(this.data);
@@ -79,7 +81,10 @@ data:any;
    
      this.bookingService.cartflag = true;
     this.btnEvent.emit('button clicked');
-      this.flag = true;
+      
+      this.count++;
+      if(this.count == roomcount)
+        this.flag = true;
     }
     
   
