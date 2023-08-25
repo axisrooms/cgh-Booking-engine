@@ -20,7 +20,7 @@ export class BookingService {
   currBookingItemValue: BookingItem | undefined;
   cartflag:boolean | undefined ;
   addflag:boolean | undefined ;
-
+  count:any | undefined;
   constructor(
     private http: HttpClient,
     private bookingCartReflect: Reflector<BookingCart>,
