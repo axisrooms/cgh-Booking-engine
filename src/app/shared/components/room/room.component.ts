@@ -57,7 +57,7 @@ data:any|null;
   onBookNow() {
     this.data =  localStorage.getItem('reflectStore');
     this.data =JSON.parse(this.data);
-    if(!this.data && this.flag){
+    if(this.data == null && this.flag){
     if(!this.data["BOOKING_CART"]["bookingItems"]){
 
       this.flag = false
