@@ -56,15 +56,22 @@ data:any;
 
   onBookNow() {
     this.data =  localStorage.getItem('reflectStore')?localStorage.getItem('reflectStore'):"NA";
-    if(this.data !== "NA")
+   
     this.data =JSON.parse(this.data);
-    if((this.data === "NA" || !this.data["BOOKING_CART"]["bookingItems"]) && this.flag){
+ 
     
 
-      this.flag = false
-    }
+      
     if(this.flag){
+      if(this.data["BOOKING_CART"]["bookingItems"])){
       if(confirm("You are not allowed to add one more Room.")){     
+         this.bookingService.cartflag = true;
+         this.btnEvent.emit('button clicked');
+         this.flag = true;
+      }}else{
+         this.bookingService.cartflag = true;
+         this.btnEvent.emit('button clicked');
+        this.flag = true;
       }
 
     }else{
