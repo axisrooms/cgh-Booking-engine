@@ -56,6 +56,7 @@ data:any|null;
 
   onBookNow() {
     this.data =  localStorage.getItem('reflectStore')?localStorage.getItem('reflectStore'):"NA";
+    if(this.data !== "NA")
     this.data =JSON.parse(this.data);
     if(this.data === "NA" && this.flag){
     
