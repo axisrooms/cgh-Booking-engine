@@ -58,16 +58,12 @@ data:any|null;
     this.data =  localStorage.getItem('reflectStore');
     this.data =JSON.parse(this.data);
     if(this.data == null && this.flag){
-    if(!this.data["BOOKING_CART"]["bookingItems"]){
+    
 
       this.flag = false
-    }}
+    }
     if(this.flag){
-      if(confirm("You are not allowed to add one more Room.")){
-     // localStorage.removeItem('reflectStore');
-     //    this.bookingService.cartflag = true;
-     //      this.btnEvent.emit('button clicked');
-         
+      if(confirm("You are not allowed to add one more Room.")){     
       }
 
     }else{
