@@ -66,8 +66,8 @@ data:any;
        this.bookingService.addflag = true;
       }else{
         if(confirm("You are not allowed to add one more Room.")){     
-         this.bookingService.cartflag = true;
-         this.btnEvent.emit('button clicked');
+         // this.bookingService.cartflag = true;
+         // this.btnEvent.emit('button clicked');
       if(this.bookingService.count == roomcount)
        this.bookingService.addflag = true;
       }
