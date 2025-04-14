@@ -8,7 +8,7 @@ export class BookingConfigService {
   bookingEngineId: number | undefined;
 
   constructor(private route: ActivatedRoute) {
-    this.route.queryParamMap.subscribe(params => {
+    this.route.paramMap.subscribe(params => {
       const id = params.get('hotelId');
       console.log('Updated Booking Engine ID:', id);
       if (id) {
