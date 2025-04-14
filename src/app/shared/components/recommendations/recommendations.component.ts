@@ -2,6 +2,8 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BookingService } from 'src/app/services/booking.service';
 import { Router } from '@angular/router';
+import { BookingConfigService } from 'src/app/services/bookingid.service';
+
 
 @Component({
   selector: 'app-recommendations',
@@ -178,7 +180,8 @@ export class RecommendationsComponent implements OnInit {
     public dialogRef: MatDialogRef<RecommendationsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private bookingService: BookingService,
-    private router: Router
+    private router: Router,
+    private BookingConfigService:BookingConfigService
   ) { 
   }
 
@@ -194,7 +197,7 @@ export class RecommendationsComponent implements OnInit {
     let searchParams: any = this.bookingService.getRecommendationsSearchParams();
     searchParams['searchType'] = 'location';
     this.dialogRef.close({event:false}) 
-    this.router.navigate(['/search'], { queryParams: searchParams })
+    this.router.navigate(['/search/'+this.BookingConfigService.getBookingEngineId()], { queryParams: searchParams })
   }
 
 
@@ -204,7 +207,7 @@ export class RecommendationsComponent implements OnInit {
     searchParams['rooms'] = 1;
     searchParams['paxInfo'] = '1|0|0|0||';
     this.dialogRef.close({event:false}) 
-    this.router.navigate(['/search'], { queryParams: searchParams })
+    this.router.navigate(['/search/'+this.BookingConfigService.getBookingEngineId()], { queryParams: searchParams })
   
   }
   viewRecommendationsForSpecific1(id: any) {
@@ -213,7 +216,7 @@ export class RecommendationsComponent implements OnInit {
     let searchParams: any = this.bookingService.getRecommendationsSearchParams();
     searchParams['productId'] = id_data[0].id;
     this.dialogRef.close({event:false}) 
-    this.router.navigate(['/search'], { queryParams: searchParams })
+    this.router.navigate(['/search/'+this.BookingConfigService.getBookingEngineId()], { queryParams: searchParams })
     
   }
  

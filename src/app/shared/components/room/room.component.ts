@@ -4,6 +4,8 @@ import { BookingService } from 'src/app/services/booking.service';
 import { SearchService } from 'src/app/services/search.service';
 import { BOOKING_ENGINE_ID } from '../../constants/url.constants';
 import { ImagePopupComponent } from '../image-popup/image-popup.component';
+import { BookingConfigService } from 'src/app/services/bookingid.service';
+
 
 @Component({
   selector: 'app-room',
@@ -27,6 +29,7 @@ data:any;
     private searchService: SearchService,
     private dialog: MatDialog,
     private bookingService: BookingService,
+    private BookingConfigService:BookingConfigService,
   ) { 
     this.bookingCart$ = this.bookingService.currBookingItem$
   }
@@ -41,7 +44,7 @@ data:any;
 
   getPrices(){
     let params: any = {};
-    params['bookingEngineId'] = BOOKING_ENGINE_ID;
+    params['bookingEngineId'] = this.BookingConfigService.getBookingEngineId();
     params['productId'] =this.productId;
     params['paxInfo'] =this.paxInfo;
     params['isDorm'] =false;
