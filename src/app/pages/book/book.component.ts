@@ -10,6 +10,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { PaymentService } from 'src/app/services/payment.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SearchService } from 'src/app/services/search.service';
+import { BookingConfigService } from 'src/app/services/bookingid.service';
 import { Router } from '@angular/router';
 import { BOOKING_ENGINE_ID } from 'src/app/shared/constants/url.constants';
 import { ComponentType } from '@angular/cdk/portal';
@@ -56,7 +57,8 @@ export class BookComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private paymentService: PaymentService,
     private snackBar: MatSnackBar,
-    private router: Router
+    private router: Router,
+    private BookingConfigService:BookingConfigService
   ) {
     this.currBookingItem$ = this.bookingService.currBookingItem$
     this.bookingCart$ = this.bookingService.bookingCart$;
@@ -190,7 +192,7 @@ console.log(this.stepper, this.eStepper.payment,  this.eStepper.personalDetails)
     if (this.stepper === this.eStepper.addons) {
       // history.back();
       let searchParams: any = {
-        bookingEngineId: BOOKING_ENGINE_ID,
+        bookingEngineId: this.BookingConfigService.getBookingEngineId(),
       };
       this.currBookingItem$.subscribe(e => {
         console.log(e)
@@ -202,7 +204,7 @@ console.log(this.stepper, this.eStepper.payment,  this.eStepper.personalDetails)
         searchParams['searchType'] = 'hotel';
         
       })
-      this.router.navigate(['/search'], { queryParams: searchParams })
+      this.router.navigate(['/search/'+this.BookingConfigService.getBookingEngineId()], { queryParams: searchParams })
 
 
     } else if (this.stepper === this.eStepper.personalDetails) {

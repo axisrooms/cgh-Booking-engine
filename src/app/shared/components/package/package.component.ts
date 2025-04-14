@@ -5,6 +5,8 @@ import { BOOKING_ENGINE_ID } from 'src/app/shared/constants/url.constants';
 import { BookingService } from 'src/app/services/booking.service';
 import { ImagePopupComponent } from '../image-popup/image-popup.component';
 import { MatDialog } from '@angular/material/dialog';
+import { BookingConfigService } from 'src/app/services/bookingid.service';
+
 
 export type RoomButtonActionType =
   | 'searchComponent-newBooking'
@@ -49,7 +51,7 @@ export class PackageComponent implements OnInit, OnDestroy {
   productId!: any;
   paxInfo!: any;
   starrate:any = [];
-  bookingEngineId = BOOKING_ENGINE_ID;
+  bookingEngineId = this.BookingConfigService.getBookingEngineId();
   activateRouteSubscription$!: Subscription;
   expandTabBlock = false;
   selectedTab!: 'overview' | 'rooms' | 'deals' | 'amenities' | undefined;
@@ -58,7 +60,8 @@ export class PackageComponent implements OnInit, OnDestroy {
   constructor(
     private activatedRoute: ActivatedRoute,
     private bookingService: BookingService,
-    private dialog:MatDialog
+    private dialog:MatDialog,
+    private BookingConfigService:BookingConfigService,
   ) { }
 
   ngOnInit(): void {

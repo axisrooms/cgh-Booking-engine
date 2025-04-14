@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { BookingService } from 'src/app/services/booking.service';
 import { BookingCart } from 'src/app/shared/models/booking.model';
+import { BookingConfigService } from 'src/app/services/bookingid.service';
+
 
 @Component({
   selector: 'app-ongoing-bookings',
@@ -13,7 +15,7 @@ export class OngoingBookingsComponent implements OnInit {
   bookingCart$: Observable<BookingCart>;
 
   constructor(private bookingService: BookingService,
-    private router:Router) {
+    private router:Router,private BookingConfigService:BookingConfigService) {
     this.bookingCart$ = this.bookingService.bookingCart$;
   }
 
@@ -27,6 +29,6 @@ export class OngoingBookingsComponent implements OnInit {
   roomBtnEvent() {
     console.log("go to search")
     // this.router.navigate(['/search'])
-    this.router.navigate(['/deals'])
+    this.router.navigate(['/deals/'+this.BookingConfigService.getBookingEngineId()])
   }
 }

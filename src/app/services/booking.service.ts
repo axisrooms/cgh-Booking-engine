@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { BASE_URL, BOOKING_ENGINE_ID, getDefaultHeaders } from '../shared/constants/url.constants';
 import { BookingItem, BookingCart, Room } from '../shared/models/booking.model';
+import { BookingConfigService } from 'src/app/services/bookingid.service';
 import { Reflector } from './reflector';
 import * as moment from 'moment';
 import { cloneDeep } from 'lodash-es';
@@ -24,7 +25,8 @@ export class BookingService {
   constructor(
     private http: HttpClient,
     private bookingCartReflect: Reflector<BookingCart>,
-    private router: Router
+    private router: Router,
+    private BookingConfigService:BookingConfigService,
   ) {
     this.bookingCart$ = this.bookingCartReflect.observe(
       this.bookingCartReflect.HOOKS.BOOKING_CART
@@ -79,7 +81,7 @@ export class BookingService {
         bookingCart
       );
     }
-    this.router.navigate(['/book']);
+    this.router.navigate(['/book/'+this.BookingConfigService.getBookingEngineId()]);
   }
 
   getTotalAmount(checkIn: string, checkOut: string, room: any) {
@@ -168,7 +170,7 @@ export class BookingService {
       this.bookingCartReflect.HOOKS.BOOKING_CART,
       bookingCart
     );
-    this.router.navigate(['/book']);
+    this.router.navigate(['/book'+this.BookingConfigService.getBookingEngineId()]);
   }
 
   removeCurrentBookingItemFromList(i: any) {
@@ -303,7 +305,7 @@ export class BookingService {
   getRecommendationsSearchParams() {
     let bookingItem = this.currBookingItemValue
     let searchParams: any = {
-      bookingEngineId: BOOKING_ENGINE_ID,
+      bookingEngineId: this.BookingConfigService.getBookingEngineId(),
     };
 
     // searchParams.cityId = bookingItem?.renderData.address.cityId;

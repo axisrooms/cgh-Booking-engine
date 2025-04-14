@@ -14,6 +14,7 @@ import * as moment from 'moment';
 import { HotelDetails } from 'src/app/shared/models/hotel-details.model';
 import { DateRange } from '@angular/material/datepicker';
 import { BOOKING_ENGINE_ID } from 'src/app/shared/constants/url.constants';
+import { BookingConfigService } from 'src/app/services/bookingid.service';
 import { BookingService } from 'src/app/services/booking.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -61,6 +62,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     private spinner: NgxSpinnerService,
     private dealsService: DealsService,
     public bookingService: BookingService,
+    private BookingConfigService: BookingConfigService
   ) { }
 
   ngOnInit(): void {
@@ -669,7 +671,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   getSearchParams() {
     let searchParams: any = {
-      bookingEngineId: BOOKING_ENGINE_ID,
+      bookingEngineId: this.BookingConfigService.getBookingEngineId(),
     };
 
     if (this.getProductId()) {

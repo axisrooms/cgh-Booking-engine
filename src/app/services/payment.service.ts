@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BookingConfigService } from 'src/app/services/bookingid.service';
 import {
   BASE_URL,
   BOOKING_ENGINE_ID,
@@ -14,7 +15,8 @@ import { cloneDeep } from 'lodash-es';
 export class PaymentService {
   constructor(
     private http: HttpClient,
-    private bookingService: BookingService
+    private bookingService: BookingService,
+    private BookingConfigService:BookingConfigService,
   ) {}
 
   async createOrderAndMakePayment(bookingItem: any, personalDetailsForm: any,payathotel: any) {
@@ -26,7 +28,7 @@ export class PaymentService {
 
   createOrder(bookingItem: any) {
     let params = {
-      bookingEngineId: BOOKING_ENGINE_ID,
+      bookingEngineId: Number(this.BookingConfigService.getBookingEngineId()),
       productId: bookingItem.hotelId,
       searchId: bookingItem.searchId,
       checkIn: bookingItem.checkIn,

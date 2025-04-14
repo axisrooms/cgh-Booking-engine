@@ -2,6 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, forkJoin } from 'rxjs';
 import { map, mergeMap, take, tap } from 'rxjs/operators';
+import { BookingConfigService } from 'src/app/services/bookingid.service';
+
 import {
   BASE_URL,
   BOOKING_ENGINE_ID,
@@ -12,7 +14,10 @@ import {
   providedIn: 'root',
 })
 export class SearchService {
-  constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient,
+    private BookingConfigService:BookingConfigService,
+
+    ) { }
 
   private getHotels(params: any): Observable<any> {
     localStorage.removeItem('reflectStore');
@@ -49,7 +54,7 @@ export class SearchService {
   private async getRoomData(data: any) {
     let roomObservables = data['Hotel_Details']?.map((e: any) => {
       let params: any = {};
-      params['bookingEngineId'] = BOOKING_ENGINE_ID;
+      params['bookingEngineId'] = this.BookingConfigService.getBookingEngineId();
       params['searchId'] = data['search_id'];
       params['productId'] = e.hotel_id;
       return this.getRooms(params).pipe(
@@ -80,7 +85,7 @@ export class SearchService {
 
   getAllHotels(date: any): Observable<any> {
     return this.http.get<any>(`${BASE_URL}api/be/search`, {
-      params: { bookingEngineId: BOOKING_ENGINE_ID ,checkin:date,},
+      params: { bookingEngineId: Number(this.BookingConfigService.getBookingEngineId()) ,checkin:date,},
       headers: getDefaultHeaders(),
     });
   }

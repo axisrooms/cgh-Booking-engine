@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { DealsService } from 'src/app/services/deals.service';
+import { BookingConfigService } from 'src/app/services/bookingid.service';
+
 
 @Component({
   selector: 'app-deals-bar',
@@ -13,7 +15,7 @@ export class DealsBar implements OnInit {
   deals$: Observable<any>;
   imagesArray = imagesArray;
 
-  constructor(private dealsService: DealsService, private router: Router) {
+  constructor(private dealsService: DealsService, private router: Router,private BookingConfigService:BookingConfigService) {
     this.deals$ = this.dealsService.deals$
   }
 
@@ -21,9 +23,9 @@ export class DealsBar implements OnInit {
 
   goToDeals(index?: number) {
     if(index != undefined) {
-      this.router.navigate(['/deals'],  { queryParams: {index} })
+      this.router.navigate(['/deals/'+this.BookingConfigService.getBookingEngineId()],  { queryParams: {index} })
     } else {
-      this.router.navigate(['/deals'])
+      this.router.navigate(['/deals/'+this.BookingConfigService.getBookingEngineId()]);
     }
   }
 }
