@@ -28,7 +28,7 @@ export class PaymentService {
 
   createOrder(bookingItem: any) {
     let params = {
-      bookingEngineId: Number(this.BookingConfigService.getBookingEngineId()),
+      bookingEngineId: this.BookingConfigService.getBookingEngineId(),
       productId: bookingItem.hotelId,
       searchId: bookingItem.searchId,
       checkIn: bookingItem.checkIn,

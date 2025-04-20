@@ -19,6 +19,6 @@ export class BookingConfigService {
   }
 
   getBookingEngineId() {
-    return this.bookingEngineId;
+    return Number(this.bookingEngineId);
   }
 }
