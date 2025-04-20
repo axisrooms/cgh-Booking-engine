@@ -8,12 +8,15 @@ export class BookingConfigService {
   bookingEngineId: number | undefined;
 
   constructor(private route: ActivatedRoute) {
-    const id = this.route.snapshot.paramMap.get('hotelId');
-    console.log('Hotel ID:', id);
-    if (id) {
-      this.bookingEngineId = +id;
-      console.log('Updated Booking Engine ID:', this.bookingEngineId);
-    }
+    this.route.paramMap.subscribe(params => {
+      const hotelId = params.get('hotelId'); // Make sure it's 'hotelId' (case-sensitive)
+      console.log('Hotel ID from paramMap:', hotelId);
+      
+      if (hotelId) {
+        this.bookingEngineId = +hotelId; // Convert to number
+        console.log('Updated Booking Engine ID:', this.bookingEngineId);
+      }
+    });
   }
 
   getBookingEngineId() {
