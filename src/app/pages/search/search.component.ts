@@ -672,6 +672,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   getSearchParams() {
     let searchParams: any = {
       bookingEngineId: this.BookingConfigService.getBookingEngineId(),
+      hotelId:this.BookingConfigService.getBookingEngineId()
     };
 
     if (this.getProductId()) {

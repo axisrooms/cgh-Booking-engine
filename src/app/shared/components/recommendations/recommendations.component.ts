@@ -197,7 +197,7 @@ export class RecommendationsComponent implements OnInit {
     let searchParams: any = this.bookingService.getRecommendationsSearchParams();
     searchParams['searchType'] = 'location';
     this.dialogRef.close({event:false}) 
-    this.router.navigate(['/search/'+this.BookingConfigService.getBookingEngineId()], { queryParams: searchParams })
+    this.router.navigate(['/search?hotelId='+this.BookingConfigService.getBookingEngineId()], { queryParams: searchParams })
   }
 
 
@@ -207,7 +207,7 @@ export class RecommendationsComponent implements OnInit {
     searchParams['rooms'] = 1;
     searchParams['paxInfo'] = '1|0|0|0||';
     this.dialogRef.close({event:false}) 
-    this.router.navigate(['/search/'+this.BookingConfigService.getBookingEngineId()], { queryParams: searchParams })
+    this.router.navigate(['/search?hotelId='+this.BookingConfigService.getBookingEngineId()], { queryParams: searchParams })
   
   }
   viewRecommendationsForSpecific1(id: any) {
@@ -216,7 +216,7 @@ export class RecommendationsComponent implements OnInit {
     let searchParams: any = this.bookingService.getRecommendationsSearchParams();
     searchParams['productId'] = id_data[0].id;
     this.dialogRef.close({event:false}) 
-    this.router.navigate(['/search/'+this.BookingConfigService.getBookingEngineId()], { queryParams: searchParams })
+    this.router.navigate(['/search?hotelId='+this.BookingConfigService.getBookingEngineId()], { queryParams: searchParams })
     
   }
  
