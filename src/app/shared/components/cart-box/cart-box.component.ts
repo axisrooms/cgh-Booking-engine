@@ -5,6 +5,8 @@ import { map } from 'rxjs/operators';
 import { BookingService } from 'src/app/services/booking.service';
 import { Reflector } from 'src/app/services/reflector';
 import { BookingCart, BookingItem } from '../../models/booking.model';
+import { BookingConfigService } from 'src/app/services/bookingid.service';
+
 
 @Component({
   selector: 'app-cart-box',
@@ -19,6 +21,7 @@ export class CartBoxComponent implements OnInit {
   constructor(private bookingService: BookingService,
     private bookingCartReflect: Reflector<BookingCart>,
     public router: Router,
+    private BookingConfigService: BookingConfigService
   ) {
     this.bookingCart$ = this.bookingService.bookingCart$
     this.bookingCart$.subscribe(res => {

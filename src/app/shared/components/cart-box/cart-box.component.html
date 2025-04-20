@@ -84,7 +84,7 @@
                 background: darkblue;
                 color: white;
                 border-radius: 10px;
-            "(click)="router.navigate(['/book']);" *ngIf="type === 'searchComponent-newBooking'">Reserve</button></p>
+            "(click)="router.navigate(['/book'], { queryParams: { hotelId: BookingConfigService.getBookingEngineId() } })" *ngIf="type === 'searchComponent-newBooking'">Reserve</button></p>
 
 
                  
