@@ -21,7 +21,7 @@ export class CartBoxComponent implements OnInit {
   constructor(private bookingService: BookingService,
     private bookingCartReflect: Reflector<BookingCart>,
     public router: Router,
-    private BookingConfigService: BookingConfigService
+    public BookingConfigService: BookingConfigService
   ) {
     this.bookingCart$ = this.bookingService.bookingCart$
     this.bookingCart$.subscribe(res => {
