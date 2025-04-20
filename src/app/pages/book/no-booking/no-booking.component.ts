@@ -16,6 +16,6 @@ export class NoBookingComponent implements OnInit {
 
   goToSearchPage() {
     // this.btnEvent.emit('button clicked');
-    this.router.navigate(['/search/'+this.BookingConfigService.getBookingEngineId()])
+    this.router.navigate(['/search?hotelId='+this.BookingConfigService.getBookingEngineId()])
   }
 }

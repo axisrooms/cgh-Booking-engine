@@ -23,9 +23,9 @@ export class DealsBar implements OnInit {
 
   goToDeals(index?: number) {
     if(index != undefined) {
-      this.router.navigate(['/deals/'+this.BookingConfigService.getBookingEngineId()],  { queryParams: {index} })
+      this.router.navigate(['/deals?hotelId='+this.BookingConfigService.getBookingEngineId()],  { queryParams: {index} })
     } else {
-      this.router.navigate(['/deals/'+this.BookingConfigService.getBookingEngineId()]);
+      this.router.navigate(['/deals?hotelId='+this.BookingConfigService.getBookingEngineId()]);
     }
   }
 }

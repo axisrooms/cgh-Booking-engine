@@ -29,6 +29,6 @@ export class OngoingBookingsComponent implements OnInit {
   roomBtnEvent() {
     console.log("go to search")
     // this.router.navigate(['/search'])
-    this.router.navigate(['/deals/'+this.BookingConfigService.getBookingEngineId()])
+    this.router.navigate(['/deals?hotelId='+this.BookingConfigService.getBookingEngineId()])
   }
 }

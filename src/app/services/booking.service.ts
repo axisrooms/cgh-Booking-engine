@@ -81,7 +81,7 @@ export class BookingService {
         bookingCart
       );
     }
-    this.router.navigate(['/book/'+this.BookingConfigService.getBookingEngineId()]);
+    this.router.navigate(['/book?hotelId='+this.BookingConfigService.getBookingEngineId()]);
   }
 
   getTotalAmount(checkIn: string, checkOut: string, room: any) {
@@ -170,7 +170,7 @@ export class BookingService {
       this.bookingCartReflect.HOOKS.BOOKING_CART,
       bookingCart
     );
-    this.router.navigate(['/book'+this.BookingConfigService.getBookingEngineId()]);
+    this.router.navigate(['/book?hotelId='+this.BookingConfigService.getBookingEngineId()]);
   }
 
   removeCurrentBookingItemFromList(i: any) {

@@ -204,7 +204,7 @@ console.log(this.stepper, this.eStepper.payment,  this.eStepper.personalDetails)
         searchParams['searchType'] = 'hotel';
         
       })
-      this.router.navigate(['/search/'+this.BookingConfigService.getBookingEngineId()], { queryParams: searchParams })
+      this.router.navigate(['/search?hotelId='+this.BookingConfigService.getBookingEngineId()], { queryParams: searchParams })
 
 
     } else if (this.stepper === this.eStepper.personalDetails) {
