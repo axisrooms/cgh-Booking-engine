@@ -21,7 +21,17 @@
                             </span>
                         </p>
                     </ng-container>
+                    <div   *ngIf="room.inclusions && room.inclusions.length > 0">
+                        <strong class="room-title mb-1">Inclusions:</strong>
+                        <ul>
+                            <li *ngFor="let inclusion of room.inclusions">{{ inclusion }}</li>
+                        </ul>
+                    </div>
                     <div class="higlight-points-row">
+                        <p class="higlight-point style-x">
+                            <i class="bi bi-card-list"></i>
+                            Rate Plane: {{room.ratePlanName}}
+                        </p>
                         <p class="higlight-point style-x">
                             <i class="bi bi-door-open"></i>
                             Max Adults: {{room.maxAdult}}
@@ -40,9 +50,8 @@
         </div>
     </div>
     <div class="room-col">
-        <p class="mb-1">
-            <span class="price-before">{{property.currency}} {{room.price.discounted ?
-                (room.price.actual | number : '1.2' ) : ''}}</span>
+        <p class="mb-1" *ngIf="room.price.discounted">
+            <span class="price-before">{{property.currency}} {{room.price.actual | number : '1.2' }}</span>
         </p>
         <p class="mb-0">
             <span class="price">
