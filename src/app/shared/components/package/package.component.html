@@ -54,12 +54,28 @@
                     <span class="text-col-span">
                         <span class="highlight-btn-type">Our lowest price</span>
                         <span>
-                            <span class="highlight-btn-text">$1200</span>
-                            <span class="view-more-span">View more</span>
+                            <!-- <p class="mb-1" *ngIf="property.rooms?.length">
+                                <span class="price-before">
+                                    {{property.currency}}
+                                    {{property.rooms[0].price.actual | number : '1.2'}}
+                                </span>
+                            </p> -->
+                            <p class="mb-0" *ngIf="property.rooms?.length">
+                                <span class="price">
+                                    {{property.currency}}
+                                    {{
+                                    property.rooms[0].price.discounted
+                                    ? (property.rooms[0].price.discounted | number : '1.2')
+                                    : (property.rooms[0].price.actual | number : '1.2')
+                                    }}
+                                </span>
+                                <span class="view-more-span">View more</span>
+                            </p>
                         </span>
                     </span>
                     <span><i class="bi bi-chevron-down"></i></span>
                 </button>
+
             </div>
         </div>
     </div>

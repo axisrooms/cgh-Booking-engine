@@ -538,3 +538,6 @@ hr {
   font-size: 10px;
   font-weight: 400;
 }
+.mat-calendar-body-disabled {
+    visibility: hidden !important;
+}

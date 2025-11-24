@@ -45,6 +45,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   searchResponse: any;
   searchTypeControlSubscription!: Subscription;
   isCurrentCalendarInputCheckout!: boolean;
+  minSelectableDate: Date = new Date();   // Today
 
   constructor(
     private searchService: SearchService,
@@ -230,14 +231,14 @@ export class SearchComponent implements OnInit, OnDestroy {
     }
   }
 
-  focusDestinationFieldInput() {
-    if (this.searchForm.controls.searchType.value === 'hotel') {
-      document.getElementById('hotel-field-input')?.focus();
-    } else {
-      document.getElementById('location-field-input')?.focus();
-    }
-    this.showFieldWarnings = this.dropdownType.none;
-  }
+  // focusDestinationFieldInput() {
+  //   if (this.searchForm.controls.searchType.value === 'hotel') {
+  //     document.getElementById('hotel-field-input')?.focus();
+  //   } else {
+  //     document.getElementById('location-field-input')?.focus();
+  //   }
+  //   this.showFieldWarnings = this.dropdownType.none;
+  // }
 
   selectHotel(name: string) {
     this.searchForm.controls.hotel.setValue(name);
@@ -565,4 +566,23 @@ export class SearchComponent implements OnInit, OnDestroy {
     result.setDate(result.getDate() + days);
     return result;
   }
+
+  focusDestinationFieldInput(type?: string) {
+  // If you want to handle specific behavior when type is 'hotel' or 'location'
+   if (type === 'hotel') {
+    this.showDropdown = this.dropdownType.hotel;
+  }
+
+  if (type === 'location') {
+    // Example: open location dropdown
+    this.showDropdown = this.dropdownType.location;
+  }
+
+  // Focus the input AFTER Angular updates the DOM
+  setTimeout(() => {
+    const input = document.getElementById('hotel-field-input') as HTMLInputElement;
+    if (input) input.focus();
+  }, 0);
+}
+
 }
