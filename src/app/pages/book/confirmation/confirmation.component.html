@@ -15,18 +15,18 @@
     <div class="content-box">
         <p class="line-item">
             <span class="item-desc">Check in</span>
-            <span class="item-value">{{cart?.cartItem?.checkIn}}</span>
+            <span class="item-value">{{cart?.checkIn}}</span>
         </p>
         <p class="line-item">
             <span class="item-desc">Check out</span>
-            <span class="item-value">{{cart?.cartItem?.checkOut}}</span>
+            <span class="item-value">{{cart?.checkOut}}</span>
         </p>
         <p class="line-item">
             <span class="item-desc">No of guests</span>
             <span class="item-value">
-                {{cart?.cartItem?.noOfAdults + cart?.cartItem?.noOfChildren}} 
-                ( {{cart?.cartItem?.noOfAdults}} Adults and {{cart?.cartItem?.noOfChildren}} Children )</span>
-        </p> 
+                {{cart?.noOfAdults + cart?.noOfChildren}}
+                ( {{cart?.noOfAdults}} Adults and {{cart?.noOfChildren}} Children )</span>
+        </p>
     </div>
 
     <p class="title">TARIFFS</p>
@@ -36,53 +36,53 @@
             <span class="item-desc">Unit Rate x No of nights</span>
             <span class="item-value">Rs 1000</span>
         </p>
-    
+
         <p class="title mt-3">ADDONS</p>
         <p class="line-item">
             <span class="item-desc">Addon service one</span>
             <span class="item-value">Rs 1000</span>
         </p>
-    
+
         <p class="title mt-3">OTHERS</p>
         <p class="line-item">
             <span class="item-desc">Tax</span>
             <span class="item-value">Rs 1000</span>
         </p>
 
-        <p class="title total">TOTAL <span class="item-value">Rs {{cart?.cartItem?.totalAmount}}</span></p>
+        <p class="title total">TOTAL <span class="item-value">Rs {{cart?.totalAmount}}</span></p>
     </div>
 
 
     <p class="title">PERSONAL DETAILS</p>
     <p class="line-item grey-bg">
         <span class="item-desc">Full Name</span>
-        <span class="item-value">John Mathew</span>
+        <span class="item-value">{{personalDetails?.firstName}} {{personalDetails?.lastName}}</span>
     </p>
     <p class="line-item grey-bg">
         <span class="item-desc">Phone</span>
-        <span class="item-value">00000000000</span>
+        <span class="item-value">{{personalDetails?.mobileNo}}</span>
     </p>
-    <p class="line-item grey-bg"  style="border-bottom: none">
+    <p class="line-item grey-bg" style="border-bottom: none">
         <span class="item-desc">Email</span>
-        <span class="item-value">asdsasdasd@c.com</span>
+        <span class="item-value">{{personalDetails?.emailId}}</span>
     </p>
 
-    <p class="title">ADRRESS</p>
+    <p class="title">ADDRESS</p>
     <p class="line-item grey-bg">
         <span class="item-desc">Lane Address</span>
-        <span class="item-value">John Mathew</span>
+        <span class="item-value">{{personalDetails?.address?.lane}}</span>
     </p>
     <p class="line-item grey-bg">
         <span class="item-desc">City</span>
-        <span class="item-value">00000000000</span>
+        <span class="item-value">{{personalDetails?.address?.city}}</span>
     </p>
     <p class="line-item grey-bg">
         <span class="item-desc">State</span>
-        <span class="item-value">asdsasdasd@c.com</span>
+        <span class="item-value">{{personalDetails?.address?.state}}</span>
     </p>
     <p class="line-item grey-bg" style="border-bottom: none">
         <span class="item-desc">Country</span>
-        <span class="item-value">asdsasdasd@c.com</span>
+        <span class="item-value">{{personalDetails?.address?.country}}</span>
     </p>
 
     <!-- <div class="two-btn-row">

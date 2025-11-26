@@ -3,7 +3,8 @@
 }
 
 header {
-    background: rgba(46, 51, 59, .8);
+    /* keep a transparent background color overlay; actual image comes from .hotel-background */
+    background-color: rgba(46, 51, 59, .35);
     position: fixed;
     top: 0;
     left: 0;
@@ -12,6 +13,7 @@ header {
     z-index: 9;
     display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 
 .navbar-brand {
@@ -101,6 +103,7 @@ header {
     display: flex;
     flex-direction: column;
     padding: 5px 50px;
+    align-items: flex-end;
 }
 
 .book-now {

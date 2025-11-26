@@ -1,9 +1,12 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": "fa6dbd82-ce5a-4c5c-8338-fd1513fcb309"
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "CGH": {
+    "New-BE": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
@@ -17,7 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/CGH/browser",
+            "outputPath": "dist/New-BE/browser",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -36,7 +39,6 @@
               "./node_modules/jquery/dist/jquery.js",
               "./node_modules/popper.js/dist/umd/popper.min.js",
               "./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
-
             ]
           },
           "configurations": {
@@ -76,10 +78,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "CGH:build:production"
+              "browserTarget": "New-BE:build:production"
             },
             "development": {
-              "browserTarget": "CGH:build:development"
+              "browserTarget": "New-BE:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -87,7 +89,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "CGH:build"
+            "browserTarget": "New-BE:build"
           }
         },
         "test": {
@@ -111,7 +113,7 @@
         "server": {
           "builder": "@angular-devkit/build-angular:server",
           "options": {
-            "outputPath": "dist/CGH/server",
+            "outputPath": "dist/New-BE/server",
             "main": "server.ts",
             "tsConfig": "tsconfig.server.json"
           },
@@ -137,12 +139,12 @@
           "builder": "@nguniversal/builders:ssr-dev-server",
           "configurations": {
             "development": {
-              "browserTarget": "CGH:build:development",
-              "serverTarget": "CGH:server:development"
+              "browserTarget": "New-BE:build:development",
+              "serverTarget": "New-BE:server:development"
             },
             "production": {
-              "browserTarget": "CGH:build:production",
-              "serverTarget": "CGH:server:production"
+              "browserTarget": "New-BE:build:production",
+              "serverTarget": "New-BE:server:production"
             }
           },
           "defaultConfiguration": "development"
@@ -156,12 +158,12 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "CGH:build:production",
-              "serverTarget": "CGH:server:production"
+              "browserTarget": "New-BE:build:production",
+              "serverTarget": "New-BE:server:production"
             },
             "development": {
-              "browserTarget": "CGH:build:development",
-              "serverTarget": "CGH:server:development"
+              "browserTarget": "New-BE:build:development",
+              "serverTarget": "New-BE:server:development"
             }
           },
           "defaultConfiguration": "production"
@@ -169,5 +171,5 @@
       }
     }
   },
-  "defaultProject": "CGH"
+  "defaultProject": "New-BE"
 }

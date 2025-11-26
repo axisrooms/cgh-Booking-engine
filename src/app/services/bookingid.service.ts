@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { BOOKING_ENGINE_ID } from 'src/app/shared/constants/url.constants';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,11 @@ constructor(private route: ActivatedRoute) {
   });
 }
   getBookingEngineId() {
-    return Number(this.bookingEngineId);
+    // If bookingEngineId is not set or is not a valid number, fall back to the
+    // default BOOKING_ENGINE_ID from constants to avoid NaN in query params.
+    if (this.bookingEngineId != null && !isNaN(this.bookingEngineId)) {
+      return Number(this.bookingEngineId);
+    }
+    return BOOKING_ENGINE_ID;
   }
 }

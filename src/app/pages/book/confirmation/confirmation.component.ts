@@ -7,6 +7,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class ConfirmationComponent implements OnInit {
   @Input() cart: any;
+  @Input() personalDetails: any;
 
   constructor() { }
 

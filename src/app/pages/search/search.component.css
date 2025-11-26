@@ -1,5 +1,5 @@
 .banner-section {
-  background-image: url(https://www.cghearth.com/uploads/banner/20170519203337PMbanneraerial1.jpg);
+  background-image: url(../../../assets/images/background.jpg);
   background-position: center;
   background-size: cover;
   height: 100vh;
@@ -612,17 +612,18 @@ hr {
     left: 0;
     min-width: fit-content;
   }
-  
 
-.main-title{
-  text-align: center;
-}
-  .contents-section{
+
+  .main-title {
+    text-align: center;
+  }
+
+  .contents-section {
     padding: 20px 15px 0px 15px;
-}
+  }
 
-.search-bar .date-card.right-card {
-  left: calc(0px);
-}
+  .search-bar .date-card.right-card {
+    left: calc(0px);
+  }
 
 }

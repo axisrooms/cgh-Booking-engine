@@ -34,7 +34,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   minDate: Date | undefined;
   searchId!: any;
   flag: any;
-  age:any= new Map();
+  age: any = new Map();
   activateRouteSubscription$!: Subscription;
 
   searchForm!: FormGroup;
@@ -69,7 +69,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.bookingCart$ = this.bookingService.bookingCart$
     this.bookingCart$.subscribe(res => {
       this.bookingItems = res?.bookingItems
-   
+
     })
     this.bookingService.cartflag = false;
     this.minDate = new Date();
@@ -93,13 +93,13 @@ export class SearchComponent implements OnInit, OnDestroy {
       debounceTime(300)
     ).subscribe(
       async (queryParams) => {
-        if(!queryParams['checkIn']){
+        if (!queryParams['checkIn']) {
           localStorage.removeItem('reflectStore');
 
         }
         if (queryParams['checkIn']) {
           this.roomCount = queryParams['rooms']
-          
+
           this.searchForm.controls.checkIn.setValue(queryParams['checkIn']);
           this.searchForm.controls.checkOut.setValue(queryParams['checkOut']);
           this.searchForm.controls.cityId.setValue(queryParams['cityId'] || '');
@@ -222,12 +222,12 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   }
 
-  addAges(i: any, index: number,index1: number) {
-    
-   console.log(i.target.value,index,index1)
-   var title = index+index1;
-   this.age.delete(index+index1)
-   this.age.set(title,i.target.value)
+  addAges(i: any, index: number, index1: number) {
+
+    console.log(i.target.value, index, index1)
+    var title = index + index1;
+    this.age.delete(index + index1)
+    this.age.set(title, i.target.value)
 
     console.log(this.age)
   }
@@ -554,7 +554,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       console.log(this.searchForm.value)
     }
     localStorage.removeItem('rooms')
-    localStorage.setItem('rooms',this.searchForm.controls.rooms.value)
+    localStorage.setItem('rooms', this.searchForm.controls.rooms.value)
 
   }
 
@@ -583,13 +583,13 @@ export class SearchComponent implements OnInit, OnDestroy {
       }
     } else if (type === 'increment') {
       let current = this.searchForm.controls.paxData.value[i].noOfChildren;
-     
+
       if (current < 3) {
-      // this.searchForm.controls.paxData.value[i].noOfChildren.setValue(current + 1);
-      this.searchForm.controls.paxData.value[i].noOfChildren = current + 1;
-      var title = i+current.length+1;
-      this.age.set(title,1)
-   
+        // this.searchForm.controls.paxData.value[i].noOfChildren.setValue(current + 1);
+        this.searchForm.controls.paxData.value[i].noOfChildren = current + 1;
+        var title = i + current.length + 1;
+        this.age.set(title, 1)
+
       }
 
     }
@@ -644,9 +644,9 @@ export class SearchComponent implements OnInit, OnDestroy {
       let searchParams: any = this.getSearchParams();
       console.log(searchParams, "searchparams")
       this.searchService.searchRooms(searchParams).subscribe((res) => {
+        this.searchId = res['search_id'];
         this.searchResponse = res;
         console.log(this.searchResponse)
-        this.searchId = this.searchResponse['search_id'];
         this.scrollToSearchView();
         this.spinner.hide();
 
@@ -672,7 +672,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   getSearchParams() {
     let searchParams: any = {
       bookingEngineId: this.BookingConfigService.getBookingEngineId(),
-      hotelId:this.BookingConfigService.getBookingEngineId()
+      hotelId: this.BookingConfigService.getBookingEngineId()
     };
 
     if (this.getProductId()) {
@@ -692,9 +692,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     if (this.searchForm.controls.checkOut.value?.length > 0) {
       searchParams.checkOut = this.searchForm.controls.checkOut.value;
     }
-     if (this.getPaxInfo()) {
-       searchParams.paxInfo = this.getPaxInfo();
-     }
+    if (this.getPaxInfo()) {
+      searchParams.paxInfo = this.getPaxInfo();
+    }
     // searchParams.paxInfo = '1'
     //searchParams.rooms = this.searchForm.controls.rooms.value;
     //searchParams.rooms = 1;
@@ -716,42 +716,43 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   getPaxInfo() {
-   let guests = 0;
+    let guests = 0;
     let paxString = ''
     let aFromArray: FormArray = this.getTablesFormArray();
     for (let i = 0; i < 1; i++) {
       paxString += aFromArray.value[i]['noOfAdults'] + '|' + aFromArray.value[i]['noOfChildren'] + '|';
-      guests = Number(guests + aFromArray.value[i]['noOfAdults'] + aFromArray.value[i]['noOfChildren']) 
+      guests = Number(guests + aFromArray.value[i]['noOfAdults'] + aFromArray.value[i]['noOfChildren'])
       let agesFormArray: FormArray = this.getChildrenAgeFormArray(i)
       console.log(agesFormArray.controls)
-      for (let ii =0; ii < aFromArray.value[i]['noOfChildren'];ii++) {
-        paxString +=  +this.age.get(i+ii);
+      for (let ii = 0; ii < aFromArray.value[i]['noOfChildren']; ii++) {
+        paxString += +this.age.get(i + ii);
         paxString += '|'
       }
       console.log(agesFormArray.controls.length)
-      if(!aFromArray.value[i]['noOfChildren']){
-        paxString +=  '0|0|'
+      if (!aFromArray.value[i]['noOfChildren']) {
+        paxString += '0|0|'
       }
-      if(aFromArray.value.length > 0){
-      paxString +="|"}
+      if (aFromArray.value.length > 0) {
+        paxString += "|"
+      }
     }
     localStorage.removeItem('guests')
-    localStorage.setItem('guests',guests.toString());
+    localStorage.setItem('guests', guests.toString());
     console.log(paxString, "paxstring")
     return paxString;
   }
 
   setPaxInfo(paxInfo: any) {
-      let paxArray = paxInfo ? paxInfo.toString().split('|') : []
-      // this.agesOfChildren.clear()
-      // paxArray.forEach((e: any, i: number) => {
-      //   if (i === 0) {
-      //     this.searchForm.controls.noOfAdults.setValue(parseInt(e));
-      //   } else if (i > 1) {
-      //     this.agesOfChildren.push(this.getChildrensAgeForm());
-      //     this.agesOfChildren.controls[i - 2].get('age')?.setValue(parseInt(e));
-      //   }
-      // });
+    let paxArray = paxInfo ? paxInfo.toString().split('|') : []
+    // this.agesOfChildren.clear()
+    // paxArray.forEach((e: any, i: number) => {
+    //   if (i === 0) {
+    //     this.searchForm.controls.noOfAdults.setValue(parseInt(e));
+    //   } else if (i > 1) {
+    //     this.agesOfChildren.push(this.getChildrensAgeForm());
+    //     this.agesOfChildren.controls[i - 2].get('age')?.setValue(parseInt(e));
+    //   }
+    // });
   }
 
   clearFormArray = (formArray: FormArray) => {

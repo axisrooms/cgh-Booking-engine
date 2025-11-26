@@ -1,5 +1,5 @@
 {
-  "name": "cgh",
+  "name": "new-be",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -7,10 +7,10 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "dev:ssr": "ng run CGH:serve-ssr",
-    "serve:ssr": "node dist/CGH/server/main.js",
-    "build:ssr": "ng build && ng run CGH:server",
-    "prerender": "ng run CGH:prerender"
+    "dev:ssr": "ng run New-BE:serve-ssr",
+    "serve:ssr": "node dist/New-BE/server/main.js",
+    "build:ssr": "ng build && ng run New-BE:server",
+    "prerender": "ng run New-BE:prerender"
   },
   "private": true,
   "dependencies": {

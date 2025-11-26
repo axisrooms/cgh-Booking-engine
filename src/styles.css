@@ -180,3 +180,29 @@ button,
 button:focus {
   outline: 0px;
 }
+
+/* Hotel background utility
+   Use the `hotel-background` class on any container and set the CSS variable
+   `--hotel-bg` (for example via Angular binding: [style.--hotel-bg]="'url(' + bgUrl + ')' ")
+   to display a hotel image as a full-bleed background. */
+.hotel-background {
+  background-image: var(--hotel-bg, none);
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  /* if you want a dark overlay for better text contrast */
+  position: relative;
+}
+.hotel-background::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.25); /* subtle overlay */
+  pointer-events: none;
+}
+
+/* Ensure children are above the overlay */
+.hotel-background > * {
+  position: relative;
+  z-index: 1;
+}
