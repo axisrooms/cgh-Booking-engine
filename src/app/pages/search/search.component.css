@@ -27,18 +27,20 @@
 
 .search-bar .icon-style {
   position: absolute;
-  top: 10px;
+  top: 50%;
   right: 10px;
-  font-size: 18px;
+  transform: translateY(-50%);
+  font-size: 20px;
   background: #7c8082;
   border-radius: 50%;
-  padding: 10px;
+  padding: 8px;
   color: white;
-  width: 35px;
-  height: 35px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
 }
 
 .search-bar .hotel-field,
@@ -254,10 +256,16 @@
 }
 
 .bi-search {
-  font-size: 30px;
+  font-size: 40px;
   color: white;
   margin: 0 0 0 20px;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.bi-search:hover {
+  transform: scale(1.1);
+  color: #caa593;
 }
 
 .search-bar .content-row {
@@ -334,8 +342,8 @@
 }
 
 .search-bar .age-input {
-  width: 66px;
-  height: 32px;
+  width: 80px;
+  height: 42px;
   border-radius: 0.5rem;
   border: 1.5px solid #717171;
   text-align: center;
@@ -351,6 +359,9 @@
   text-align: center;
   border-radius: 0.5rem;
   outline: 0px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
 }
 
 .search-bar .age-input select:focus {
@@ -557,6 +568,13 @@ hr {
     left: calc(1px);
   }
 
+ .childAges {
+ border-radius: 4px;
+    width: 74px;
+    height: 35px;
+  }
+     
+
   .date-card .calendar-block {
     width: 100%;
     display: flex;
@@ -593,11 +611,24 @@ hr {
     border-radius: 2px;
   }
 
+  .search-bar .icon-style {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+    padding: 7px;
+  }
+
   .bi-search {
-    font-size: 30px;
+    font-size: 35px;
     color: white;
     margin-top: 16px;
     cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .bi-search:hover {
+    transform: scale(1.1);
+    color: #caa593;
   }
 
   .search-results {

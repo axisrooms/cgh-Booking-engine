@@ -40,6 +40,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { NgxPaginationModule } from "ngx-pagination";
 import { ImagePopupComponent } from './shared/components/image-popup/image-popup.component';
 import { DealDetailsComponent } from './pages/deals/deal-details/deal-details.component';
+import { TermsDialogComponent } from './shared/components/terms-dialog/terms-dialog.component';
 
 
 @NgModule({
@@ -64,7 +65,8 @@ import { DealDetailsComponent } from './pages/deals/deal-details/deal-details.co
     DealsComponent,
     BookingNotificationComponent,
     ImagePopupComponent,
-    DealDetailsComponent
+    DealDetailsComponent,
+    TermsDialogComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

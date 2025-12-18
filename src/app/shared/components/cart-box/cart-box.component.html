@@ -64,7 +64,7 @@
             <ng-container *ngFor="let item of bookingItem.addons">
                 <p class="line-item">
                     <span class="item-desc">{{item.policy_name}} - {{item.qty}} Qty</span>
-                    <span class="item-amount">{{item.currency}} {{((item.cost || 0) * item.qty) | number:
+                    <span class="item-amount">{{item.currency}} {{calculateAddonPrice(item, bookingItem) | number:
                         '1.2-2'}}</span>
                 </p>
 
@@ -84,7 +84,7 @@
                 background: darkblue;
                 color: white;
                 border-radius: 10px;
-            "(click)="router.navigate(['/book'], { queryParams: { hotelId: BookingConfigService.getBookingEngineId() } })" *ngIf="type === 'searchComponent-newBooking'">Reserve</button></p>
+            "(click)="router.navigate(['/book'], { queryParams: { bookingEngineId: BookingConfigService.getBookingEngineId() } })" *ngIf="type === 'searchComponent-newBooking'">Reserve</button></p>
 
 
                  

@@ -26,7 +26,7 @@
                     <div style="min-height: 480px;">
                         <app-addons *ngIf="stepper === eStepper.addons">
                         </app-addons>
-                        <app-personal-details [payathotel]="payflag" *ngIf="stepper === eStepper.personalDetails">
+                        <app-personal-details [payathotel]="payflag" [bookingItem]="streams.currBookingItem" *ngIf="stepper === eStepper.personalDetails">
                         </app-personal-details>
                         <app-confirmation *ngIf="stepper === eStepper.confirmation" [cart]="streams.currBookingItem"
                             [personalDetails]="personalDetailsForm.value"></app-confirmation>
@@ -34,7 +34,7 @@
 
                     </div>
 
-                    <div class="btn-row" style="display: inline;text-align: center;"
+                    <!-- <div class="btn-row" style="display: inline;text-align: center;"
                         *ngIf="stepper === eStepper.personalDetails">
                         <div>
 
@@ -85,7 +85,7 @@
 
 
 
-                    </div><br>
+                    </div><br> -->
                     <div class="btn-row" style="display: flow-root;text-align: center;">
 
                         <ng-container *ngIf="stepper == eStepper.personalDetails">
@@ -95,7 +95,7 @@
                         " [checked]="!payathotel" class="btn-main" name="pay" (click)="setPayNow();"></label>
 
                         </ng-container>
-                        <ng-container *ngIf="stepper == eStepper.personalDetails && payflag == true">
+                        <ng-container *ngIf="stepper == eStepper.personalDetails && isPayAtHotelAvailable">
                             <label style="font-weight:bolder"> Pay At Hotel
                                 <input type="radio" style="
                             margin-top: 15px;margin-left: -69px;
@@ -107,6 +107,91 @@
 
 
                     </div>
+                    
+                    <!-- Card Details Section - Show only when pay at hotel is enabled AND available -->
+                    <div class="card-details-section" *ngIf="stepper == eStepper.personalDetails && payathotel === true && isPayAtHotelAvailable" 
+                         style="margin: 30px 0 20px 0;">
+                        <p style="font-family: 'Adobe Caslon Pro', serif; font-weight: bold; letter-spacing: 0.06em; 
+                                  text-align: left; color: #000; margin-bottom: 15px; font-size: 16px; padding-left: 5px;">
+                            CARD DETAILS
+                        </p>
+                        <div class="row m-0" style="margin-bottom: 12px;">
+                            <input type="text" name="cardNumber" placeholder="Card Number" 
+                                [(ngModel)]="cardDetails.cardno" 
+                                style="flex: 1; margin: 5px 5px 5px 0; height: 40px; padding: 0 12px; 
+                                       border: 1px solid #999; border-radius: 3px; font-size: 14px; 
+                                       background-color: #fff; color: #333;">
+                        </div>
+                        <div class="row m-0" style="margin-bottom: 12px;">
+                            <input type="text" name="expiryDate" placeholder="Expiry Date (MM/YY)" 
+                                [(ngModel)]="cardDetails.epdate" 
+                                maxlength="5"
+                                style="flex: 1; margin: 5px 5px 5px 0; height: 40px; padding: 0 12px; 
+                                       border: 1px solid #999; border-radius: 3px; font-size: 14px; 
+                                       background-color: #fff; color: #333;">
+                            <input type="text" name="cvv" placeholder="CVV" 
+                                [(ngModel)]="cardDetails.cvv" 
+                                maxlength="4"
+                                style="flex: 1; margin: 5px 0 5px 5px; height: 40px; padding: 0 12px; 
+                                       border: 1px solid #999; border-radius: 3px; font-size: 14px; 
+                                       background-color: #fff; color: #333;">
+                        </div>
+                    </div>
+
+                    <!-- Policy Checkboxes Section -->
+                    <div class="policy-checkboxes-section" *ngIf="stepper == eStepper.personalDetails" 
+                         style="margin: 20px 0; padding: 0 5px;">
+                        
+                        <!-- View Cancellation Policy Checkbox -->
+                        <div style="margin-bottom: 12px;">
+                            <label style="display: flex; align-items: center; cursor: pointer; font-size: 14px; color: #333;">
+                                <input type="checkbox" name="viewCancellationPolicy" 
+                                    [(ngModel)]="cpolicy"
+                                    style="width: 18px; height: 18px; margin-right: 10px; cursor: pointer; 
+                                           accent-color: #2AB59D;">
+                                <span style="font-family: 'ITC Kabel Std', sans-serif; line-height: 1.5;">
+                                    I have read the 
+                                    <a (click)="viewCancellationPolicy(); $event.preventDefault()" 
+                                       style="color: #2AB59D; text-decoration: underline; cursor: pointer; font-weight: 500;">
+                                        Cancellation Policy
+                                    </a>
+                                </span>
+                            </label>
+                        </div>
+
+                        <!-- View Hotel Policy Checkbox -->
+                        <div style="margin-bottom: 12px;">
+                            <label style="display: flex; align-items: center; cursor: pointer; font-size: 14px; color: #333;">
+                                <input type="checkbox" name="viewHotelPolicy" 
+                                    [(ngModel)]="hpolicy"
+                                    style="width: 18px; height: 18px; margin-right: 10px; cursor: pointer; 
+                                           accent-color: #2AB59D;">
+                                <span style="font-family: 'ITC Kabel Std', sans-serif; line-height: 1.5;">
+                                    I have read the 
+                                    <a (click)="viewHotelPolicy(); $event.preventDefault()" 
+                                       style="color: #2AB59D; text-decoration: underline; cursor: pointer; font-weight: 500;">
+                                        Hotel Policy
+                                    </a>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Terms and Conditions Checkbox -->
+                    <div class="terms-conditions-section" *ngIf="stepper == eStepper.personalDetails" 
+                         style="margin: 20px 0; padding: 0 5px;">
+                        <label style="display: flex; align-items: center; cursor: pointer; font-size: 14px; color: #333;">
+                            <input type="checkbox" name="acceptTerms" 
+                                [(ngModel)]="acceptTerms"
+                                style="width: 18px; height: 18px; margin-right: 10px; cursor: pointer; 
+                                       accent-color: #2AB59D;">
+                            <span style="font-family: 'ITC Kabel Std', sans-serif; line-height: 1.5;">
+                                I accept the <a (click)="openTermsDialog(); $event.preventDefault()" 
+                                                style="color: #2AB59D; text-decoration: underline; cursor: pointer;">Terms and Conditions</a>
+                            </span>
+                        </label>
+                    </div>
+                    
                     <div class="btn-row">
                         <button class="btn-main" (click)="goBack()">
                             {{ stepper != eStepper.confirmation ? 'BACK' : 'Download PDF'}}

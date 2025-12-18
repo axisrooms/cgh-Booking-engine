@@ -1,7 +1,8 @@
 <div class="container-fluid" style="position: relative;">
     <div class="row">
         <div class="col-12">
-            <section class="banner-section img-fluid overlay">
+            <section class="banner-section img-fluid overlay" 
+                     [ngStyle]="getBackgroundImageStyle()">
 
                 <div class="search-bar" [formGroup]="searchForm" autocomplete="off">
                     <div class="hotel-field" (click)="focusDestinationFieldInput('hotel')">
@@ -19,7 +20,8 @@
                                 (keydown)="onHotelFieldEvent('keydown', $event)" (focus)="onHotelFieldEvent('focus')">
 
                             <mat-card class="dropdown-card p-0" style="  scroll-behavior: smooth;
-                            max-height: 255px;">
+                            max-height: 255px;" 
+                            *ngIf="showDropdown === dropdownType.hotel || showDropdown === dropdownType.location">
                                 <div class="option-block" *ngFor="let option of filteredHotelsList | async">
                                     <i class="bi bi-building"></i>
                                     <div class="option-text-block" (click)="selectHotel(option.hotel_name)">
@@ -161,7 +163,7 @@
 
 
                                 </div>
-                                <ng-container *ngFor="let room of [].constructor(searchForm?.controls?.rooms?.value); let i = index">
+                                <ng-container *ngFor="let room of [].constructor(searchForm?.controls?.rooms?.value > 0 ? searchForm?.controls?.rooms?.value : 1); let i = index">
                                     <div class="row w-100">
                                         <div class="col">
                                             <p
@@ -199,11 +201,13 @@
                                             <p style="font-size: 16px;font-weight: 400;">Provide Children's age</p>
                                         </div>
                                     </div>
-                                    <div class="row">
+                                    <div class="row" style="display: contents;">
                                         <div class="col-4 mx-1"
                                             *ngFor="let age of [].constructor(searchForm.controls.paxData.value[i]?.noOfChildren); let childIndex = index;" (change)="addAges($event, i, childIndex)"
                                             style="margin-bottom: 10px;">
-                                            <select class="input childAges" >
+                                            <select class="input childAges" style="border-radius: 4px;
+                                                width: 74px;
+                                                height: 35px;">
                                                 
                                                 <option *ngFor="let item of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]" value="{{item}}" >
                                                     {{item}}</option>
@@ -213,6 +217,19 @@
 
                                    
                                 </ng-container>
+                                
+                                <!-- Save Button -->
+                                <div class="row w-100" style="margin-top: 20px;">
+                                    <div class="col-12 text-center">
+                                        <button class="btn btn-primary" 
+                                                style="background-color: #2c7a4d; border: none; padding: 10px 40px; 
+                                                       font-size: 16px; font-weight: 600; border-radius: 4px; 
+                                                       cursor: pointer; color: white;"
+                                                (click)="saveRoomConfiguration()">
+                                            SAVE
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- ====================================================================== -->
@@ -309,7 +326,7 @@
                             </ng-container>
                             <ng-template #noPackageTemplate>
                                 <div class="no-packages">
-                                    Sorry, we are unable to match your search criteria. <br>Please choose alternate dates or you may reach out to us via email at contact@cghearth.com or call us at +91 7558999998
+                                    Sorry, we are unable to match your search criteria. <br>Please choose alternate dates or you may reach out to us via email at support@axisrooms.com or call us at +91-7026568280
                                 </div>
                             </ng-template>
                         </div>
@@ -317,7 +334,7 @@
                     <div class="col-12 col-md-4 col-lg-4">
                        <p *ngIf="searchResponse?.Hotel_Details?.length && bookingItems" class="main-title">My Cart</p>
                         <app-cart-box *ngIf="searchResponse?.Hotel_Details?.length && bookingItems"[type]="'searchComponent-newBooking'"></app-cart-box><br>
-                        <app-deals-bar></app-deals-bar>
+                        <app-deals-bar [productId]="searchResponse?.Hotel_Details?.[0]?.hotel_id"></app-deals-bar>
 
                     </div>
 

@@ -9,6 +9,29 @@ footer {
     font-family: ACaslonPro-Regular;
 }
 
+#cm_footer {
+    margin-top: 20px;
+}
+
+#cm_footer p {
+    font-size: 16px;
+    margin: 0;
+    line-height: 1.5;
+}
+
+#cm_footer .text-muted {
+    color: #666;
+}
+
+#cm_footer a {
+    text-decoration: none;
+    font-weight: 500;
+}
+
+#cm_footer a:hover {
+    text-decoration: underline;
+}
+
 footer:before, header:before, section:before, ul:before {
     content: "";
 }

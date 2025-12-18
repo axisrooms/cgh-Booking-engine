@@ -5,6 +5,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
@@ -29,8 +30,10 @@ import { BookingCart, BookingItem } from '../../shared/models/booking.model';
 })
 export class SearchComponent implements OnInit, OnDestroy {
   dropdownType = DropdownType;
-  showDropdown!: DropdownType;
+  showDropdown: DropdownType = DropdownType.none;
   showFieldWarnings!: DropdownType;
+  isSelectingOption: boolean = false; // Flag to prevent dropdown reopening after selection
+  previousBookingEngineId: number | null = null; // Track previous booking engine ID
   minDate: Date | undefined;
   searchId!: any;
   flag: any;
@@ -48,6 +51,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   filteredLocationList!: Observable<any>;
 
   searchResponse: any;
+  hotelBackgroundImage: string = '';
   searchTypeControlSubscription!: Subscription;
   isCurrentCalendarInputCheckout!: boolean;
   roomCount: any;
@@ -62,7 +66,8 @@ export class SearchComponent implements OnInit, OnDestroy {
     private spinner: NgxSpinnerService,
     private dealsService: DealsService,
     public bookingService: BookingService,
-    private BookingConfigService: BookingConfigService
+    private BookingConfigService: BookingConfigService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -76,6 +81,11 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.searchForm = this.getsearchForm();
     console.log(this.searchForm.value,
       this.searchForm.controls.paxData.value[0].noOfAdults)
+    
+    // Initialize previousBookingEngineId from the service
+    this.previousBookingEngineId = this.BookingConfigService.getBookingEngineId();
+    console.log('Initial booking engine ID on component load:', this.previousBookingEngineId);
+    
     this.getWithExpiry();
     console.log(this.searchForm, "searchform")
     this.filteredHotelsList = this.searchForm.controls.hotel.valueChanges.pipe(
@@ -93,10 +103,46 @@ export class SearchComponent implements OnInit, OnDestroy {
       debounceTime(300)
     ).subscribe(
       async (queryParams) => {
+        console.log('========================================');
+        console.log('SearchComponent: Query params changed!');
+        console.log('All query params:', queryParams);
+        console.log('Current router URL:', this.router.url);
+        console.log('========================================');
+        
+        // Get the current booking engine ID from URL
+        const currentBookingEngineId = queryParams['bookingEngineId'] 
+          ? Number(queryParams['bookingEngineId']) 
+          : null;
+        
+        console.log('Previous booking engine ID:', this.previousBookingEngineId);
+        console.log('Current booking engine ID:', currentBookingEngineId);
+        
+        // Check if bookingEngineId has actually changed
+        if (currentBookingEngineId && currentBookingEngineId !== this.previousBookingEngineId) {
+          console.log('🔄 Booking Engine ID CHANGED! Reloading hotels for ID:', currentBookingEngineId);
+          
+          // Update the previous ID
+          this.previousBookingEngineId = currentBookingEngineId;
+          
+          // Clear cached data and reload hotels for the new booking engine
+          this.flag = null;
+          this.hotelsList = [];
+          this.locationList = [];
+          this.isHotelListLoaded = false;
+          localStorage.removeItem('hotel');
+          
+          // Force reload hotels
+          await this.getAllHotels();
+        } else if (currentBookingEngineId && !this.previousBookingEngineId) {
+          // First time loading - set the initial booking engine ID
+          console.log('📌 Initial booking engine ID set to:', currentBookingEngineId);
+          this.previousBookingEngineId = currentBookingEngineId;
+        }
+
         if (!queryParams['checkIn']) {
           localStorage.removeItem('reflectStore');
-
         }
+        
         if (queryParams['checkIn']) {
           this.roomCount = queryParams['rooms']
 
@@ -110,9 +156,24 @@ export class SearchComponent implements OnInit, OnDestroy {
           );
           await this.setHotelName(parseInt(queryParams['productId']));
           this.setLocation(queryParams['cityId'], queryParams['stateId']);
+          
+          // Set paxInfo first (this will rebuild the paxData array)
           this.setPaxInfo(queryParams['paxInfo']);
+          
+          // Set rooms from query params (or use paxData length if not present)
+          let roomsCount = queryParams['rooms'] ? Number(queryParams['rooms']) : this.getTablesFormArray().length;
+          
+          // Ensure roomsCount is a valid positive number
+          if (isNaN(roomsCount) || roomsCount < 1) {
+            roomsCount = 1;
+          }
+          
+          this.searchForm.controls.rooms.setValue(roomsCount);
+          
+          // Update localStorage to match the query params
+          localStorage.setItem('rooms', roomsCount.toString());
+          
           this.fetchSearchResult();
-          this.searchForm.controls.rooms.setValue(Number(localStorage.getItem('rooms')))
         }
       }
     );
@@ -208,14 +269,16 @@ export class SearchComponent implements OnInit, OnDestroy {
       countryId: [''],
       checkIn: [dt, Validators.required],
       checkOut: [dtTom, Validators.required],
-      noOfAdults: [1],
+      noOfAdults: [2],
       agesOfChildren: this.formBuilder.array([]),
       rooms: [1],
-      paxData: this.formBuilder.array([{
-        noOfAdults: 1,
-        noOfChildren: 0,
-        agesOfChildren: this.formBuilder.array([])
-      }]),
+      paxData: this.formBuilder.array([
+        this.formBuilder.group({
+          noOfAdults: [2],
+          noOfChildren: [0],
+          agesOfChildren: this.formBuilder.array([])
+        })
+      ]),
 
     });
 
@@ -232,7 +295,8 @@ export class SearchComponent implements OnInit, OnDestroy {
     console.log(this.age)
   }
   getChildrenAgeFormArray(index: number): FormArray {
-    return this.getTablesFormArray().at(index).value.agesOfChildren as FormArray;
+    const roomFormGroup = this.getTablesFormArray().at(index) as FormGroup;
+    return roomFormGroup.get('agesOfChildren') as FormArray;
   }
 
   getChildrenAgeFormArray_1() {
@@ -250,17 +314,17 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   addTablesForm() {
     console.log(this.getTablesForm())
-    this.getTablesFormArray().push(this.getTablesForm().at(0));
+    this.getTablesFormArray().push(this.getTablesForm());
   }
   removeTable(index: number) {
     this.getTablesFormArray().removeAt(index)
   }
   getTablesForm() {
-    return this.formBuilder.array([{
-      noOfAdults: 1,
-      noOfChildren: 0,
+    return this.formBuilder.group({
+      noOfAdults: [2],
+      noOfChildren: [0],
       agesOfChildren: this.formBuilder.array([])
-    }]);
+    });
   }
 
   // getChildrenAgeFormArray(i: number): FormArray {
@@ -277,25 +341,57 @@ export class SearchComponent implements OnInit, OnDestroy {
   filterHotel(value: any): any[] {
     this.getWithExpiry();
     if (!value) value = '';
+    
+    // Check if hotelsList exists and is an array
+    if (!this.hotelsList || !Array.isArray(this.hotelsList)) {
+      this.hotelsList = [];
+      return [];
+    }
+    
     let filterValue = value?.toLowerCase();
     let filteredArray = this.hotelsList.filter((val) =>
       val.hotel_name?.toLowerCase().indexOf(filterValue) > -1
     );
 
-    this.showDropdown =
-      filteredArray.length > 0 ? DropdownType.hotel : DropdownType.none;
+    // Only show dropdown if not in the middle of selecting an option
+    if (!this.isSelectingOption) {
+      // Defer dropdown state change to avoid ExpressionChangedAfterItHasBeenCheckedError
+      setTimeout(() => {
+        if (!this.isSelectingOption) {
+          this.showDropdown =
+            filteredArray.length > 0 ? DropdownType.hotel : DropdownType.none;
+        }
+      }, 0);
+    }
+    
     return filteredArray;
   }
 
   filterLocation(value: any): any[] {
     this.getWithExpiry();
     if (!value) value = '';
+    
+    // Check if locationList exists and is an array
+    if (!this.locationList || !Array.isArray(this.locationList)) {
+      this.locationList = [];
+      return [];
+    }
+    
     let filterValue = value?.toLowerCase();
     let filteredArray = this.locationList.filter((val: any) =>
       val.key?.toLowerCase().indexOf(filterValue) > -1
     );
-    this.showDropdown =
-      filteredArray.length > 0 ? DropdownType.location : DropdownType.none;
+    
+    // Only show dropdown if not in the middle of selecting an option
+    if (!this.isSelectingOption) {
+      // Defer dropdown state change to avoid ExpressionChangedAfterItHasBeenCheckedError
+      setTimeout(() => {
+        if (!this.isSelectingOption) {
+          this.showDropdown =
+            filteredArray.length > 0 ? DropdownType.location : DropdownType.none;
+        }
+      }, 0);
+    }
 
     console.log(this.locationList, filteredArray, "########")
     return filteredArray;
@@ -314,14 +410,36 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   async getAllHotels() {
-    await this.searchService
-      .getAllHotels(this.searchForm.controls.checkIn.value)
-      .toPromise()
-      .then((res) => {
-        this.setWithExpiry(res['Hotel_Details'])
-        this.getWithExpiry();
-      })
-      .catch((err) => console.log(err));
+    console.log('getAllHotels called with checkIn date:', this.searchForm.controls.checkIn.value);
+    console.log('Current bookingEngineId:', this.BookingConfigService.getBookingEngineId());
+    
+    try {
+      const res = await this.searchService
+        .getAllHotels(this.searchForm.controls.checkIn.value)
+        .toPromise();
+      
+      console.log('getAllHotels API response:', res);
+      
+      if (res && res['Hotel_Details']) {
+        console.log('Number of hotels received:', res['Hotel_Details'].length);
+        const hotelDetails = res['Hotel_Details'];
+        
+        // Store in localStorage
+        this.setWithExpiry(hotelDetails);
+        
+        // Immediately populate the lists for UI display
+        this.hotelsList = hotelDetails;
+        this.getLocationList(hotelDetails);
+        this.isHotelListLoaded = true;
+        
+        console.log('hotelsList populated with:', this.hotelsList.length, 'hotels');
+        console.log('locationList populated with:', this.locationList.length, 'locations');
+      } else {
+        console.error('No Hotel_Details in response:', res);
+      }
+    } catch (err) {
+      console.error('Error fetching hotels:', err);
+    }
   }
   getWithExpiry() {
     const itemStr = localStorage.getItem('hotel')
@@ -333,6 +451,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     if (!itemStr && this.flag == true) {
       this.getAllHotels();
       this.flag = false;
+      return; // Return early, hotels will be loaded asynchronously
     }
     let item
     if (itemStr && this.flag == true) {
@@ -346,16 +465,31 @@ export class SearchComponent implements OnInit, OnDestroy {
 
         this.getAllHotels();
         this.flag = false;
-
+        return; // Return early, hotels will be loaded asynchronously
       }
-      this.hotelsList = item.value;
-      this.getLocationList(item.value);
-      this.isHotelListLoaded = true;
+      
+      // Check if item.value exists and is an array before using it
+      if (item.value && Array.isArray(item.value)) {
+        this.hotelsList = item.value;
+        this.getLocationList(item.value);
+        this.isHotelListLoaded = true;
+      } else {
+        // If invalid data, fetch fresh data
+        localStorage.removeItem('hotel');
+        this.getAllHotels();
+        this.flag = false;
+      }
       return;
     }
 
   }
   getLocationList(val: any) {
+    // Check if val exists and is an array
+    if (!val || !Array.isArray(val)) {
+      console.warn('getLocationList called with invalid data:', val);
+      return;
+    }
+    
     val.forEach((e1: any) => {
       //Push city if available
       if (e1.address.city) {
@@ -424,9 +558,11 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.getWithExpiry();
     }
     if (type === 'focus') {
+      this.showDropdown = this.dropdownType.hotel;
       this.filterHotel(this.searchForm.controls.hotel.value);
       this.filterLocation(this.searchForm.controls.hotel.value);
     } else if (type === 'keydown') {
+      this.showDropdown = this.dropdownType.hotel;
       this.filterHotel(this.searchForm.controls.hotel.value);
       this.filterLocation(this.searchForm.controls.hotel.value);
     }
@@ -446,40 +582,62 @@ export class SearchComponent implements OnInit, OnDestroy {
   focusDestinationFieldInput(type: string) {
     if (type === 'hotel') {
       document.getElementById('hotel-field-input')?.focus();
+      this.showDropdown = this.dropdownType.hotel;
     } else {
       document.getElementById('location-field-input')?.focus();
+      this.showDropdown = this.dropdownType.location;
     }
     this.showFieldWarnings = this.dropdownType.none;
   }
 
   selectHotel(name: string) {
+    // Set flag to prevent dropdown from reopening
+    this.isSelectingOption = true;
+    
     this.searchForm.controls.hotel.setValue(name);
+    this.searchForm.controls.searchType.setValue('hotel');
+    
+    // Close dropdown immediately
+    this.showDropdown = DropdownType.none;
+    this.showFieldWarnings = DropdownType.none;
+    
+    // Blur the input field and reset flag
     setTimeout(() => {
       document.getElementById('hotel-field-input')?.blur();
-      this.showDropdown = DropdownType.none;
-      this.showFieldWarnings = this.dropdownType.none;
+      // Reset flag after a short delay to allow valueChanges to complete
+      setTimeout(() => {
+        this.isSelectingOption = false;
+      }, 100);
     }, 0);
-    this.showDropdown = this.dropdownType.none;
   }
 
   selectLocation(option: any) {
-    // this.searchForm.controls.status = 'VALID';
-    if ((option.type = 'city')) {
+    // Set flag to prevent dropdown from reopening
+    this.isSelectingOption = true;
+    
+    // Set form values based on location selection
+    if (option.type === 'city') {
       this.searchForm.controls.hotel.setValue(option.key);
       this.searchForm.controls.cityId.setValue(option.cityId);
-
-      this.searchForm.controls.searchType.setValue('location')
-
+      this.searchForm.controls.searchType.setValue('location');
     }
+    
     this.searchForm.controls.stateId.setValue(option.stateId);
     this.searchForm.controls.countryId.setValue(option.countryId);
     this.searchForm.controls.location.setValue(option.key);
+    
+    // Close dropdown immediately
+    this.showDropdown = DropdownType.none;
+    this.showFieldWarnings = DropdownType.none;
+    
+    // Blur the input field and reset flag
     setTimeout(() => {
       document.getElementById('hotel-field-input')?.blur();
-      this.showDropdown = DropdownType.none;
-      this.showFieldWarnings = this.dropdownType.none;
+      // Reset flag after a short delay to allow valueChanges to complete
+      setTimeout(() => {
+        this.isSelectingOption = false;
+      }, 100);
     }, 0);
-    this.showDropdown = this.dropdownType.none;
   }
 
   async setHotelName(id: number) {
@@ -541,60 +699,67 @@ export class SearchComponent implements OnInit, OnDestroy {
 
 
   updateroomCount(type: string) {
+    let current = this.searchForm.controls.rooms.value;
+    
+    // Ensure current is a valid number
+    if (isNaN(current) || current === null || current === undefined) {
+      current = 1;
+      this.searchForm.controls.rooms.setValue(1);
+    }
+    
     if (type === 'decrement') {
-      let current = this.searchForm.controls.rooms.value;
       if (current > 1) {
         this.searchForm.controls.rooms.setValue(current - 1);
         this.removeTable(this.searchForm.controls.rooms.value)
       }
     } else if (type === 'increment') {
-      let current = this.searchForm.controls.rooms.value;
       this.searchForm.controls.rooms.setValue(current + 1);
       this.addTablesForm()
       console.log(this.searchForm.value)
     }
     localStorage.removeItem('rooms')
-    localStorage.setItem('rooms', this.searchForm.controls.rooms.value)
+    localStorage.setItem('rooms', String(this.searchForm.controls.rooms.value))
 
   }
 
   updateAdultCount(type: string, i: number) {
+    const roomFormGroup = this.getTablesFormArray().at(i) as FormGroup;
     if (type === 'decrement') {
-      let current = this.searchForm.controls.paxData.value[i].noOfAdults;
+      let current = roomFormGroup.get('noOfAdults')?.value;
       if (current > 1) {
-        this.searchForm.controls.paxData.value[i].noOfAdults = current - 1;
+        roomFormGroup.get('noOfAdults')?.setValue(current - 1);
         console.log(this.searchForm.controls.paxData)
-
       }
     } else if (type === 'increment') {
-      let current = this.searchForm.controls.paxData.value[i].noOfAdults;
-      this.searchForm.controls.paxData.value[i].noOfAdults = current + 1;
-
+      let current = roomFormGroup.get('noOfAdults')?.value;
+      roomFormGroup.get('noOfAdults')?.setValue(current + 1);
     }
   }
 
   updateChildCount(type: string, i: number) {
+    const roomFormGroup = this.getTablesFormArray().at(i) as FormGroup;
     if (type === 'decrement') {
-      let current = this.searchForm.controls.paxData.value[i].noOfChildren;
+      let current = roomFormGroup.get('noOfChildren')?.value;
       if (current > 0) {
-        // this.searchForm.controls.paxData.value[i].noOfChildren.setValue(current - 1);
-        this.searchForm.controls.paxData.value[i].noOfChildren = current - 1;
-        this.removeAge(i, this.searchForm.controls.paxData.value[i].noOfChildren)
+        roomFormGroup.get('noOfChildren')?.setValue(current - 1);
+        this.removeAge(i, current - 1);
       }
     } else if (type === 'increment') {
-      let current = this.searchForm.controls.paxData.value[i].noOfChildren;
-
+      let current = roomFormGroup.get('noOfChildren')?.value;
       if (current < 3) {
-        // this.searchForm.controls.paxData.value[i].noOfChildren.setValue(current + 1);
-        this.searchForm.controls.paxData.value[i].noOfChildren = current + 1;
+        roomFormGroup.get('noOfChildren')?.setValue(current + 1);
         var title = i + current.length + 1;
-        this.age.set(title, 1)
-
+        this.age.set(title, 1);
       }
-
     }
 
     console.log(this.searchForm.value, "@#$%^&*(")
+  }
+
+  saveRoomConfiguration() {
+    // Close the dropdown after saving room configuration
+    this.showDropdown = this.dropdownType.none;
+    console.log('Room configuration saved:', this.searchForm.controls.paxData.value);
   }
 
 
@@ -647,6 +812,10 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.searchId = res['search_id'];
         this.searchResponse = res;
         console.log(this.searchResponse)
+        
+        // Update background image when search response is received
+        this.updateBackgroundImage();
+        
         this.scrollToSearchView();
         this.spinner.hide();
 
@@ -654,6 +823,56 @@ export class SearchComponent implements OnInit, OnDestroy {
       });
     }
   }
+
+  updateBackgroundImage() {
+    // Check if searchResponse has Hotel_Details and if the first hotel has images
+    console.log('Search Response:', this.searchResponse);
+    
+    if (this.searchResponse && 
+        this.searchResponse.Hotel_Details && 
+        this.searchResponse.Hotel_Details.length > 0) {
+      
+      const firstHotel = this.searchResponse.Hotel_Details[0];
+      console.log('First Hotel:', firstHotel);
+      console.log('First Hotel Images:', firstHotel.images);
+      
+      if (firstHotel.images && firstHotel.images.length > 0) {
+        // Use the first image of the first hotel
+        this.hotelBackgroundImage = firstHotel.images[0];
+        console.log('Updated background image to:', this.hotelBackgroundImage);
+      } else {
+        // Reset to default
+        this.hotelBackgroundImage = '';
+        console.log('No images found in hotel, reset to default background image');
+      }
+    } else {
+      // Reset to default
+      this.hotelBackgroundImage = '';
+      console.log('No Hotel_Details found, reset to default background image');
+    }
+    
+    // Trigger change detection
+    this.cdr.detectChanges();
+  }
+
+  getBackgroundImageStyle() {
+    // Check if hotel background image is set
+    if (this.hotelBackgroundImage) {
+      return {
+        'background-image': `url(${this.hotelBackgroundImage})`,
+        'background-position': 'center',
+        'background-size': 'cover'
+      };
+    }
+    
+    // Fallback to default background image
+    return {
+      'background-image': 'url(../../../assets/images/background.jpg)',
+      'background-position': 'center',
+      'background-size': 'cover'
+    };
+  }
+
 
 
   scrollToSearchView() {
@@ -671,8 +890,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   getSearchParams() {
     let searchParams: any = {
-      bookingEngineId: this.BookingConfigService.getBookingEngineId(),
-      hotelId: this.BookingConfigService.getBookingEngineId()
+      bookingEngineId: this.BookingConfigService.getBookingEngineId()
     };
 
     if (this.getProductId()) {
@@ -695,9 +913,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     if (this.getPaxInfo()) {
       searchParams.paxInfo = this.getPaxInfo();
     }
-    // searchParams.paxInfo = '1'
-    //searchParams.rooms = this.searchForm.controls.rooms.value;
-    //searchParams.rooms = 1;
+    
+    // Include rooms in search params
+    searchParams.rooms = this.searchForm.controls.rooms.value;
 
     return searchParams;
   }
@@ -719,7 +937,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     let guests = 0;
     let paxString = ''
     let aFromArray: FormArray = this.getTablesFormArray();
-    for (let i = 0; i < 1; i++) {
+    
+    // Loop through all rooms instead of just the first one
+    for (let i = 0; i < aFromArray.length; i++) {
       paxString += aFromArray.value[i]['noOfAdults'] + '|' + aFromArray.value[i]['noOfChildren'] + '|';
       guests = Number(guests + aFromArray.value[i]['noOfAdults'] + aFromArray.value[i]['noOfChildren'])
       let agesFormArray: FormArray = this.getChildrenAgeFormArray(i)
@@ -732,7 +952,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       if (!aFromArray.value[i]['noOfChildren']) {
         paxString += '0|0|'
       }
-      if (aFromArray.value.length > 0) {
+      if (i < aFromArray.length - 1) {
         paxString += "|"
       }
     }
@@ -743,16 +963,51 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   setPaxInfo(paxInfo: any) {
-    let paxArray = paxInfo ? paxInfo.toString().split('|') : []
-    // this.agesOfChildren.clear()
-    // paxArray.forEach((e: any, i: number) => {
-    //   if (i === 0) {
-    //     this.searchForm.controls.noOfAdults.setValue(parseInt(e));
-    //   } else if (i > 1) {
-    //     this.agesOfChildren.push(this.getChildrensAgeForm());
-    //     this.agesOfChildren.controls[i - 2].get('age')?.setValue(parseInt(e));
-    //   }
-    // });
+    if (!paxInfo) return;
+    
+    // Clear existing paxData
+    const paxDataArray = this.getTablesFormArray();
+    while (paxDataArray.length > 0) {
+      paxDataArray.removeAt(0);
+    }
+    
+    // Split by double pipe to get room data
+    let rooms = paxInfo.toString().split('||').filter((r: string) => r.length > 0);
+    
+    rooms.forEach((roomData: string, roomIndex: number) => {
+      let paxArray = roomData.split('|').filter((p: string) => p.length > 0);
+      
+      if (paxArray.length >= 2) {
+        const noOfAdults = parseInt(paxArray[0]) || 2;
+        const noOfChildren = parseInt(paxArray[1]) || 0;
+        
+        // Create a new room FormGroup
+        const roomFormGroup = this.formBuilder.group({
+          noOfAdults: [noOfAdults],
+          noOfChildren: [noOfChildren],
+          agesOfChildren: this.formBuilder.array([])
+        });
+        
+        // Add children ages if any
+        if (noOfChildren > 0 && paxArray.length > 2) {
+          for (let i = 0; i < noOfChildren && i + 2 < paxArray.length; i++) {
+            const age = parseInt(paxArray[i + 2]) || 1;
+            this.age.set(roomIndex + i, age);
+          }
+        }
+        
+        paxDataArray.push(roomFormGroup);
+      }
+    });
+    
+    // If no rooms were added, add a default room
+    if (paxDataArray.length === 0) {
+      paxDataArray.push(this.formBuilder.group({
+        noOfAdults: [2],
+        noOfChildren: [0],
+        agesOfChildren: this.formBuilder.array([])
+      }));
+    }
   }
 
   clearFormArray = (formArray: FormArray) => {

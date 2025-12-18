@@ -78,7 +78,7 @@ export class AddonsComponent implements OnInit {
         .subscribe((res) => {
           this.addons = res['policies'];
           this.addons.forEach((element: { qty: number; count: boolean }) => {
-            element.qty = 0;
+            element.qty = 1;
             element.count = false
           });
           console.log(this.addons)
@@ -137,6 +137,37 @@ export class AddonsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
     });
+  }
+
+  // Calculate addon price based on adults and children
+  calculateAddonPrice(addon: any): number {
+    if (!this.bookingService.currBookingItemValue) {
+      return 0;
+    }
+    
+    const noOfAdults = this.bookingService.currBookingItemValue.noOfAdults || 0;
+    const noOfChildren = this.bookingService.currBookingItemValue.noOfChildren || 0;
+    
+    const adultCost = (addon.adultValue || 0) * noOfAdults;
+    const childCost = (addon.childValue || 0) * noOfChildren;
+    
+    return adultCost + childCost;
+  }
+
+  // Calculate total addon price (including quantity)
+  calculateTotalAddonPrice(addon: any): number {
+    const basePrice = this.calculateAddonPrice(addon);
+    return basePrice * (addon.qty || 1);
+  }
+
+  // Get number of adults from current booking
+  getNoOfAdults(): number {
+    return this.bookingService.currBookingItemValue?.noOfAdults || 0;
+  }
+
+  // Get number of children from current booking
+  getNoOfChildren(): number {
+    return this.bookingService.currBookingItemValue?.noOfChildren || 0;
   }
 
 }

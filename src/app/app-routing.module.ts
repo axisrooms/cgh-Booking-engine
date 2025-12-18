@@ -6,27 +6,37 @@ import { DealsComponent } from './pages/deals/deals.component';
 import { SearchComponent } from './pages/search/search.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'search', pathMatch: 'full' },
-
   { path: 'search', component: SearchComponent },
-  { path: 'search/:hotelId', component: SearchComponent },
+  { path: 'search/:bookingEngineId', component: SearchComponent },
 
   { path: 'search_page', component: SearchComponent },
-  { path: 'search_page/:hotelId', component: SearchComponent },
+  { path: 'search_page/:bookingEngineId', component: SearchComponent },
 
   { path: 'book', component: BookComponent },
-  { path: 'book/:hotelId', component: BookComponent },
+  { path: 'book/:bookingEngineId', component: BookComponent },
 
   { path: 'deals', component: DealsComponent },
-  { path: 'deals/:hotelId', component: DealsComponent },
+  { path: 'deals/:bookingEngineId', component: DealsComponent },
 
   { path: 'cart', component: OngoingBookingsComponent },
-  { path: 'cart/:hotelId', component: OngoingBookingsComponent }
+  { path: 'cart/:bookingEngineId', component: OngoingBookingsComponent },
+
+  { 
+    path: '', 
+    redirectTo: 'search', 
+    pathMatch: 'full'
+  },
+
+  { path: '**', redirectTo: 'search' }
 ];
 
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled', initialNavigation: 'enabled' })],
+  imports: [RouterModule.forRoot(routes, { 
+    scrollPositionRestoration: 'enabled', 
+    initialNavigation: 'enabled',
+    paramsInheritanceStrategy: 'always'
+  })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

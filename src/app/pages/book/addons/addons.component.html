@@ -24,6 +24,29 @@
                                     <a (click)="openAddon = true; getDetails(item)"
                                         style="font-size: 12px;cursor: pointer;color: #595b62;">View
                                         Details</a>
+                                    
+                                    <!-- Display Adult and Children pricing breakdown -->
+                                    <div class="row mt-2" style="font-size: 11px; color: #666; background: #f5f5f5; padding: 8px; border-radius: 4px; margin-left: 1px; margin-right: 1px;">
+                                        <div class="col-12" style="margin-bottom: 3px;">
+                                            <div style="display: flex; justify-content: space-between;">
+                                                <span>Adults ({{getNoOfAdults()}}) × {{item?.currency}} {{item?.adultValue || 0}}</span>
+                                                <span style="font-weight: 600;">{{item?.currency}} {{(item?.adultValue || 0) * getNoOfAdults()}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div style="display: flex; justify-content: space-between;">
+                                                <span>Children ({{getNoOfChildren()}}) × {{item?.currency}} {{item?.childValue || 0}}</span>
+                                                <span style="font-weight: 600;">{{item?.currency}} {{(item?.childValue || 0) * getNoOfChildren()}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-12" style="border-top: 1px solid #ddd; margin-top: 5px; padding-top: 5px;">
+                                            <div style="display: flex; justify-content: space-between; color: #2AB59D; font-weight: 600;">
+                                                <span>{{item?.policy_type_name}}</span>
+                                                <span>{{item?.currency}} {{calculateAddonPrice(item)}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
                                     <div class="row mt-1">
                                         <div class="col-4 d-flex justify-content-between align-items-around">
                                             <button class="btn-main"
@@ -36,14 +59,14 @@
                                         </div>
                                         <div class="col-8 addon-price-div">
                                             <p class="addon-price" *ngIf="item.qty>0">{{item?.currency}}
-                                                {{item?.cost}} x {{item.qty}}
+                                                {{calculateAddonPrice(item)}} x {{item.qty}}
                                             </p>
                                             <p class="addon-price"> Total : {{item?.currency}}
                                                 <span *ngIf="item.qty == 0">
-                                                    {{item?.cost}}
+                                                    {{calculateAddonPrice(item)}}
                                                 </span>
                                                 <span *ngIf="item.qty > 0">
-                                                    {{item?.cost * item.qty}}
+                                                    {{calculateTotalAddonPrice(item)}}
                                                 </span>
 
                                             </p>
@@ -75,7 +98,23 @@
 
                     </div>
                     <div class="content">
-                        <p class="addon-title">{{addonDetail.currency}} {{addonDetail.cost}}</p>
+                        <p class="addon-title" style="margin-bottom: 10px;">Pricing Breakdown:</p>
+                        <div style="background: #f5f5f5; padding: 12px; border-radius: 4px; font-size: 13px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span>Adults ({{getNoOfAdults()}}) × {{addonDetail.currency}} {{addonDetail.adultValue || 0}}</span>
+                                <span style="font-weight: 600;">{{addonDetail.currency}} {{(addonDetail.adultValue || 0) * getNoOfAdults()}}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span>Children ({{getNoOfChildren()}}) × {{addonDetail.currency}} {{addonDetail.childValue || 0}}</span>
+                                <span style="font-weight: 600;">{{addonDetail.currency}} {{(addonDetail.childValue || 0) * getNoOfChildren()}}</span>
+                            </div>
+                            <div style="border-top: 1px solid #ddd; padding-top: 8px; margin-top: 8px;">
+                                <div style="display: flex; justify-content: space-between; color: #2AB59D; font-weight: 600;">
+                                    <span>Total  {{addonDetail.policy_type_name}}</span>
+                                    <span>{{addonDetail.currency}} {{calculateAddonPrice(addonDetail)}}</span>
+                                </div>
+                            </div>
+                        </div>
                         <!-- <p class="addon-title">Duration: <span class="desc">1-2 hours </span> </p>
 
                     <p class="addon-title">Inclusions:</p>
@@ -137,7 +176,7 @@
                 <div class="addon-content-col">
                     <p class="addon-title">{{addon.policy_name}}</p>
                     <p class="addon-desc">{{addon.policy_description}}</p>
-                    <p class="addon-price">{{addon.currency}} {{addon.cost}} {{addon.policy_type_name}}</p>
+                    <p class="addon-price">{{addon.currency}} {{calculateAddonPrice(addon)}} {{addon.policy_type_name}}</p>
                 </div>
                 <div class="btn-col">
                     <button class="btn-main" (click)="removeAddon(addon)">-</button>

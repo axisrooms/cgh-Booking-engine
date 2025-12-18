@@ -50,4 +50,6 @@ export interface Addon {
     policy_type_id: string,
     policy_type_name: string,
     qty: number,
+    adultValue?: number,
+    childValue?: number,
 }

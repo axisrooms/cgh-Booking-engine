@@ -58,3 +58,15 @@ input:nth-child(even) {
     font-size: 12px;
 }
 
+.btn-apply-promo:hover:not(:disabled) {
+  background-color: #45a049 !important;
+}
+
+.btn-apply-promo:disabled {
+  background-color: #cccccc !important;
+  cursor: not-allowed !important;
+}
+
+.btn-clear-promo:hover {
+  background-color: #da190b !important;
+}

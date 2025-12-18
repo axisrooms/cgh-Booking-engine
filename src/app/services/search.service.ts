@@ -84,8 +84,14 @@ export class SearchService {
   }
 
   getAllHotels(date: any): Observable<any> {
+    const bookingEngineId = this.BookingConfigService.getBookingEngineId();
+    console.log('getAllHotels API call - bookingEngineId:', bookingEngineId, 'checkin:', date);
+    
     return this.http.get<any>(`${BASE_URL}api/be/search`, {
-      params: { bookingEngineId: this.BookingConfigService.getBookingEngineId() ,checkin:date,},
+      params: { 
+        bookingEngineId: bookingEngineId.toString(),
+        checkin: date || ''
+      },
       headers: getDefaultHeaders(),
     });
   }

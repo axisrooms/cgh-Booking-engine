@@ -82,4 +82,15 @@ export class CartBoxComponent implements OnInit {
 
     return ratePlan;
   }
+
+  // Calculate addon price based on adults and children
+  calculateAddonPrice(addon: any, bookingItem: BookingItem): number {
+    const noOfAdults = bookingItem.noOfAdults || 0;
+    const noOfChildren = bookingItem.noOfChildren || 0;
+    
+    const adultCost = (addon.adultValue || 0) * noOfAdults;
+    const childCost = (addon.childValue || 0) * noOfChildren;
+    
+    return (adultCost + childCost) * (addon.qty || 1);
+  }
 }

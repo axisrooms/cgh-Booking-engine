@@ -77,14 +77,12 @@ export class BookingService {
       };
 
       this.bookingCartReflect.set(
-        this.bookingCartReflect.HOOKS.BOOKING_CART,
-        bookingCart
-      );
-    }
-    this.router.navigate(['/book?hotelId='+this.BookingConfigService.getBookingEngineId()]);
+      this.bookingCartReflect.HOOKS.BOOKING_CART,
+      bookingCart
+    );
   }
-
-  getTotalAmount(checkIn: string, checkOut: string, room: any) {
+  this.router.navigate(['/book'], { queryParams: { bookingEngineId: this.BookingConfigService.getBookingEngineId() } });
+}  getTotalAmount(checkIn: string, checkOut: string, room: any) {
     // let diff = this.getNoOfDays(checkIn, checkOut);
     let price =
       (room.price.discounted ? (room.price.actual) : room.price.actual) +
@@ -170,7 +168,7 @@ export class BookingService {
       this.bookingCartReflect.HOOKS.BOOKING_CART,
       bookingCart
     );
-    this.router.navigate(['/book?hotelId='+this.BookingConfigService.getBookingEngineId()]);
+    this.router.navigate(['/book'], { queryParams: { bookingEngineId: this.BookingConfigService.getBookingEngineId() } });
   }
 
   removeCurrentBookingItemFromList(i: any) {
@@ -196,17 +194,25 @@ export class BookingService {
   //
 
   getAddons(searchParams: any): Observable<any> {
+    console.log("getAddons called with params:", searchParams);
     return this.http.get<any>(`${BASE_URL}api/be/getPolicies`, {
       params: searchParams,
       headers: getDefaultHeaders(),
     });
   }
- getpolicy(searchParams: any): Observable<any> {
-  return this.http.get<any>(`${BASE_URL}api/be/getPolicies`, {
-    params: searchParams,
-    headers: getDefaultHeaders(),
-  });
- }
+
+  getDeals(): Observable<any> {
+    return this.http.get<any>(`http://app.axisrooms.com/api/be/deals`, {
+      headers: getDefaultHeaders(),
+    });
+  }
+
+  validatePromo(promoData: any): Observable<any> {
+    return this.http.post<any>(`http://app.axisrooms.com/api/be/validatePromo`, promoData, {
+      headers: getDefaultHeaders(),
+    });
+  }
+
   addAddon(addon: any) {
     let bookingItem = this.currBookingItemValue;
 
@@ -225,7 +231,11 @@ export class BookingService {
 
             bookingItem.addons.forEach(e => {
               if (bookingItem) {
-                bookingItem.addonTotalPrice += (e.cost * e.qty)
+                // Calculate based on adultValue and childValue
+                const adultCost = (e.adultValue || 0) * (bookingItem.noOfAdults || 0);
+                const childCost = (e.childValue || 0) * (bookingItem.noOfChildren || 0);
+                const totalCost = (adultCost + childCost) * e.qty;
+                bookingItem.addonTotalPrice += totalCost;
               }
 
             })
@@ -243,7 +253,11 @@ export class BookingService {
         // bookingItem.addonTotalPrice += (parseInt(addon.cost) * addon.qty)
         bookingItem.addons.forEach(e => {
           if (bookingItem) {
-            bookingItem.addonTotalPrice += (e.cost * e.qty)
+            // Calculate based on adultValue and childValue
+            const adultCost = (e.adultValue || 0) * (bookingItem.noOfAdults || 0);
+            const childCost = (e.childValue || 0) * (bookingItem.noOfChildren || 0);
+            const totalCost = (adultCost + childCost) * e.qty;
+            bookingItem.addonTotalPrice += totalCost;
           }
         })
         console.log(bookingItem, "bye")
@@ -273,7 +287,11 @@ export class BookingService {
               // bookingItem.addons[index].qty -= 1;
               bookingItem.addons.forEach(e => {
                 if (bookingItem) {
-                  bookingItem.addonTotalPrice += (e.cost * e.qty)
+                  // Calculate based on adultValue and childValue
+                  const adultCost = (e.adultValue || 0) * (bookingItem.noOfAdults || 0);
+                  const childCost = (e.childValue || 0) * (bookingItem.noOfChildren || 0);
+                  const totalCost = (adultCost + childCost) * e.qty;
+                  bookingItem.addonTotalPrice += totalCost;
                 }
               })
               bookingItem?.addons.splice(index, 1);
@@ -281,7 +299,11 @@ export class BookingService {
             } else if (bookingItem.addons[index].qty === 1 || bookingItem.addons[index].qty === 0) {
               bookingItem.addons.forEach(e => {
                 if (bookingItem) {
-                  bookingItem.addonTotalPrice += (e.cost * e.qty)
+                  // Calculate based on adultValue and childValue
+                  const adultCost = (e.adultValue || 0) * (bookingItem.noOfAdults || 0);
+                  const childCost = (e.childValue || 0) * (bookingItem.noOfChildren || 0);
+                  const totalCost = (adultCost + childCost) * e.qty;
+                  bookingItem.addonTotalPrice += totalCost;
                 }
               })
               bookingItem?.addons.splice(index, 1);
@@ -301,6 +323,9 @@ export class BookingService {
       );
     }
   }
+
+
+  
 
   getRecommendationsSearchParams() {
     let bookingItem = this.currBookingItemValue
