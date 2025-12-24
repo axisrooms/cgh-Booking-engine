@@ -334,7 +334,7 @@
                     <div class="col-12 col-md-4 col-lg-4">
                        <p *ngIf="searchResponse?.Hotel_Details?.length && bookingItems" class="main-title">My Cart</p>
                         <app-cart-box *ngIf="searchResponse?.Hotel_Details?.length && bookingItems"[type]="'searchComponent-newBooking'"></app-cart-box><br>
-                        <app-deals-bar [productId]="searchResponse?.Hotel_Details?.[0]?.hotel_id"></app-deals-bar>
+                        <app-deals-bar [supplierId]="searchResponse?.Hotel_Details?.[0]?.supplier_id"></app-deals-bar>
 
                     </div>
 

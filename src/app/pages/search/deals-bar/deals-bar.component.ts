@@ -14,7 +14,7 @@ import { BookingConfigService } from 'src/app/services/bookingid.service';
 export class DealsBar implements OnInit, OnChanges {
   deals$: Observable<any>;
   imagesArray = imagesArray;
-  @Input() productId: number = 0;
+  @Input() supplierId: number = 0;
 
   constructor(private dealsService: DealsService, private router: Router,private BookingConfigService:BookingConfigService) {
     this.deals$ = this.dealsService.deals$
@@ -22,24 +22,24 @@ export class DealsBar implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.deals$ = this.dealsService.deals$;
-    console.log('DealsBar initialized with productId:', this.productId);
-    if (this.productId > 0) {
+    console.log('DealsBar initialized with supplierId:', this.supplierId);
+    if (this.supplierId > 0) {
       this.fetchDeals();
     }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['productId'] && !changes['productId'].firstChange) {
-      console.log('ProductId changed:', changes['productId'].currentValue);
-      if (this.productId > 0) {
+    if (changes['supplierId'] && !changes['supplierId'].firstChange) {
+      console.log('SupplierId changed:', changes['supplierId'].currentValue);
+      if (this.supplierId > 0) {
         this.fetchDeals();
       }
     }
   }
 
   fetchDeals() {
-    console.log('Fetching deals for productId:', this.productId);
-    this.dealsService.getDeals(this.productId).subscribe(
+    console.log('Fetching deals for supplierId:', this.supplierId);
+    this.dealsService.getDeals(this.supplierId).subscribe(
       (response) => {
         console.log('Deals fetched successfully:', response);
       },
@@ -54,8 +54,8 @@ export class DealsBar implements OnInit, OnChanges {
     if (index !== undefined) {
       queryParams.index = index;
     }
-    if (this.productId > 0) {
-      queryParams.productId = this.productId;
+    if (this.supplierId > 0) {
+      queryParams.supplierId = this.supplierId;
     }
     console.log('Navigating to deals with queryParams:', queryParams);
     this.router.navigate(['/deals?bookingEngineId='+this.BookingConfigService.getBookingEngineId()], { queryParams });

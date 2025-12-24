@@ -13,11 +13,10 @@ export class DealsService {
 
   constructor(private http: HttpClient) {}
 
-  getDeals(productId: number) {
-    console.log('getDeals API call - productId:', productId);
-    console.log('API URL:', `${BASE_URL}api/be/productDealsNew?productId=${productId}`);
+  getDeals(supplierId: number) {
+    console.log('getDeals API call - supplierId:', supplierId);
     
-    return this.http.get<any>(`${BASE_URL}api/be/productDealsNew?productId=${productId}`, {
+    return this.http.get<any>(`https://preprod.axisrooms.com/api/be/productDealsNew?supplierId=${supplierId}`, {
       headers: getDefaultHeaders(),
     }).pipe(
       tap(response => {

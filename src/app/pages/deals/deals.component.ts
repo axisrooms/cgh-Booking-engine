@@ -15,7 +15,7 @@ export class DealsComponent implements OnInit, OnDestroy {
   deals: any;
   activateRouteSubscription$: Subscription;
   index: number | undefined;
-  productId: number = 0;
+  supplierId: number = 0;
 
   constructor(
     private dealsService: DealsService,
@@ -27,20 +27,20 @@ export class DealsComponent implements OnInit, OnDestroy {
       .subscribe((queryParams) => {
         console.log('Query Params:', queryParams);
         this.setIndex(queryParams['index']);
-        if (queryParams['productId']) {
-          this.productId = +queryParams['productId'];
-          console.log('Product ID from query params:', this.productId);
+        if (queryParams['supplierId']) {
+          this.supplierId = +queryParams['supplierId'];
+          console.log('Supplier ID from query params:', this.supplierId);
           this.getDeals();
         }
       });
   }
 
   ngOnInit(): void {
-    // Check if productId is already set from route params
-    const productIdFromRoute = this.activatedRoute.snapshot.queryParams['productId'];
-    if (productIdFromRoute && !this.productId) {
-      this.productId = +productIdFromRoute;
-      console.log('Product ID from snapshot:', this.productId);
+    // Check if supplierId is already set from route params
+    const supplierIdFromRoute = this.activatedRoute.snapshot.queryParams['supplierId'];
+    if (supplierIdFromRoute && !this.supplierId) {
+      this.supplierId = +supplierIdFromRoute;
+      console.log('Supplier ID from snapshot:', this.supplierId);
       this.getDeals();
     }
   }
@@ -52,17 +52,17 @@ export class DealsComponent implements OnInit, OnDestroy {
   }
 
   getDeals() {
-    console.log('getDeals called with productId:', this.productId);
-    if (this.productId > 0) {
-      console.log('Fetching deals for productId:', this.productId);
-      this.dealsService.getDeals(this.productId).subscribe((res) => {
+    console.log('getDeals called with supplierId:', this.supplierId);
+    if (this.supplierId > 0) {
+      console.log('Fetching deals for supplierId:', this.supplierId);
+      this.dealsService.getDeals(this.supplierId).subscribe((res) => {
         console.log('Deals response:', res);
         this.deals = res;
       }, (error) => {
         console.error('Error fetching deals:', error);
       });
     } else {
-      console.warn('Product ID is not valid:', this.productId);
+      console.warn('Supplier ID is not valid:', this.supplierId);
     }
   }
 

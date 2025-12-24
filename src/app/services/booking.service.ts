@@ -202,13 +202,13 @@ export class BookingService {
   }
 
   getDeals(): Observable<any> {
-    return this.http.get<any>(`http://app.axisrooms.com/api/be/deals`, {
+    return this.http.get<any>(`${BASE_URL}api/be/deals`, {
       headers: getDefaultHeaders(),
     });
   }
 
   validatePromo(promoData: any): Observable<any> {
-    return this.http.post<any>(`http://app.axisrooms.com/api/be/validatePromo`, promoData, {
+    return this.http.post<any>(`${BASE_URL}api/be/validatePromo`, promoData, {
       headers: getDefaultHeaders(),
     });
   }
