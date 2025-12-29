@@ -70,9 +70,14 @@
 
             </ng-container>
 
+            <p class="line-item" *ngIf="bookingItem.promoDiscount && bookingItem.promoDiscount > 0">
+                <span class="item-desc">Promo Discount ({{bookingItem.promoCode}})</span>
+                <span class="item-amount" style="color: green;">- {{bookingItem.renderData.currency}} {{bookingItem.promoDiscount | number:
+                    '1.2-2'}}</span>
+            </p>
 
             <hr>
-            <p class="total">Total <span class="item-amount">{{currency}} {{(bookingItem.totalAmount + bookingItem.addonTotalPrice) | number:
+            <p class="total">Total <span class="item-amount">{{currency}} {{(bookingItem.totalAmount + bookingItem.addonTotalPrice - (bookingItem.promoDiscount || 0)) | number:
                     '1.2-2'}}</span></p>
                     <hr>
 

@@ -22,9 +22,10 @@
                             <mat-card class="dropdown-card p-0" style="  scroll-behavior: smooth;
                             max-height: 255px;" 
                             *ngIf="showDropdown === dropdownType.hotel || showDropdown === dropdownType.location">
-                                <div class="option-block" *ngFor="let option of filteredHotelsList | async">
+                                <div class="option-block" *ngFor="let option of filteredHotelsList | async"
+                                    (click)="selectHotel(option.hotel_name, $event)">
                                     <i class="bi bi-building"></i>
-                                    <div class="option-text-block" (click)="selectHotel(option.hotel_name)">
+                                    <div class="option-text-block">
                                         <p class="option-title-text">{{option.hotel_name}}</p>
                                         <p class="option-sub-text">
                                             <span style="font-weight: 600; color: #666">Resorts . </span>
@@ -36,7 +37,7 @@
 
                                 </div>
                                 <div class="option-block" *ngFor="let option of filteredLocationList | async"
-                                    (click)="selectLocation(option)">
+                                    (click)="selectLocation(option, $event)">
                                     <i class="bi bi-geo-alt"></i>
                                     <div class="option-text-block">
                                         <p class="option-title-text">{{option.key}}</p>

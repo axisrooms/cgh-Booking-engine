@@ -25,26 +25,41 @@
                                         style="font-size: 12px;cursor: pointer;color: #595b62;">View
                                         Details</a>
                                     
-                                    <!-- Display Adult and Children pricing breakdown -->
+                                    <!-- Display pricing based on policy type -->
                                     <div class="row mt-2" style="font-size: 11px; color: #666; background: #f5f5f5; padding: 8px; border-radius: 4px; margin-left: 1px; margin-right: 1px;">
-                                        <div class="col-12" style="margin-bottom: 3px;">
-                                            <div style="display: flex; justify-content: space-between;">
-                                                <span>Adults ({{getNoOfAdults()}}) × {{item?.currency}} {{item?.adultValue || 0}}</span>
-                                                <span style="font-weight: 600;">{{item?.currency}} {{(item?.adultValue || 0) * getNoOfAdults()}}</span>
+                                        
+                                        <!-- For "per booking" type - show flat cost -->
+                                        <ng-container *ngIf="item?.adultValue === 0 && item?.childValue === 0">
+                                            <div class="col-12">
+                                                <div style="display: flex; justify-content: space-between; color: #2AB59D; font-weight: 600;">
+                                                    <span>{{item?.policy_type_name}}</span>
+                                                    <span>{{item?.currency}} {{item?.cost}}</span>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div style="display: flex; justify-content: space-between;">
-                                                <span>Children ({{getNoOfChildren()}}) × {{item?.currency}} {{item?.childValue || 0}}</span>
-                                                <span style="font-weight: 600;">{{item?.currency}} {{(item?.childValue || 0) * getNoOfChildren()}}</span>
+                                        </ng-container>
+                                        
+                                        <!-- For "per guest" type - show adult/child breakdown -->
+                                        <ng-container *ngIf="item?.adultValue > 0 || item?.childValue > 0">
+                                            <div class="col-12" style="margin-bottom: 3px;">
+                                                <div style="display: flex; justify-content: space-between;">
+                                                    <span>Adults ({{getNoOfAdults()}}) × {{item?.currency}} {{item?.adultValue || 0}}</span>
+                                                    <span style="font-weight: 600;">{{item?.currency}} {{(item?.adultValue || 0) * getNoOfAdults()}}</span>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-12" style="border-top: 1px solid #ddd; margin-top: 5px; padding-top: 5px;">
-                                            <div style="display: flex; justify-content: space-between; color: #2AB59D; font-weight: 600;">
-                                                <span>{{item?.policy_type_name}}</span>
-                                                <span>{{item?.currency}} {{calculateAddonPrice(item)}}</span>
+                                            <div class="col-12">
+                                                <div style="display: flex; justify-content: space-between;">
+                                                    <span>Children ({{getNoOfChildren()}}) × {{item?.currency}} {{item?.childValue || 0}}</span>
+                                                    <span style="font-weight: 600;">{{item?.currency}} {{(item?.childValue || 0) * getNoOfChildren()}}</span>
+                                                </div>
                                             </div>
-                                        </div>
+                                            <div class="col-12" style="border-top: 1px solid #ddd; margin-top: 5px; padding-top: 5px;">
+                                                <div style="display: flex; justify-content: space-between; color: #2AB59D; font-weight: 600;">
+                                                    <span>{{item?.policy_type_name}}</span>
+                                                    <span>{{item?.currency}} {{calculateAddonPrice(item)}}</span>
+                                                </div>
+                                            </div>
+                                        </ng-container>
+                                        
                                     </div>
                                     
                                     <div class="row mt-1">

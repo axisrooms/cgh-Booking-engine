@@ -23,8 +23,9 @@ export interface BookingItem {
     agesOfChildren: number[],
     rooms: Room[],
     renderData?: any,
-    payathotel:any
-
+    payathotel:any,
+    promoDiscount?: number,
+    promoCode?: string
 }
 
 export interface Room {

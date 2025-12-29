@@ -236,7 +236,8 @@ export class PersonalDetailsComponent implements OnInit {
       promoCode: promoCode.trim(),
       ratePlanID: this.bookingItem.rooms?.[0]?.ratePlanId?.toString(),
       rooms: rooms,
-      totalPrice: totalPrice
+      totalPrice: totalPrice,
+      searchId: this.bookingItem.searchId
     };
 
     console.log('Validating promo code with data:', promoData);
@@ -246,10 +247,20 @@ export class PersonalDetailsComponent implements OnInit {
       (response) => {
         console.log('Promo validation response:', response);
         this.promoValidating = false;
-        if (response && !response.Error) {
+        if (response && response.Result && !response.Error) {
           this.promoValidated = true;
-          this.promoDiscount = response.discountValue || 0;
-          this.snackBar.open(`Promo code applied successfully! Discount: ${this.promoDiscount}`, 'Close', { 
+          // API returns "Discount Price" inside Result object
+          this.promoDiscount = response.Result['Discount Price'] || 0;
+          
+          // Update the booking item with promo discount
+          if (this.bookingItem) {
+            this.bookingItem.promoDiscount = this.promoDiscount;
+            this.bookingItem.promoCode = promoCode.trim();
+            // Trigger cart update by reassigning bookingItem
+            this.bookingItem = {...this.bookingItem};
+          }
+          
+          this.snackBar.open(`Promo code applied successfully! Discount: ₹${this.promoDiscount}`, 'Close', { 
             duration: 5000,
             panelClass: ['success-snackbar']
           });
@@ -298,5 +309,13 @@ export class PersonalDetailsComponent implements OnInit {
     this.promoValidated = false;
     this.promoError = '';
     this.promoDiscount = 0;
+    
+    // Clear promo discount from booking item
+    if (this.bookingItem) {
+      this.bookingItem.promoDiscount = 0;
+      this.bookingItem.promoCode = undefined;
+      // Trigger cart update by reassigning bookingItem
+      this.bookingItem = {...this.bookingItem};
+    }
   }
 }

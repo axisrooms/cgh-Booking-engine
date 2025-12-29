@@ -1,7 +1,7 @@
 import { HttpHeaders } from "@angular/common/http";
 
 
-export const BASE_URL = 'https://preprod.axisrooms.com/'
+export const BASE_URL = 'https://preprod2.axisrooms.com/'
 //export const BASE_URL = 'https://app.axisrooms.com/'
 
 export const BOOKING_ENGINE_ID = 4943;
@@ -18,5 +18,6 @@ export function getDefaultHeaders() {
   return new HttpHeaders({
     apiKey: '132706a3eae0a6d542ed7927de43589c12485fa7',
     channelId: '0',
+    'Content-Type': 'application/json'
   });
 }

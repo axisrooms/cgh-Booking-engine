@@ -139,12 +139,18 @@ export class AddonsComponent implements OnInit {
     });
   }
 
-  // Calculate addon price based on adults and children
+  // Calculate addon price based on policy type
   calculateAddonPrice(addon: any): number {
     if (!this.bookingService.currBookingItemValue) {
       return 0;
     }
     
+    // If adultValue and childValue are both 0, use the flat cost (per booking)
+    if ((addon.adultValue === 0 || !addon.adultValue) && (addon.childValue === 0 || !addon.childValue)) {
+      return parseFloat(addon.cost || 0);
+    }
+    
+    // Otherwise calculate based on adults and children (per guest)
     const noOfAdults = this.bookingService.currBookingItemValue.noOfAdults || 0;
     const noOfChildren = this.bookingService.currBookingItemValue.noOfChildren || 0;
     

@@ -45,7 +45,8 @@ export class CartBoxComponent implements OnInit {
   getTotal(item: BookingItem[] | undefined = []) {
     const grandTotal = item.reduce((total, item) => {
       let addonTotal = item.addonTotalPrice ? item.addonTotalPrice : 0
-      return item.totalAmount + addonTotal + total
+      let promoDiscount = item.promoDiscount ? item.promoDiscount : 0
+      return item.totalAmount + addonTotal - promoDiscount + total
     }, 0)
     console.log(grandTotal, "#####")
     return grandTotal;
@@ -83,8 +84,15 @@ export class CartBoxComponent implements OnInit {
     return ratePlan;
   }
 
-  // Calculate addon price based on adults and children
+  // Calculate addon price based on policy type
   calculateAddonPrice(addon: any, bookingItem: BookingItem): number {
+    // Check if it's per booking (flat cost) or per guest (adult/child values)
+    if ((addon.adultValue === 0 || !addon.adultValue) && (addon.childValue === 0 || !addon.childValue)) {
+      // Per booking - use flat cost
+      return parseFloat(addon.cost || 0) * (addon.qty || 1);
+    }
+    
+    // Per guest - calculate based on adultValue and childValue
     const noOfAdults = bookingItem.noOfAdults || 0;
     const noOfChildren = bookingItem.noOfChildren || 0;
     

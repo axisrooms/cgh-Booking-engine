@@ -590,7 +590,13 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.showFieldWarnings = this.dropdownType.none;
   }
 
-  selectHotel(name: string) {
+  selectHotel(name: string, event?: MouseEvent) {
+    // Prevent event from bubbling to parent elements
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    
     // Set flag to prevent dropdown from reopening
     this.isSelectingOption = true;
     
@@ -611,7 +617,13 @@ export class SearchComponent implements OnInit, OnDestroy {
     }, 0);
   }
 
-  selectLocation(option: any) {
+  selectLocation(option: any, event?: MouseEvent) {
+    // Prevent event from bubbling to parent elements
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    
     // Set flag to prevent dropdown from reopening
     this.isSelectingOption = true;
     
