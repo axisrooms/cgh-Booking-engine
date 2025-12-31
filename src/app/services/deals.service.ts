@@ -15,8 +15,8 @@ export class DealsService {
 
   getDeals(supplierId: number) {
     console.log('getDeals API call - supplierId:', supplierId);
-    
-    return this.http.get<any>(`https://preprod.axisrooms.com/api/be/productDealsNew?supplierId=${supplierId}`, {
+    const url = `${BASE_URL}api/be/productDealsNew?supplierId=${supplierId}`;
+    return this.http.get<any>(url, {
       headers: getDefaultHeaders(),
     }).pipe(
       tap(response => {

@@ -47,6 +47,11 @@ export class AddonsComponent implements OnInit {
   }
 
   calAmt(item: any, i: any) {
+    // Prevent quantity changes for mandatory addons
+    if (item.mandatory === true) {
+      return;
+    }
+    
     // if (qty >= 1) {
     //   this.addons[i].cost = this.addons[i].price * qty;
     // }
@@ -77,9 +82,16 @@ export class AddonsComponent implements OnInit {
         })
         .subscribe((res) => {
           this.addons = res['policies'];
-          this.addons.forEach((element: { qty: number; count: boolean }) => {
+          this.addons.forEach((element: { qty: number; count: boolean; mandatory?: boolean }) => {
             element.qty = 1;
-            element.count = false
+            element.count = false;
+            
+            // Automatically add mandatory addons to cart
+            if (element.mandatory === true) {
+              element.count = true;
+              element.qty = 1;
+              this.bookingService.addAddon(element);
+            }
           });
           console.log(this.addons)
           this.spinner.hide();
@@ -100,6 +112,11 @@ export class AddonsComponent implements OnInit {
   }
 
   removeAddon(addon: any, i: any) {
+    // Prevent removal of mandatory addons
+    if (addon.mandatory === true) {
+      return;
+    }
+    
     this.addons.forEach((e: { policy_id: any; count: boolean;qty:any }) => {
       if(e.policy_id == addon.policy_id){
         e.count = false

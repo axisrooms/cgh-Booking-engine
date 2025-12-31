@@ -285,6 +285,11 @@ export class BookingService {
   }
 
   removeAddon(addon: any) {
+    // Prevent removal of mandatory addons
+    if (addon.mandatory === true) {
+      return;
+    }
+    
     let bookingItem = this.currBookingItemValue;
     if (bookingItem) {
       bookingItem.addonTotalPrice = 0
@@ -292,6 +297,10 @@ export class BookingService {
       if (bookingItem.addons) {
         for (let index = 0; index < bookingItem?.addons?.length; index++) {
           if (addon['policy_id'] === bookingItem?.addons[index]['policy_id']) {
+            // Double check: prevent removal if the addon in cart is also mandatory
+            if (bookingItem.addons[index].mandatory === true) {
+              return;
+            }
             if (bookingItem.addons[index].qty > 1) {
               bookingItem.addons.forEach(e => {
                 if (bookingItem) {
