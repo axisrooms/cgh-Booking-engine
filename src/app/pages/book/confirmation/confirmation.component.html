@@ -1,14 +1,25 @@
 <div class="wrapper">
     <p class="title text-center mb-4">BOOKING CONFIRMATION</p>
-    <img class="package-image" src="https://www.cghearth.com/uploads/banner/20170519203337PMbanneraerial1.jpg" alt="">
+    <img class="package-image" [src]="cart?.property?.banner_image || cart?.renderData?.banner_image || 'https://www.cghearth.com/uploads/banner/20170519203337PMbanneraerial1.jpg'" 
+         [alt]="cart?.property?.hotel_name || 'Hotel Image'">
 
-    <p class="title mb-4">BOOKING CONFIRMATION #TXCS12123123</p>
+    <p class="title mb-4">BOOKING CONFIRMATION #{{bookingConfirmationNumber || 'PENDING'}}</p>
 
     <p class="title">PACKAGE SUMMARY</p>
     <div class="content-box">
-        <p class="mb-2">A week long excursion through God’s Own Country, where you experience the best that Kerala
-            has to offer. You begin with a trip down history, exploring the heritage town of Fort Kochi.
-            Followed by a rendezvous with nature’s wonders in Thekkady</p>
+        <p class="mb-2">
+            <strong>{{cart?.property?.hotel_name || cart?.renderData?.hotel_name || 'Hotel Booking'}}</strong>
+        </p>
+        <p class="mb-2" *ngIf="cart?.property?.description || cart?.renderData?.description">
+            {{cart?.property?.description || cart?.renderData?.description}}
+        </p>
+        <p class="mb-2" *ngIf="cart?.rooms && cart.rooms.length > 0">
+            <strong>Room:</strong> {{getRoomName(cart?.renderData?.rooms || cart?.property?.rooms, cart?.rooms[0]?.roomId)}}
+            <br>
+            <strong>Rate Plan:</strong> {{getRatePlan(cart?.renderData?.rooms || cart?.property?.rooms, cart?.rooms[0]?.roomId, cart?.rooms[0]?.ratePlanId)}}
+            <br>
+            <strong>Number of Rooms:</strong> {{cart?.noOfRooms || 1}}
+        </p>
     </div>
 
     <p class="title">CHECK-IN DETAILS</p>
@@ -22,34 +33,55 @@
             <span class="item-value">{{cart?.checkOut}}</span>
         </p>
         <p class="line-item">
+            <span class="item-desc">No of nights</span>
+            <span class="item-value">{{cart?.noOfDays || 1}}</span>
+        </p>
+        <p class="line-item">
             <span class="item-desc">No of guests</span>
             <span class="item-value">
-                {{cart?.noOfAdults + cart?.noOfChildren}}
-                ( {{cart?.noOfAdults}} Adults and {{cart?.noOfChildren}} Children )</span>
+                {{(cart?.noOfAdults || 0) + (cart?.noOfChildren || 0)}}
+                ( {{cart?.noOfAdults || 0}} Adults and {{cart?.noOfChildren || 0}} Children )</span>
         </p>
     </div>
 
     <p class="title">TARIFFS</p>
     <div class="background-box">
         <p class="title mt-2">ROOM</p>
-        <p class="line-item">
-            <span class="item-desc">Unit Rate x No of nights</span>
-            <span class="item-value">Rs 1000</span>
+        <p class="line-item" *ngIf="cart?.rooms && cart.rooms.length > 0">
+            <span class="item-desc">
+                {{getCurrency()}} {{getRoomRatePerNight() | number: '1.2-2'}} x {{cart?.noOfDays || 1}} night(s)
+            </span>
+            <span class="item-value">{{getCurrency()}} {{getRoomRate() | number: '1.2-2'}}</span>
+        </p>
+        <p class="line-item" *ngIf="cart?.rooms?.[0]?.price?.discounted">
+            <span class="item-desc">Discount</span>
+            <span class="item-value">- {{getCurrency()}} {{(cart.rooms[0].price.discounted || 0) | number: '1.2-2'}}</span>
         </p>
 
-        <p class="title mt-3">ADDONS</p>
-        <p class="line-item">
-            <span class="item-desc">Addon service one</span>
-            <span class="item-value">Rs 1000</span>
+        <p class="title mt-3" *ngIf="hasActiveAddons(cart?.addons)">ADDONS</p>
+        <ng-container *ngFor="let addon of getActiveAddons(cart?.addons)">
+            <p class="line-item">
+                <span class="item-desc">{{addon?.policy_name || 'Addon'}} - {{addon?.qty || 1}} Qty</span>
+                <span class="item-value">{{getCurrency()}} {{calculateAddonPrice(addon) | number: '1.2-2'}}</span>
+            </p>
+        </ng-container>
+        <p class="line-item" *ngIf="!hasActiveAddons(cart?.addons)">
+            <span class="item-desc">No addons selected</span>
+            <span class="item-value">{{getCurrency()}} 0.00</span>
         </p>
 
         <p class="title mt-3">OTHERS</p>
-        <p class="line-item">
-            <span class="item-desc">Tax</span>
-            <span class="item-value">Rs 1000</span>
+        <p class="line-item" *ngIf="cart?.rooms && cart.rooms.length > 0">
+            <span class="item-desc">Tax (per night)</span>
+            <span class="item-value">{{getCurrency()}} {{(cart.rooms[0]?.price?.taxValue || 0) | number: '1.2-2'}}</span>
         </p>
 
-        <p class="title total">TOTAL <span class="item-value">Rs {{cart?.totalAmount}}</span></p>
+        <p class="line-item" *ngIf="cart?.promoDiscount">
+            <span class="item-desc">Promo Discount ({{cart?.promoCode}})</span>
+            <span class="item-value">- {{getCurrency()}} {{(cart.promoDiscount || 0) | number: '1.2-2'}}</span>
+        </p>
+
+        <p class="title total">TOTAL <span class="item-value">{{getCurrency()}} {{getTotalAmount() | number: '1.2-2'}}</span></p>
     </div>
 
 

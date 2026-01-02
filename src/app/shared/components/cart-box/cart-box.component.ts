@@ -101,4 +101,16 @@ export class CartBoxComponent implements OnInit {
     
     return (adultCost + childCost) * (addon.qty || 1);
   }
+
+  // Filter addons with qty > 0
+  getActiveAddons(addons: any[] | undefined): any[] {
+    if (!addons) return [];
+    return addons.filter(addon => addon.qty > 0);
+  }
+
+  // Check if there are active addons
+  hasActiveAddons(addons: any[] | undefined): boolean {
+    if (!addons) return false;
+    return addons.some(addon => addon.qty > 0);
+  }
 }

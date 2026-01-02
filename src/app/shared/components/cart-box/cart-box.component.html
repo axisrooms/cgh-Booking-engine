@@ -59,9 +59,9 @@
                     number:
                     '1.2-2'}}</span>
             </p>
-            <h6 *ngIf="bookingItem.addons?.length != 0" style="margin: 10px 0;    font-size: 18px;
+            <h6 *ngIf="hasActiveAddons(bookingItem.addons)" style="margin: 10px 0;    font-size: 18px;
             color: #724e37;">Addons</h6>
-            <ng-container *ngFor="let item of bookingItem.addons">
+            <ng-container *ngFor="let item of getActiveAddons(bookingItem.addons)">
                 <p class="line-item">
                     <span class="item-desc">{{item.policy_name}} - {{item.qty}} Qty</span>
                     <span class="item-amount">{{item.currency}} {{calculateAddonPrice(item, bookingItem) | number:

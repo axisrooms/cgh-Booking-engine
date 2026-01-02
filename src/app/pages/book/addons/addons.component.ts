@@ -52,23 +52,17 @@ export class AddonsComponent implements OnInit {
       return;
     }
     
-    // if (qty >= 1) {
-    //   this.addons[i].cost = this.addons[i].price * qty;
-    // }
-
-    // if (e == "add") {
-    //   this.num += 1
-    // } else if (e == "minus") {
-    //   this.num -= 1
-    //   if (this.num <= 0) {
-    //     this.num = 0;
-    //   }
-    // }
-    // this.totalPrice = price
-    // this.totalPrice = price * qty
-
-    this.addAddon(item,i)
-
+    // If quantity is 0, remove from cart
+    if (item.qty === 0 || item.qty <= 0) {
+      item.count = false;
+      this.removeAddon(item, i);
+    } else {
+      // If quantity > 0, add or update in cart
+      if (!item.count) {
+        item.count = true;
+      }
+      this.addAddon(item, i);
+    }
   }
 
   getAddons() {
@@ -82,15 +76,49 @@ export class AddonsComponent implements OnInit {
         })
         .subscribe((res) => {
           this.addons = res['policies'];
-          this.addons.forEach((element: { qty: number; count: boolean; mandatory?: boolean }) => {
-            element.qty = 1;
-            element.count = false;
-            
-            // Automatically add mandatory addons to cart
+          const bookingItem = this.bookingService.currBookingItemValue;
+          
+          // First, sync existing cart addons with the new addon list
+          if (bookingItem && bookingItem.addons) {
+            bookingItem.addons.forEach((cartAddon: any) => {
+              const addonInList = this.addons.find((a: any) => a.policy_id === cartAddon.policy_id);
+              if (addonInList) {
+                // If addon exists in list, sync the state
+                addonInList.qty = cartAddon.qty || 0;
+                addonInList.count = (cartAddon.qty > 0);
+              }
+            });
+          }
+          
+          this.addons.forEach((element: { qty: number; count: boolean; mandatory?: boolean; policy_id: any }) => {
+            // Only auto-add mandatory addons to cart if they're not already there
             if (element.mandatory === true) {
-              element.count = true;
-              element.qty = 1;
-              this.bookingService.addAddon(element);
+              const inCart = bookingItem?.addons?.find((a: any) => a.policy_id === element.policy_id);
+              if (!inCart) {
+                element.count = true;
+                element.qty = 1;
+                this.bookingService.addAddon(element);
+              } else {
+                // Already in cart, sync the state
+                element.count = true;
+                element.qty = inCart.qty || 1;
+              }
+            } else {
+              // Non-mandatory addons: check if they're in cart
+              const inCart = bookingItem?.addons?.find((a: any) => a.policy_id === element.policy_id);
+              if (inCart && inCart.qty > 0) {
+                // Already in cart with qty > 0, sync the state
+                element.count = true;
+                element.qty = inCart.qty;
+              } else {
+                // Not in cart or qty is 0, set to default
+                element.qty = 0;
+                element.count = false;
+                // Remove from cart if it exists with qty 0
+                if (inCart && inCart.qty <= 0) {
+                  this.bookingService.removeAddon(element);
+                }
+              }
             }
           });
           console.log(this.addons)
@@ -100,6 +128,11 @@ export class AddonsComponent implements OnInit {
   }
 
   addAddon(addon: any, i: any) {
+    // Set qty to 1 if it's 0 or not set
+    if (!addon.qty || addon.qty <= 0) {
+      addon.qty = 1;
+    }
+    
     this.addons.forEach((e: { policy_id: any; count: boolean; }) => {
       if(e.policy_id == addon.policy_id){
         e.count = true

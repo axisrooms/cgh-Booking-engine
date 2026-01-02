@@ -225,9 +225,21 @@ export class BookingService {
         for (let index = 0; index < bookingItem.addons?.length || 0; index++) {
           if (addon['policy_id'] === bookingItem.addons[index]['policy_id']) {
             addonFound = true;
+            
+            // If qty is 0 or less, remove the addon from cart
+            if (!addon.qty || addon.qty <= 0) {
+              // Don't remove if it's mandatory
+              if (bookingItem.addons[index].mandatory !== true) {
+                bookingItem.addons.splice(index, 1);
+              }
+            } else {
+              // Update the quantity of the existing addon
+              bookingItem.addons[index].qty = addon.qty;
+            }
 
             bookingItem.addons.forEach(e => {
-              if (bookingItem) {
+              if (bookingItem && e.qty > 0) {
+                // Only calculate price for addons with qty > 0
                 // Check if it's per booking (flat cost) or per guest (adult/child values)
                 if ((e.adultValue === 0 || !e.adultValue) && (e.childValue === 0 || !e.childValue)) {
                   // Per booking - use flat cost
@@ -248,13 +260,17 @@ export class BookingService {
         }
       }
       if (!addonFound) {
-        addon.qty = 1;
+        // Use the qty from the addon parameter, default to 1 if not set
+        if (!addon.qty || addon.qty <= 0) {
+          addon.qty = 1;
+        }
         if (!bookingItem.addons) {
           bookingItem.addons = [];
         }
         bookingItem.addons.push(addon);
         bookingItem.addons.forEach(e => {
-          if (bookingItem) {
+          if (bookingItem && e.qty > 0) {
+            // Only calculate price for addons with qty > 0
             // Check if it's per booking (flat cost) or per guest (adult/child values)
             if ((e.adultValue === 0 || !e.adultValue) && (e.childValue === 0 || !e.childValue)) {
               // Per booking - use flat cost
@@ -301,44 +317,27 @@ export class BookingService {
             if (bookingItem.addons[index].mandatory === true) {
               return;
             }
-            if (bookingItem.addons[index].qty > 1) {
-              bookingItem.addons.forEach(e => {
-                if (bookingItem) {
-                  // Check if it's per booking (flat cost) or per guest (adult/child values)
-                  if ((e.adultValue === 0 || !e.adultValue) && (e.childValue === 0 || !e.childValue)) {
-                    // Per booking - use flat cost
-                    const totalCost = parseFloat(String(e.cost || 0)) * e.qty;
-                    bookingItem.addonTotalPrice += totalCost;
-                  } else {
-                    // Per guest - calculate based on adultValue and childValue
-                    const adultCost = (e.adultValue || 0) * (bookingItem.noOfAdults || 0);
-                    const childCost = (e.childValue || 0) * (bookingItem.noOfChildren || 0);
-                    const totalCost = (adultCost + childCost) * e.qty;
-                    bookingItem.addonTotalPrice += totalCost;
-                  }
+            // Remove the addon from cart
+            bookingItem?.addons.splice(index, 1);
+            
+            // Recalculate total price for remaining addons
+            bookingItem.addons.forEach(e => {
+              if (bookingItem && e.qty > 0) {
+                // Only calculate price for addons with qty > 0
+                // Check if it's per booking (flat cost) or per guest (adult/child values)
+                if ((e.adultValue === 0 || !e.adultValue) && (e.childValue === 0 || !e.childValue)) {
+                  // Per booking - use flat cost
+                  const totalCost = parseFloat(String(e.cost || 0)) * e.qty;
+                  bookingItem.addonTotalPrice += totalCost;
+                } else {
+                  // Per guest - calculate based on adultValue and childValue
+                  const adultCost = (e.adultValue || 0) * (bookingItem.noOfAdults || 0);
+                  const childCost = (e.childValue || 0) * (bookingItem.noOfChildren || 0);
+                  const totalCost = (adultCost + childCost) * e.qty;
+                  bookingItem.addonTotalPrice += totalCost;
                 }
-              })
-              bookingItem?.addons.splice(index, 1);
-
-            } else if (bookingItem.addons[index].qty === 1 || bookingItem.addons[index].qty === 0) {
-              bookingItem.addons.forEach(e => {
-                if (bookingItem) {
-                  // Check if it's per booking (flat cost) or per guest (adult/child values)
-                  if ((e.adultValue === 0 || !e.adultValue) && (e.childValue === 0 || !e.childValue)) {
-                    // Per booking - use flat cost
-                    const totalCost = parseFloat(String(e.cost || 0)) * e.qty;
-                    bookingItem.addonTotalPrice += totalCost;
-                  } else {
-                    // Per guest - calculate based on adultValue and childValue
-                    const adultCost = (e.adultValue || 0) * (bookingItem.noOfAdults || 0);
-                    const childCost = (e.childValue || 0) * (bookingItem.noOfChildren || 0);
-                    const totalCost = (adultCost + childCost) * e.qty;
-                    bookingItem.addonTotalPrice += totalCost;
-                  }
-                }
-              })
-              bookingItem?.addons.splice(index, 1);
-            }
+              }
+            })
             break;
           }
         }
