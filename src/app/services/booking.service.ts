@@ -358,22 +358,50 @@ export class BookingService {
   
 
   getRecommendationsSearchParams() {
-    let bookingItem = this.currBookingItemValue
+    let bookingItem = this.currBookingItemValue;
     let searchParams: any = {
       bookingEngineId: this.BookingConfigService.getBookingEngineId(),
     };
 
-    // searchParams.cityId = bookingItem?.renderData.address.cityId;
-    // searchParams.stateId = bookingItem?.renderData.address.stateId;
-    // searchParams.countryId = bookingItem?.renderData.address.countryId;
-    searchParams.checkIn = bookingItem?.checkOut;
+    if (!bookingItem) {
+      return searchParams;
+    }
 
-    let checkOut = moment(bookingItem?.checkOut, "DD-MM-YYYY")
-    checkOut.add(2, 'days')
+    // searchParams.cityId = bookingItem?.renderData?.address?.cityId;
+    // searchParams.stateId = bookingItem?.renderData?.address?.stateId;
+    // searchParams.countryId = bookingItem?.renderData?.address?.countryId;
+    
+    // Use checkOut as checkIn for recommendations (start from current booking's checkout date)
+    if (bookingItem.checkOut) {
+      // Try different date formats
+      let checkOutDate;
+      if (bookingItem.checkOut.includes('-')) {
+        // Format: DD-MM-YYYY or DD/MM/YYYY
+        checkOutDate = moment(bookingItem.checkOut, ["DD-MM-YYYY", "DD/MM/YYYY", "YYYY-MM-DD"], true);
+      } else {
+        checkOutDate = moment(bookingItem.checkOut);
+      }
+      
+      if (checkOutDate.isValid()) {
+        searchParams.checkIn = checkOutDate.format('DD/MM/YYYY');
+        // Add 2 days for checkout
+        checkOutDate.add(2, 'days');
+        searchParams.checkOut = checkOutDate.format('DD/MM/YYYY');
+      } else {
+        // Fallback: use checkOut as-is
+        searchParams.checkIn = bookingItem.checkOut;
+        searchParams.checkOut = bookingItem.checkOut;
+      }
+    }
 
-    searchParams.checkOut = checkOut.format('DD/MM/YYYY');
-    searchParams.paxInfo = bookingItem?.paxInfo;
-    searchParams.rooms = bookingItem?.rooms;
+    searchParams.paxInfo = bookingItem?.paxInfo || '1|0|0|0||';
+    
+    // Convert rooms array to JSON string if needed
+    if (bookingItem?.rooms && Array.isArray(bookingItem.rooms)) {
+      searchParams.rooms = JSON.stringify(bookingItem.rooms);
+    } else {
+      searchParams.rooms = bookingItem?.rooms || '1';
+    }
 
     return searchParams;
   }

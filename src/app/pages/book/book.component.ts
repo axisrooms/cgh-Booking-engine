@@ -57,10 +57,10 @@ export class BookComponent implements OnInit {
     epdate: '',
     cvv: ''
   };
-    // Policy related properties
-    cancellationPolicy: string[] = [];
-    hotelPolicy: string[] = [];
-    policiesLoaded: boolean = false;
+  // Policy related properties
+  cancellationPolicy: string[] = [];
+  hotelPolicy: string[] = [];
+  policiesLoaded: boolean = false;
   acceptTerms: boolean = false;
   constructor(
     public dialog: MatDialog,
@@ -81,20 +81,20 @@ export class BookComponent implements OnInit {
       this.hotelid = e?.hotelId;
       this.searchid = e?.searchId;
       this.payflag = e?.payathotel;
-      
+
       // Check if Pay At Hotel option is available from the hotel data
       this.isPayAtHotelAvailable = e?.payathotel === true;
-      
+
       // Load policies when booking item is available
       if (this.hotelid && this.searchid) {
         this.loadPolicies();
       }
     });
-    
+
     // Set default stepper to addons - the addons component will handle fetching
     this.stepper = this.eStepper.addons;
   }
-  
+
   loadPolicies(): void {
     if (this.hotelid && this.searchid) {
       this.bookingService.getAddons({
@@ -115,31 +115,31 @@ export class BookComponent implements OnInit {
       );
     }
   }
-  
+
   viewCancellationPolicy(): void {
     if (this.cancellationPolicy.length > 0) {
-      const policyHtml = '<ul style="text-align: left; padding-left: 20px;">' + 
-        this.cancellationPolicy.map(policy => `<li style="margin-bottom: 10px;">${policy}</li>`).join('') + 
+      const policyHtml = '<ul style="text-align: left; padding-left: 20px;">' +
+        this.cancellationPolicy.map(policy => `<li style="margin-bottom: 10px;">${policy}</li>`).join('') +
         '</ul>';
-      
+
       this.showPolicyDialog('Cancellation Policy', policyHtml);
     } else {
       this.snackBar.open('Cancellation policy not available', 'Close', { duration: 3000 });
     }
   }
-  
+
   viewHotelPolicy(): void {
     if (this.hotelPolicy.length > 0) {
-      const policyHtml = '<ul style="text-align: left; padding-left: 20px;">' + 
-        this.hotelPolicy.map(policy => `<li style="margin-bottom: 10px;">${policy}</li>`).join('') + 
+      const policyHtml = '<ul style="text-align: left; padding-left: 20px;">' +
+        this.hotelPolicy.map(policy => `<li style="margin-bottom: 10px;">${policy}</li>`).join('') +
         '</ul>';
-      
+
       this.showPolicyDialog('Hotel Policy', policyHtml);
     } else {
       this.snackBar.open('Hotel policy not available', 'Close', { duration: 3000 });
     }
   }
-  
+
   private showPolicyDialog(title: string, content: string): void {
     // Create overlay
     const overlay = document.createElement('div');
@@ -148,7 +148,7 @@ export class BookComponent implements OnInit {
       background-color: rgba(0,0,0,0.5); z-index: 9999; 
       display: flex; align-items: center; justify-content: center;
     `;
-    
+
     // Create dialog
     const dialog = document.createElement('div');
     dialog.style.cssText = `
@@ -156,7 +156,7 @@ export class BookComponent implements OnInit {
       max-height: 80vh; overflow-y: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
       padding: 20px;
     `;
-    
+
     dialog.innerHTML = `
       <h2 style="font-family: 'Adobe Caslon Pro', serif; color: #724e37; margin-bottom: 15px; margin-top: 0;">
         ${title}
@@ -168,11 +168,11 @@ export class BookComponent implements OnInit {
         Close
       </button>
     `;
-    
+
     overlay.appendChild(dialog);
     document.body.appendChild(overlay);
     document.body.style.overflow = 'hidden';
-    
+
     // Close button handler
     const closeBtn = dialog.querySelector('.close-policy-btn');
     if (closeBtn) {
@@ -183,7 +183,7 @@ export class BookComponent implements OnInit {
         document.body.style.overflow = 'auto';
       });
     }
-    
+
     // Close on overlay click
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) {
@@ -195,43 +195,54 @@ export class BookComponent implements OnInit {
     });
   }
 
-  // openRecommendationsDialog() {
-  //   this.spinner.show();
-  //   let dat = this.currBookingItem$.subscribe(e => { return e?.checkIn })
-  //   this.searchService.getAllHotels(dat).subscribe(res => {
-  //     this.dialog.open(RecommendationsComponent, {
-  //       width: '600px',
-  //       panelClass: ['mat-dialog-custom-dimensions'],
-  //       position: { bottom: '0px' },
-  //       data: {
-  //         searchResult: res,
-  //         HotelId: this.hotelid,
-  //       },
-  //     }).afterClosed().subscribe(res => {
-  //       if (res.event == true) {
-  //         if (this.personalDetailsComponent.personalDetailsForm.valid) {
-  //           this.personalDetailsForm =
-  //             this.personalDetailsComponent.personalDetailsForm;
-  //           // this.stepper = this.eStepper.addons;
+  openRecommendationsDialog() {
+    this.spinner.show();
+    const checkIn = this.bookingService.currBookingItemValue?.checkIn;
+    this.searchService.getAllHotels(checkIn).subscribe(res => {
+      this.dialog.open(RecommendationsComponent, {
+        width: '600px',
+        panelClass: ['mat-dialog-custom-dimensions'],
+        position: { bottom: '0px' },
+        data: {
+          searchResult: res,
+          HotelId: this.hotelid,
+        },
+      }).afterClosed().subscribe(res => {
+        if (res && res.event == true) {
+          if (this.personalDetailsComponent.personalDetailsForm.valid) {
+            this.personalDetailsForm =
+              this.personalDetailsComponent.personalDetailsForm;
+            // this.stepper = this.eStepper.addons;
 
-  //           if (this.payathotel) {
-  //             this.paymentService.createOrder(this.bookingService.currBookingItemValue).subscribe((res1) => {
-  //               this.clickFn();
-  //             });
-  //           } else {
-  //             this.paymentService.createOrderAndMakePayment(
-  //               this.bookingService.currBookingItemValue, this.personalDetailsForm.value, this.payathotel
-  //             );
-  //           }
-  //         } else {
-  //           this.personalDetailsComponent.personalDetailsForm.markAllAsTouched();
-  //           this.snackBar.open('Please complete the form', '', { duration: 2000 });
-  //         }
-  //       }
-  //     });
-  //     this.spinner.hide();
-  //   })
-  // }
+            if (this.payathotel) {
+              this.paymentService.createOrder(this.bookingService.currBookingItemValue).subscribe(
+                (res1) => {
+                  this.clickFn();
+                },
+                (error) => {
+                  console.error('Error creating order:', error);
+                  this.snackBar.open('Error creating order. Please try again.', '', { duration: 3000 });
+                }
+              );
+            } else {
+              try {
+                this.paymentService.createOrderAndMakePayment(
+                  this.bookingService.currBookingItemValue, this.personalDetailsForm.value, this.payathotel
+                );
+              } catch (error) {
+                console.error('Error processing payment:', error);
+                this.snackBar.open('Error processing payment. Please try again.', '', { duration: 3000 });
+              }
+            }
+          } else {
+            this.personalDetailsComponent.personalDetailsForm.markAllAsTouched();
+            this.snackBar.open('Please complete the form', '', { duration: 2000 });
+          }
+        }
+      });
+      this.spinner.hide();
+    })
+  }
 
   setPayNow() {
     this.payathotel = false;
@@ -318,24 +329,24 @@ export class BookComponent implements OnInit {
         this.snackBar.open('Form is not ready. Please try again.', '', { duration: 2000 });
         return;
       }
-      
+
       // Check if terms and conditions are accepted
       if (!this.acceptTerms) {
         this.snackBar.open('Please accept the Terms and Conditions to proceed', '', { duration: 3000 });
         return;
       }
-      
+
       // Check if both policy checkboxes are checked
       if (!this.cpolicy) {
         this.snackBar.open('Please read and acknowledge the Cancellation Policy', '', { duration: 3000 });
         return;
       }
-      
+
       if (!this.hpolicy) {
         this.snackBar.open('Please read and acknowledge the Hotel Policy', '', { duration: 3000 });
         return;
       }
-      
+
       // Validate the form
       if (this.personalDetailsComponent.personalDetailsForm.valid) {
         this.personalDetailsForm = this.personalDetailsComponent.personalDetailsForm;
@@ -353,26 +364,7 @@ export class BookComponent implements OnInit {
           return;
         }
 
-        if (this.payathotel) {
-          this.paymentService.createOrder(this.bookingService.currBookingItemValue).subscribe(
-            (res1) => {
-              this.clickFn();
-            },
-            (error) => {
-              console.error('Error creating order:', error);
-              this.snackBar.open('Error creating order. Please try again.', '', { duration: 3000 });
-            }
-          );
-        } else {
-          try {
-            this.paymentService.createOrderAndMakePayment(
-              this.bookingService.currBookingItemValue, this.personalDetailsForm.value, this.payathotel
-            );
-          } catch (error) {
-            console.error('Error processing payment:', error);
-            this.snackBar.open('Error processing payment. Please try again.', '', { duration: 3000 });
-          }
-        }
+        this.openRecommendationsDialog();
       } else {
         this.personalDetailsComponent.personalDetailsForm.markAllAsTouched();
         this.snackBar.open('Please complete the form', '', { duration: 2000 });
@@ -381,21 +373,7 @@ export class BookComponent implements OnInit {
 
 
 
-    // if (this.stepper === this.eStepper.personalDetails) {
-    //   if (this.personalDetailsComponent.personalDetailsForm.valid) {
-    //     this.personalDetailsForm =
-    //       this.personalDetailsComponent.personalDetailsForm;
-    //     this.stepper = this.eStepper.addons;
-    //     this.openRecommendationsDialog()
-    //   } else {
-    //     this.personalDetailsComponent.personalDetailsForm.markAllAsTouched();
-    //     this.snackBar.open('Please complete the form', '', { duration: 2000 });
-    //   }
-    // } else if (this.stepper === this.eStepper.addons) {
-    //   this.paymentService.createOrderAndMakePayment(
-    //     this.bookingService.currBookingItemValue, this.personalDetailsForm.value
-    //   );
-    // }
+
     window.scrollTo(0, 200);
   }
 
@@ -450,7 +428,7 @@ export class BookComponent implements OnInit {
       this.expandTabBlock = true;
     }
   }
-  
+
   hotelpolicy() {
     if (this.expandTabBlock1) {
       this.expandTabBlock1 = false;
