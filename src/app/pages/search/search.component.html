@@ -17,7 +17,7 @@
                         <ng-container>
                             <input type="search" autocomplete="off" class="field-content cstm" id="hotel-field-input"
                                 placeholder="Search By Hotel/City" aria-label="Number" matInput formControlName="hotel"
-                                (keydown)="onHotelFieldEvent('keydown', $event)" (focus)="onHotelFieldEvent('focus')">
+                                (input)="onHotelFieldEvent('input', $event)" (focus)="onHotelFieldEvent('focus')">
 
                             <mat-card class="dropdown-card p-0" style="  scroll-behavior: smooth;
                             max-height: 255px;" 

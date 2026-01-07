@@ -262,7 +262,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     console.log(dtTom)
     return this.formBuilder.group({
       searchType: [],
-      hotel: [''],
+      hotel: ['', Validators.required],
       location: [''],
       cityId: [''],
       stateId: [''],
@@ -353,15 +353,9 @@ export class SearchComponent implements OnInit, OnDestroy {
       val.hotel_name?.toLowerCase().indexOf(filterValue) > -1
     );
 
-    // Only show dropdown if not in the middle of selecting an option
-    if (!this.isSelectingOption) {
-      // Defer dropdown state change to avoid ExpressionChangedAfterItHasBeenCheckedError
-      setTimeout(() => {
-        if (!this.isSelectingOption) {
-          this.showDropdown =
-            filteredArray.length > 0 ? DropdownType.hotel : DropdownType.none;
-        }
-      }, 0);
+    // Show dropdown when there are results (don't hide here, let the combined logic handle it)
+    if (!this.isSelectingOption && filteredArray.length > 0) {
+      this.showDropdown = DropdownType.hotel;
     }
     
     return filteredArray;
@@ -382,15 +376,9 @@ export class SearchComponent implements OnInit, OnDestroy {
       val.key?.toLowerCase().indexOf(filterValue) > -1
     );
     
-    // Only show dropdown if not in the middle of selecting an option
-    if (!this.isSelectingOption) {
-      // Defer dropdown state change to avoid ExpressionChangedAfterItHasBeenCheckedError
-      setTimeout(() => {
-        if (!this.isSelectingOption) {
-          this.showDropdown =
-            filteredArray.length > 0 ? DropdownType.location : DropdownType.none;
-        }
-      }, 0);
+    // Show dropdown when there are results (hotel dropdown also shows locations)
+    if (!this.isSelectingOption && filteredArray.length > 0) {
+      this.showDropdown = DropdownType.hotel;
     }
 
     console.log(this.locationList, filteredArray, "########")
@@ -561,10 +549,12 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.showDropdown = this.dropdownType.hotel;
       this.filterHotel(this.searchForm.controls.hotel.value);
       this.filterLocation(this.searchForm.controls.hotel.value);
-    } else if (type === 'keydown') {
+    } else if (type === 'input' || type === 'keydown') {
       this.showDropdown = this.dropdownType.hotel;
-      this.filterHotel(this.searchForm.controls.hotel.value);
-      this.filterLocation(this.searchForm.controls.hotel.value);
+      // For input events, get the value from the event target
+      const searchValue = event?.target?.value ?? this.searchForm.controls.hotel.value;
+      this.filterHotel(searchValue);
+      this.filterLocation(searchValue);
     }
   }
 
@@ -653,9 +643,11 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   async setHotelName(id: number) {
-    if (!this.isHotelListLoaded) {
-      this.getWithExpiry();
+    // Wait for hotels to load if not already loaded
+    if (!this.isHotelListLoaded || this.hotelsList.length === 0) {
+      await this.getAllHotels();
     }
+    
     let hotelName = '';
     for (let i = 0; i < this.hotelsList.length; i++) {
       if (this.hotelsList[i].hotel_id === id) {
@@ -780,6 +772,13 @@ export class SearchComponent implements OnInit, OnDestroy {
     console.log(this.searchForm, this.searchForm.valid)
     this.searchForm.markAllAsTouched();
     this.showDropdown = this.dropdownType.none;
+    
+    // Check if hotel field is empty
+    if (!this.searchForm.controls.hotel.value || this.searchForm.controls.hotel.value.trim() === '') {
+      this.showFieldWarnings = this.dropdownType.hotel;
+      return;
+    }
+    
     // if(      this.searchForm.controls.searchType.status== "VALID" ){
     //   this.searchForm.valid
     // }
@@ -947,30 +946,37 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   getPaxInfo() {
     let guests = 0;
-    let paxString = ''
+    let paxParts: string[] = [];
     let aFromArray: FormArray = this.getTablesFormArray();
     
-    // Loop through all rooms instead of just the first one
+    // Loop through all rooms
     for (let i = 0; i < aFromArray.length; i++) {
-      paxString += aFromArray.value[i]['noOfAdults'] + '|' + aFromArray.value[i]['noOfChildren'] + '|';
-      guests = Number(guests + aFromArray.value[i]['noOfAdults'] + aFromArray.value[i]['noOfChildren'])
-      let agesFormArray: FormArray = this.getChildrenAgeFormArray(i)
-      console.log(agesFormArray.controls)
-      for (let ii = 0; ii < aFromArray.value[i]['noOfChildren']; ii++) {
-        paxString += +this.age.get(i + ii);
-        paxString += '|'
+      let roomPax: string[] = [];
+      const noOfAdults = aFromArray.value[i]['noOfAdults'] || 0;
+      const noOfChildren = aFromArray.value[i]['noOfChildren'] || 0;
+      
+      roomPax.push(noOfAdults.toString());
+      roomPax.push(noOfChildren.toString());
+      
+      guests += noOfAdults + noOfChildren;
+      
+      // Add children ages if any
+      if (noOfChildren > 0) {
+        let agesFormArray: FormArray = this.getChildrenAgeFormArray(i);
+        for (let ii = 0; ii < noOfChildren; ii++) {
+          const age = this.age.get(i + '' + ii) || 0;
+          roomPax.push(age.toString());
+        }
       }
-      console.log(agesFormArray.controls.length)
-      if (!aFromArray.value[i]['noOfChildren']) {
-        paxString += '0|0|'
-      }
-      if (i < aFromArray.length - 1) {
-        paxString += "|"
-      }
+      
+      paxParts.push(roomPax.join('|'));
     }
-    localStorage.removeItem('guests')
+    
+    const paxString = paxParts.join('||');
+    
+    localStorage.removeItem('guests');
     localStorage.setItem('guests', guests.toString());
-    console.log(paxString, "paxstring")
+    console.log(paxString, "paxstring");
     return paxString;
   }
 
@@ -983,11 +989,20 @@ export class SearchComponent implements OnInit, OnDestroy {
       paxDataArray.removeAt(0);
     }
     
-    // Split by double pipe to get room data
-    let rooms = paxInfo.toString().split('||').filter((r: string) => r.length > 0);
+    const paxString = paxInfo.toString();
+    let rooms: string[] = [];
+    
+    // Check if it's the new format (rooms separated by ||) or old format
+    if (paxString.includes('||')) {
+      rooms = paxString.split('||').filter((r: string) => r.length > 0);
+    } else {
+      // Old format - try to parse as single room or multiple rooms separated by single |
+      // Format: adults|children|age1|age2|...
+      rooms = [paxString];
+    }
     
     rooms.forEach((roomData: string, roomIndex: number) => {
-      let paxArray = roomData.split('|').filter((p: string) => p.length > 0);
+      let paxArray = roomData.split('|').filter((p: string) => p !== '');
       
       if (paxArray.length >= 2) {
         const noOfAdults = parseInt(paxArray[0]) || 2;
@@ -1004,7 +1019,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         if (noOfChildren > 0 && paxArray.length > 2) {
           for (let i = 0; i < noOfChildren && i + 2 < paxArray.length; i++) {
             const age = parseInt(paxArray[i + 2]) || 1;
-            this.age.set(roomIndex + i, age);
+            this.age.set(roomIndex + '' + i, age);
           }
         }
         

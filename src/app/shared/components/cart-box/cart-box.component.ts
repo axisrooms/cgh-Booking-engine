@@ -113,4 +113,11 @@ export class CartBoxComponent implements OnInit {
     if (!addons) return false;
     return addons.some(addon => addon.qty > 0);
   }
+
+  // Get the number of remaining rooms to be selected
+  getRemainingRooms(): number {
+    const totalRoomsRequested = parseInt(localStorage.getItem('rooms') || '1', 10);
+    const roomsInCart = this.bookingItems?.length || 0;
+    return Math.max(0, totalRoomsRequested - roomsInCart);
+  }
 }

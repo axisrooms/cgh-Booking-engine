@@ -89,12 +89,49 @@
                 background: darkblue;
                 color: white;
                 border-radius: 10px;
-            "(click)="router.navigate(['/book'], { queryParams: { bookingEngineId: BookingConfigService.getBookingEngineId() } })" *ngIf="type === 'searchComponent-newBooking'">Reserve</button></p>
+            "(click)="router.navigate(['/book'], { queryParams: { bookingEngineId: BookingConfigService.getBookingEngineId() } })" *ngIf="type === 'searchComponent-newBooking' && getRemainingRooms() === 0">Reserve</button></p>
 
 
                  
         <!-- <app-no-booking class="w-100" *ngIf="bookingItems?.length == 0" (click)="gotoHomepage()">
                 </app-no-booking> -->
+
+        <!-- Message showing remaining rooms to select -->
+        <div *ngIf="bookingItems && bookingItems.length > 0 && getRemainingRooms() > 0" 
+             style="width: 100%; padding: 0 15px; box-sizing: border-box;">
+            <div style="background: linear-gradient(135deg, #2c7a4d 0%, #1a5c38 100%); 
+                        border-radius: 8px; 
+                        padding: 20px; 
+                        margin: 15px 0; 
+                        box-shadow: 0 4px 12px rgba(44, 122, 77, 0.3);
+                        text-align: center;
+                        width: 100%;
+                        box-sizing: border-box;">
+                <div style="background: rgba(255,255,255,0.2); 
+                            width: 45px; 
+                            height: 45px; 
+                            border-radius: 50%; 
+                            display: inline-flex; 
+                            align-items: center; 
+                            justify-content: center; 
+                            margin-bottom: 12px;">
+                    <i class="bi bi-door-open" style="font-size: 22px; color: white;"></i>
+                </div>
+                <p style="color: white; 
+                          font-size: 15px; 
+                          font-weight: 600; 
+                          margin: 0 0 6px 0;
+                          line-height: 1.3;">
+                    {{getRemainingRooms()}} More Room{{getRemainingRooms() > 1 ? 's' : ''}} Needed
+                </p>
+                <p style="color: rgba(255,255,255,0.85); 
+                          font-size: 12px; 
+                          margin: 0;
+                          line-height: 1.4;">
+                    Please select {{getRemainingRooms() === 1 ? 'another room' : getRemainingRooms() + ' more rooms'}} to complete your booking
+                </p>
+            </div>
+        </div>
 
         <div class="wrapper" *ngIf="bookingItems?.length == 0">
             <div class="alert alert-secondary" role="alert">
