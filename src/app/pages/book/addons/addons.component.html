@@ -2,220 +2,216 @@
     <p class="title">ADDONS</p>
     <ng-container *ngIf="addons.length > 0; else elseTemplate">
         <div class="row">
-            <div [ngClass]="openAddon == true ? 'col-6' : 'col-12'">
+            <div [ngClass]="openAddon == true ? 'col-lg-6 col-md-6' : 'col-12'">
                 <div class="row">
-                    <ng-container *ngFor="let item of addons | paginate: config; let i=index ">
-                        <div class="col-12 col-md-6 col-lg-6" [ngClass]="openAddon == true ? 'col-12' : 'col-12  col-md-6 col-lg6'">
+                    <ng-container *ngFor="let item of addons | paginate: config; let i=index">
+                        <div class="col-12 col-md-6" [ngClass]="openAddon == true ? 'col-lg-12' : 'col-lg-6'">
                             <div class="card">
-                                <img class="addon-img" [src]='item.policy_image_url' alt="">
-                                <div style="padding:15px">
-                                    <div class="row">
-                                        <div class="col-12 d-flex justify-content-between">
-                                            <div>
-                                                <p class="addon-title">{{item?.policy_name}}</p>
-                                                <span *ngIf="item.mandatory === true" style="font-size: 10px; color: #dc3545; font-weight: 600;">Mandatory</span>
-                                            </div>
-                                            <i *ngIf="item.count == false && item.mandatory !== true" class="bi bi-plus-square-fill" style="cursor: pointer;"
-                                                (click)="addAddon(item, i);"></i>
-                                            <i *ngIf="item.count == true && item.mandatory !== true" class="bi bi-dash-square-fill" style="cursor: pointer;"
-                                                (click)="removeAddon(item, i);"></i>
-                                            <i *ngIf="item.mandatory === true" class="bi bi-dash-square-fill" style="cursor: not-allowed; opacity: 0.5;" title="Mandatory addon - cannot be removed"></i>
-
-
+                                <img class="addon-img" 
+                                     [src]="item.policy_image_url" 
+                                     alt="{{item?.policy_name}}"
+                                     onerror="this.src='assets/images/no-image-found.png'">
+                                
+                                <div class="card-content">
+                                    <!-- Header with Title and Toggle Button -->
+                                    <div class="addon-header">
+                                        <div>
+                                            <p class="addon-title">{{item?.policy_name}}</p>
+                                            <span class="mandatory-badge" *ngIf="item.mandatory === true">
+                                                <i class="bi bi-lock-fill"></i> Mandatory
+                                            </span>
+                                        </div>
+                                        <div class="toggle-btn add" 
+                                             *ngIf="item.count == false && item.mandatory !== true"
+                                             (click)="addAddon(item, i)">
+                                            <i class="bi bi-plus"></i>
+                                        </div>
+                                        <div class="toggle-btn remove" 
+                                             *ngIf="item.count == true && item.mandatory !== true"
+                                             (click)="removeAddon(item, i)">
+                                            <i class="bi bi-dash"></i>
+                                        </div>
+                                        <div class="toggle-btn disabled" 
+                                             *ngIf="item.mandatory === true"
+                                             title="Mandatory addon">
+                                            <i class="bi bi-check"></i>
                                         </div>
                                     </div>
+
+                                    <!-- Description -->
                                     <p class="addon-desc">{{item?.policy_description}}</p>
-                                    <a (click)="openAddon = true; getDetails(item)"
-                                        style="font-size: 12px;cursor: pointer;color: #595b62;">View
-                                        Details</a>
                                     
-                                    <!-- Display pricing based on policy type -->
-                                    <div class="row mt-2" style="font-size: 11px; color: #666; background: #f5f5f5; padding: 8px; border-radius: 4px; margin-left: 1px; margin-right: 1px;">
-                                        
-                                        <!-- For "per booking" type - show flat cost -->
+                                    <!-- View Details Link -->
+                                    <a class="view-details-link" (click)="openAddon = true; getDetails(item)">
+                                        <i class="bi bi-info-circle"></i> View Details
+                                    </a>
+
+                                    <!-- Pricing Box -->
+                                    <div class="pricing-box">
+                                        <!-- Per Booking Type -->
                                         <ng-container *ngIf="item?.adultValue === 0 && item?.childValue === 0">
-                                            <div class="col-12">
-                                                <div style="display: flex; justify-content: space-between; color: #2AB59D; font-weight: 600;">
-                                                    <span>{{item?.policy_type_name}}</span>
-                                                    <span>{{item?.currency}} {{item?.cost}}</span>
-                                                </div>
+                                            <div class="pricing-row total">
+                                                <span class="pricing-label">
+                                                    <i class="bi bi-tag-fill"></i> {{item?.policy_type_name}}
+                                                </span>
+                                                <span class="pricing-value">{{item?.currency}} {{item?.cost}}</span>
                                             </div>
                                         </ng-container>
                                         
-                                        <!-- For "per guest" type - show adult/child breakdown -->
+                                        <!-- Per Guest Type with Dropdowns -->
                                         <ng-container *ngIf="item?.adultValue > 0 || item?.childValue > 0">
-                                            <div class="col-12" style="margin-bottom: 3px;">
-                                                <div style="display: flex; justify-content: space-between;">
-                                                    <span>Adults ({{getNoOfAdults()}}) × {{item?.currency}} {{item?.adultValue || 0}}</span>
-                                                    <span style="font-weight: 600;">{{item?.currency}} {{(item?.adultValue || 0) * getNoOfAdults()}}</span>
+                                            <div class="guest-selectors">
+                                                <div class="selector-group">
+                                                    <label class="selector-label">Adults</label>
+                                                    <select class="selector-dropdown" 
+                                                            [(ngModel)]="item.selectedAdults"
+                                                            (change)="updateAddonPrice(item, i)">
+                                                        <option *ngFor="let num of getAdultOptions()" [value]="num">{{num}}</option>
+                                                    </select>
                                                 </div>
+                                                <div class="selector-group">
+                                                    <label class="selector-label">Childrens</label>
+                                                    <select class="selector-dropdown"
+                                                            [(ngModel)]="item.selectedChildren"
+                                                            (change)="updateAddonPrice(item, i)">
+                                                        <option *ngFor="let num of getChildrenOptions()" [value]="num">{{num}}</option>
+                                                    </select>
+                                                </div>
+                                                <!-- <div class="selector-group">
+                                                    <label class="selector-label">Nights</label>
+                                                    <select class="selector-dropdown"
+                                                            [(ngModel)]="item.selectedNights"
+                                                            (change)="updateAddonPrice(item, i)">
+                                                        <option *ngFor="let num of getNightOptions()" [value]="num">{{num}}</option>
+                                                    </select>
+                                                </div> -->
                                             </div>
-                                            <div class="col-12">
-                                                <div style="display: flex; justify-content: space-between;">
-                                                    <span>Children ({{getNoOfChildren()}}) × {{item?.currency}} {{item?.childValue || 0}}</span>
-                                                    <span style="font-weight: 600;">{{item?.currency}} {{(item?.childValue || 0) * getNoOfChildren()}}</span>
-                                                </div>
+                                            <div class="pricing-row">
+                                                <span class="pricing-label">
+                                                    <i class="bi bi-person-fill"></i> Adults ({{item.selectedAdults || 0}}) × {{item?.currency}} {{item?.adultValue || 0}}
+                                                </span>
+                                                <span class="pricing-value">{{item?.currency}} {{(item?.adultValue || 0) * (item.selectedAdults || 0)}}</span>
                                             </div>
-                                            <div class="col-12" style="border-top: 1px solid #ddd; margin-top: 5px; padding-top: 5px;">
-                                                <div style="display: flex; justify-content: space-between; color: #2AB59D; font-weight: 600;">
-                                                    <span>{{item?.policy_type_name}}</span>
-                                                    <span>{{item?.currency}} {{calculateAddonPrice(item)}}</span>
-                                                </div>
+                                            <div class="pricing-row">
+                                                <span class="pricing-label">
+                                                    <i class="bi bi-person-fill"></i> Children ({{item.selectedChildren || 0}}) × {{item?.currency}} {{item?.childValue || 0}}
+                                                </span>
+                                                <span class="pricing-value">{{item?.currency}} {{(item?.childValue || 0) * (item.selectedChildren || 0)}}</span>
+                                            </div>
+                                            <div class="pricing-row total">
+                                                <span class="pricing-label">
+                                                    <i class="bi bi-tag-fill"></i> {{item?.policy_type_name}}
+                                                </span>
+                                                <span class="pricing-value">{{item?.currency}} {{calculateAddonPriceWithSelections(item)}}</span>
                                             </div>
                                         </ng-container>
-                                        
                                     </div>
-                                    
-                                    <div class="row mt-1">
-                                        <div class="col-4 d-flex justify-content-between align-items-around">
-                                            <button class="btn-main" 
-                                                [disabled]="item.mandatory === true"
-                                                [style.opacity]="item.mandatory === true ? '0.5' : '1'"
-                                                [style.cursor]="item.mandatory === true ? 'not-allowed' : 'pointer'"
-                                                (click)="item.qty = (item.qty>0?item.qty-1:0);calAmt(item ,i)">-</button>
-                                            <span class="btn-num">{{item?.qty}}</span>
-                                            <button class="btn-main"
-                                                [disabled]="item.mandatory === true"
-                                                [style.opacity]="item.mandatory === true ? '0.5' : '1'"
-                                                [style.cursor]="item.mandatory === true ? 'not-allowed' : 'pointer'"
-                                                (click)="item.qty = item.qty+1;calAmt(item ,i)">+</button>
 
-
-                                        </div>
-                                        <div class="col-8 addon-price-div">
-                                            <p class="addon-price" *ngIf="item.qty>0">{{item?.currency}}
-                                                {{calculateAddonPrice(item)}} x {{item.qty}}
-                                            </p>
-                                            <p class="addon-price"> Total : {{item?.currency}}
-                                                <span *ngIf="item.qty == 0">
-                                                    {{calculateAddonPrice(item)}}
-                                                </span>
-                                                <span *ngIf="item.qty > 0">
-                                                    {{calculateTotalAddonPrice(item)}}
-                                                </span>
-
-                                            </p>
-                                        </div>
-                                        <!-- <div class="col-12">
-                                            <button class="price-btn" (click)="addAddon(item)">
-                                                Add
+                                    <!-- Quantity Controls -->
+                                    <div class="quantity-controls">
+                                        <div class="qty-wrapper">
+                                            <button class="qty-btn"
+                                                    [disabled]="item.mandatory === true"
+                                                    (click)="item.qty = (item.qty > 0 ? item.qty - 1 : 0); calAmt(item, i)">
+                                                <i class="bi bi-dash"></i>
                                             </button>
-                                        </div> -->
+                                            <span class="qty-num">{{item?.qty}}</span>
+                                            <button class="qty-btn"
+                                                    [disabled]="item.mandatory === true"
+                                                    (click)="item.qty = item.qty + 1; calAmt(item, i)">
+                                                <i class="bi bi-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div class="total-price-display">
+                                            <p class="price-calculation" *ngIf="item.qty > 0">
+                                                {{item?.currency}} {{calculateAddonPrice(item)}} × {{item.qty}}
+                                            </p>
+                                            <p class="total-price">
+                                                Total: {{item?.currency}} 
+                                                <span *ngIf="item.qty == 0">{{calculateAddonPrice(item)}}</span>
+                                                <span *ngIf="item.qty > 0">{{calculateTotalAddonPrice(item)}}</span>
+                                            </p>
+                                        </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
                     </ng-container>
                 </div>
             </div>
-            <div class="col-6" *ngIf="openAddon == true">
-                <div class="card-wrapper">
-                    <i class="bi bi-x-circle-fill" (click)="openAddon = false"></i>
-                    <img class="w-100" style="    max-height: 40vh; position: relative;
-                object-fit: cover;
-                object-position: center;" [src]="addonDetail.policy_image_url" alt=""
-                      >
-                        <i class="bi bi-arrows-angle-expand"   (click)="expandImg(addonDetail.policy_image_url)" ></i>
-                    <div class="content">
-                        <p class="addon-title">{{addonDetail.policy_name}}</p>
-                        <p class="desc">{{addonDetail.policy_description}}</p>
 
+            <!-- Detail Panel -->
+            <div class="col-lg-6 col-md-6" *ngIf="openAddon == true">
+                <div class="detail-panel">
+                    <div class="detail-close-btn" (click)="openAddon = false">
+                        <i class="bi bi-x"></i>
                     </div>
-                    <div class="content">
-                        <p class="addon-title" style="margin-bottom: 10px;">Pricing Breakdown:</p>
-                        <div style="background: #f5f5f5; padding: 12px; border-radius: 4px; font-size: 13px;">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                <span>Adults ({{getNoOfAdults()}}) × {{addonDetail.currency}} {{addonDetail.adultValue || 0}}</span>
-                                <span style="font-weight: 600;">{{addonDetail.currency}} {{(addonDetail.adultValue || 0) * getNoOfAdults()}}</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                <span>Children ({{getNoOfChildren()}}) × {{addonDetail.currency}} {{addonDetail.childValue || 0}}</span>
-                                <span style="font-weight: 600;">{{addonDetail.currency}} {{(addonDetail.childValue || 0) * getNoOfChildren()}}</span>
-                            </div>
-                            <div style="border-top: 1px solid #ddd; padding-top: 8px; margin-top: 8px;">
-                                <div style="display: flex; justify-content: space-between; color: #2AB59D; font-weight: 600;">
-                                    <span>Total  {{addonDetail.policy_type_name}}</span>
+                    <img class="detail-image" 
+                         [src]="addonDetail.policy_image_url" 
+                         alt="{{addonDetail.policy_name}}"
+                         onerror="this.src='assets/images/no-image-found.png'">
+                    <div class="expand-btn" (click)="expandImg(addonDetail.policy_image_url)">
+                        <i class="bi bi-arrows-fullscreen"></i> Expand
+                    </div>
+                    
+                    <div class="detail-content">
+                        <div class="detail-section">
+                            <p class="detail-title">{{addonDetail.policy_name}}</p>
+                            <p class="detail-desc">{{addonDetail.policy_description}}</p>
+                        </div>
+                        
+                        <div class="detail-pricing-section">
+                            <p class="detail-pricing-title">
+                                <i class="bi bi-currency-exchange"></i> Pricing Breakdown
+                            </p>
+                            <div class="detail-pricing-box">
+                                <div class="detail-pricing-row">
+                                    <span><i class="bi bi-person-fill"></i> Adults ({{getNoOfAdults()}}) × {{addonDetail.currency}} {{addonDetail.adultValue || 0}}</span>
+                                    <span>{{addonDetail.currency}} {{(addonDetail.adultValue || 0) * getNoOfAdults()}}</span>
+                                </div>
+                                <div class="detail-pricing-row">
+                                    <span><i class="bi bi-person-fill"></i> Children ({{getNoOfChildren()}}) × {{addonDetail.currency}} {{addonDetail.childValue || 0}}</span>
+                                    <span>{{addonDetail.currency}} {{(addonDetail.childValue || 0) * getNoOfChildren()}}</span>
+                                </div>
+                                <div class="detail-pricing-row total">
+                                    <span><i class="bi bi-tag-fill"></i> Total ({{addonDetail.policy_type_name}})</span>
                                     <span>{{addonDetail.currency}} {{calculateAddonPrice(addonDetail)}}</span>
                                 </div>
                             </div>
                         </div>
-                        <!-- <p class="addon-title">Duration: <span class="desc">1-2 hours </span> </p>
-
-                    <p class="addon-title">Inclusions:</p>
-                    <ul class="desc">
-                        <li>Instructor fee</li>
-                        <li>Paddle, board, and life jacket</li>
-                    </ul>
-                    <p class="addon-title">Exclusions:</p>
-                    <ul class="desc">
-                        <li>Food/snacks</li>
-                        <li>Photos/videos</li>
-                        <li>Transfers from and to the resort </li>
-
-                    </ul> -->
                     </div>
                 </div>
             </div>
         </div>
     </ng-container>
+
     <ng-template #elseTemplate>
         <div class="no-content">
-            No addons available
+            <i class="bi bi-box-seam" style="font-size: 48px; display: block; margin-bottom: 15px; color: #adb5bd;"></i>
+            No addons available for this booking
         </div>
     </ng-template>
-    <pagination-template *ngIf="(addons.length > 0)" #p="paginationApi" [id]="config.id"
+
+    <!-- Pagination -->
+    <pagination-template *ngIf="addons.length > 0" #p="paginationApi" [id]="config.id"
         (pageChange)="config.currentPage = $event">
-
         <div class="custom-pagination">
-
             <div class="pagination-previous" [class.disabled]="p.isFirstPage()">
                 <span *ngIf="!p.isFirstPage()" (click)="p.previous()">
                     <i class="bi bi-chevron-left"></i>
                 </span>
             </div>
-
             <div class="page-number" *ngFor="let page of p.pages" [class.current]="p.getCurrent() === page.value">
                 <span (click)="p.setCurrent(page.value)" *ngIf="p.getCurrent() !== page.value">{{ page.label }}</span>
                 <div *ngIf="p.getCurrent() === page.value">
                     <span>{{ page.label }}</span>
                 </div>
             </div>
-
             <div class="pagination-next" [class.disabled]="p.isLastPage()">
                 <span *ngIf="!p.isLastPage()" (click)="p.next()">
                     <i class="bi bi-chevron-right"></i>
                 </span>
             </div>
-
         </div>
-
     </pagination-template>
-
-    <!-- <ng-container *ngIf="addons.length > 0; else elseTemplate">
-        <ng-container *ngFor="let addon of addons; let first=first;">
-            <div class="row m-0 mt-2 addon-block">
-                <div class="addon-image-col">
-                    <img src="{{addon.policy_image_url}}" alt="">
-                </div>
-                <div class="addon-content-col">
-                    <p class="addon-title">{{addon.policy_name}}</p>
-                    <p class="addon-desc">{{addon.policy_description}}</p>
-                    <p class="addon-price">{{addon.currency}} {{calculateAddonPrice(addon)}} {{addon.policy_type_name}}</p>
-                </div>
-                <div class="btn-col">
-                    <button class="btn-main" (click)="removeAddon(addon)">-</button>
-                    <span>{{getQty(addon.policy_id)}}</span>
-                    <button class="btn-main" (click)="addAddon(addon)">+</button>
-                </div>
-            </div>
-        </ng-container>
-    </ng-container>
-    <ng-template #elseTemplate>
-        <div class="no-content">
-            No addons available
-        </div>
-    </ng-template> -->
-
-
 </div>

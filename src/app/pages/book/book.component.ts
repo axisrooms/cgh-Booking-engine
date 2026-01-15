@@ -195,54 +195,53 @@ export class BookComponent implements OnInit {
     });
   }
 
-  openRecommendationsDialog() {
-    this.spinner.show();
-    const checkIn = this.bookingService.currBookingItemValue?.checkIn;
-    this.searchService.getAllHotels(checkIn).subscribe(res => {
-      this.dialog.open(RecommendationsComponent, {
-        width: '600px',
-        panelClass: ['mat-dialog-custom-dimensions'],
-        position: { bottom: '0px' },
-        data: {
-          searchResult: res,
-          HotelId: this.hotelid,
-        },
-      }).afterClosed().subscribe(res => {
-        if (res && res.event == true) {
-          if (this.personalDetailsComponent.personalDetailsForm.valid) {
-            this.personalDetailsForm =
-              this.personalDetailsComponent.personalDetailsForm;
-            // this.stepper = this.eStepper.addons;
-
-            if (this.payathotel) {
-              this.paymentService.createOrder(this.bookingService.currBookingItemValue).subscribe(
-                (res1) => {
-                  this.clickFn();
-                },
-                (error) => {
-                  console.error('Error creating order:', error);
-                  this.snackBar.open('Error creating order. Please try again.', '', { duration: 3000 });
-                }
-              );
-            } else {
-              try {
-                this.paymentService.createOrderAndMakePayment(
-                  this.bookingService.currBookingItemValue, this.personalDetailsForm.value, this.payathotel
-                );
-              } catch (error) {
-                console.error('Error processing payment:', error);
-                this.snackBar.open('Error processing payment. Please try again.', '', { duration: 3000 });
-              }
-            }
-          } else {
-            this.personalDetailsComponent.personalDetailsForm.markAllAsTouched();
-            this.snackBar.open('Please complete the form', '', { duration: 2000 });
-          }
-        }
-      });
-      this.spinner.hide();
-    })
-  }
+  // Recommendations popup disabled - not required
+  // openRecommendationsDialog() {
+  //   this.spinner.show();
+  //   const checkIn = this.bookingService.currBookingItemValue?.checkIn;
+  //   this.searchService.getAllHotels(checkIn).subscribe(res => {
+  //     this.dialog.open(RecommendationsComponent, {
+  //       width: '600px',
+  //       panelClass: ['mat-dialog-custom-dimensions'],
+  //       position: { bottom: '0px' },
+  //       data: {
+  //         searchResult: res,
+  //         HotelId: this.hotelid,
+  //       },
+  //     }).afterClosed().subscribe(res => {
+  //       if (res && res.event == true) {
+  //         if (this.personalDetailsComponent.personalDetailsForm.valid) {
+  //           this.personalDetailsForm =
+  //             this.personalDetailsComponent.personalDetailsForm;
+  //           if (this.payathotel) {
+  //             this.paymentService.createOrder(this.bookingService.currBookingItemValue).subscribe(
+  //               (res1) => {
+  //                 this.clickFn();
+  //               },
+  //               (error) => {
+  //                 console.error('Error creating order:', error);
+  //                 this.snackBar.open('Error creating order. Please try again.', '', { duration: 3000 });
+  //               }
+  //             );
+  //           } else {
+  //             try {
+  //               this.paymentService.createOrderAndMakePayment(
+  //                 this.bookingService.currBookingItemValue, this.personalDetailsForm.value, this.payathotel
+  //               );
+  //             } catch (error) {
+  //               console.error('Error processing payment:', error);
+  //               this.snackBar.open('Error processing payment. Please try again.', '', { duration: 3000 });
+  //             }
+  //           }
+  //         } else {
+  //           this.personalDetailsComponent.personalDetailsForm.markAllAsTouched();
+  //           this.snackBar.open('Please complete the form', '', { duration: 2000 });
+  //         }
+  //       }
+  //     });
+  //     this.spinner.hide();
+  //   })
+  // }
 
   setPayNow() {
     this.payathotel = false;
@@ -261,6 +260,30 @@ export class BookComponent implements OnInit {
       epdate: '',
       cvv: ''
     };
+  }
+
+  // Format card number with spaces every 4 digits
+  formatCardNumber(event: any) {
+    let value = event.target.value.replace(/\s/g, '').replace(/\D/g, '');
+    let formattedValue = '';
+    for (let i = 0; i < value.length; i++) {
+      if (i > 0 && i % 4 === 0) {
+        formattedValue += ' ';
+      }
+      formattedValue += value[i];
+    }
+    this.cardDetails.cardno = formattedValue;
+    event.target.value = formattedValue;
+  }
+
+  // Format expiry date with slash
+  formatExpiryDate(event: any) {
+    let value = event.target.value.replace(/\//g, '').replace(/\D/g, '');
+    if (value.length >= 2) {
+      value = value.substring(0, 2) + '/' + value.substring(2);
+    }
+    this.cardDetails.epdate = value;
+    event.target.value = value;
   }
 
   payhotel() {
@@ -364,7 +387,27 @@ export class BookComponent implements OnInit {
           return;
         }
 
-        this.openRecommendationsDialog();
+        // Proceed with payment directly (recommendations popup disabled)
+        if (this.payathotel) {
+          this.paymentService.createOrder(this.bookingService.currBookingItemValue).subscribe(
+            (res1) => {
+              this.clickFn();
+            },
+            (error) => {
+              console.error('Error creating order:', error);
+              this.snackBar.open('Error creating order. Please try again.', '', { duration: 3000 });
+            }
+          );
+        } else {
+          try {
+            this.paymentService.createOrderAndMakePayment(
+              this.bookingService.currBookingItemValue, this.personalDetailsForm.value, this.payathotel
+            );
+          } catch (error) {
+            console.error('Error processing payment:', error);
+            this.snackBar.open('Error processing payment. Please try again.', '', { duration: 3000 });
+          }
+        }
       } else {
         this.personalDetailsComponent.personalDetailsForm.markAllAsTouched();
         this.snackBar.open('Please complete the form', '', { duration: 2000 });

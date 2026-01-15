@@ -197,21 +197,22 @@
 
                                         </div>
                                     </div>
-                                    <div class="row w-100" style="margin-top: 12  px;" *ngIf="searchForm.controls.paxData.value[i]?.noOfChildren>0">
-                                        <div class="col-auto">
-                                            <p style="font-size: 16px;font-weight: 400;">Provide Children's age</p>
-                                        </div>
-                                    </div>
-                                    <div class="row" style="display: contents;">
-                                        <div class="col-4 mx-1"
-                                            *ngFor="let age of [].constructor(searchForm.controls.paxData.value[i]?.noOfChildren); let childIndex = index;" (change)="addAges($event, i, childIndex)"
-                                            style="margin-bottom: 10px;">
-                                            <select class="input childAges" style="border-radius: 4px;
-                                                width: 74px;
-                                                height: 35px;">
-                                                
-                                                <option *ngFor="let item of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]" value="{{item}}" >
-                                                    {{item}}</option>
+                                    <div class="w-100" style="margin-top: 12px;" *ngIf="searchForm.controls.paxData.value[i]?.noOfChildren>0">
+                                        <p style="font-size: 14px; font-weight: 500; margin-bottom: 10px; color: #333;">Provide Children's age</p>
+                                        <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 12px;">
+                                            <select *ngFor="let age of [].constructor(searchForm.controls.paxData.value[i]?.noOfChildren); let childIndex = index;" 
+                                                 (change)="addAges($event, i, childIndex)"
+                                                 class="input childAges" 
+                                                 style="border-radius: 6px;
+                                                    width: 80px;
+                                                    height: 40px;
+                                                    padding: 5px 12px;
+                                                    border: 1px solid #dee2e6;
+                                                    background: #fff;
+                                                    font-size: 14px;
+                                                    cursor: pointer;
+                                                    outline: none;">
+                                                <option *ngFor="let item of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]" value="{{item}}">{{item}}</option>
                                             </select>
                                         </div>
                                     </div>

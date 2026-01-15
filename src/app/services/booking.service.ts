@@ -49,7 +49,26 @@ export class BookingService {
     this.unsetPGLoaderFlag()
   }
 
-  initializeNewBooking(bookingItem: BookingItem) {
+  // Check if cart is full (all required rooms are added)
+  isCartFull(): boolean {
+    const totalRoomsRequired = parseInt(localStorage.getItem('rooms') || '1', 10);
+    const roomsInCart = this.bookingCartValue?.bookingItems?.length || 0;
+    return roomsInCart >= totalRoomsRequired;
+  }
+
+  // Get remaining rooms count
+  getRemainingRoomsCount(): number {
+    const totalRoomsRequired = parseInt(localStorage.getItem('rooms') || '1', 10);
+    const roomsInCart = this.bookingCartValue?.bookingItems?.length || 0;
+    return Math.max(0, totalRoomsRequired - roomsInCart);
+  }
+
+  initializeNewBooking(bookingItem: BookingItem): boolean {
+    // Check if cart is already full
+    if (this.isCartFull()) {
+      return false; // Indicate that room was not added
+    }
+
     let bookingItems: BookingItem[] = this.bookingCartValue?.bookingItems
       ? [...this.bookingCartValue?.bookingItems]
       : [];
@@ -64,6 +83,7 @@ export class BookingService {
       bookingCart
     );
     
+    return true; // Indicate that room was successfully added
   }
 
   navigateToBookingWithoutSpecifyingIndex() {
@@ -233,8 +253,11 @@ export class BookingService {
                 bookingItem.addons.splice(index, 1);
               }
             } else {
-              // Update the quantity of the existing addon
+              // Update the quantity and selections of the existing addon
               bookingItem.addons[index].qty = addon.qty;
+              bookingItem.addons[index].selectedAdults = addon.selectedAdults;
+              bookingItem.addons[index].selectedChildren = addon.selectedChildren;
+              bookingItem.addons[index].selectedNights = addon.selectedNights;
             }
 
             bookingItem.addons.forEach(e => {
@@ -246,10 +269,13 @@ export class BookingService {
                   const totalCost = parseFloat(String(e.cost || 0)) * e.qty;
                   bookingItem.addonTotalPrice += totalCost;
                 } else {
-                  // Per guest - calculate based on adultValue and childValue
-                  const adultCost = (e.adultValue || 0) * (bookingItem.noOfAdults || 0);
-                  const childCost = (e.childValue || 0) * (bookingItem.noOfChildren || 0);
-                  const totalCost = (adultCost + childCost) * e.qty;
+                  // Per guest - use selectedAdults/selectedChildren/selectedNights if available
+                  const noOfAdults = e.selectedAdults !== undefined ? e.selectedAdults : (bookingItem.noOfAdults || 0);
+                  const noOfChildren = e.selectedChildren !== undefined ? e.selectedChildren : (bookingItem.noOfChildren || 0);
+                  const noOfNights = e.selectedNights !== undefined ? e.selectedNights : 1;
+                  const adultCost = (e.adultValue || 0) * noOfAdults;
+                  const childCost = (e.childValue || 0) * noOfChildren;
+                  const totalCost = (adultCost + childCost) * noOfNights * e.qty;
                   bookingItem.addonTotalPrice += totalCost;
                 }
               }
@@ -277,10 +303,13 @@ export class BookingService {
               const totalCost = parseFloat(String(e.cost || 0)) * e.qty;
               bookingItem.addonTotalPrice += totalCost;
             } else {
-              // Per guest - calculate based on adultValue and childValue
-              const adultCost = (e.adultValue || 0) * (bookingItem.noOfAdults || 0);
-              const childCost = (e.childValue || 0) * (bookingItem.noOfChildren || 0);
-              const totalCost = (adultCost + childCost) * e.qty;
+              // Per guest - use selectedAdults/selectedChildren/selectedNights if available
+              const noOfAdults = e.selectedAdults !== undefined ? e.selectedAdults : (bookingItem.noOfAdults || 0);
+              const noOfChildren = e.selectedChildren !== undefined ? e.selectedChildren : (bookingItem.noOfChildren || 0);
+              const noOfNights = e.selectedNights !== undefined ? e.selectedNights : 1;
+              const adultCost = (e.adultValue || 0) * noOfAdults;
+              const childCost = (e.childValue || 0) * noOfChildren;
+              const totalCost = (adultCost + childCost) * noOfNights * e.qty;
               bookingItem.addonTotalPrice += totalCost;
             }
           }

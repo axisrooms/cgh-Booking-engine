@@ -41,6 +41,18 @@ data:any;
 
   }
 
+  // Check if cart is full
+  isCartFull(): boolean {
+    const roomcount = Number(localStorage.getItem('rooms') || 1);
+    const data = localStorage.getItem('reflectStore');
+    if (data) {
+      const parsedData = JSON.parse(data);
+      const roomsInCart = parsedData?.["BOOKING_CART"]?.["bookingItems"]?.length || 0;
+      return roomsInCart >= roomcount;
+    }
+    return false;
+  }
+
 
   getPrices(){
     let params: any = {};
@@ -58,32 +70,27 @@ data:any;
   }
 
   onBookNow() {
-    var roomcount = Number(localStorage.getItem('rooms'));
-    this.data =  localStorage.getItem('reflectStore');
-    this.data =JSON.parse(this.data);
-    if(this.bookingService.addflag){
-      if(this.data["BOOKING_CART"]["bookingItems"].length == 0){
-          this.bookingService.cartflag = true;
-         this.btnEvent.emit('button clicked');
-       if(this.bookingService.count == roomcount)
-       this.bookingService.addflag = true;
-      }else{
-        if(confirm("You are not allowed to add one more Room.")){     
-         // this.bookingService.cartflag = true;
-         // this.btnEvent.emit('button clicked');
-      if(this.bookingService.count == roomcount)
-       this.bookingService.addflag = true;
-      }
-      }
-    }else{
-     this.bookingService.cartflag = true;
-    this.btnEvent.emit('button clicked');
-      this.bookingService.count++;
-      if(this.bookingService.count == roomcount)
-       this.bookingService.addflag = true;
+    var roomcount = Number(localStorage.getItem('rooms') || 1);
+    this.data = localStorage.getItem('reflectStore');
+    this.data = JSON.parse(this.data);
+    
+    // Get current number of rooms in cart
+    const roomsInCart = this.data?.["BOOKING_CART"]?.["bookingItems"]?.length || 0;
+    
+    // Check if cart is already full
+    if (roomsInCart >= roomcount) {
+      alert(`You have already selected ${roomcount} room${roomcount > 1 ? 's' : ''} as per your search criteria. Please remove a room from cart if you want to add a different one.`);
+      return;
     }
     
-  
+    // Add room to cart
+    this.bookingService.cartflag = true;
+    this.btnEvent.emit('button clicked');
+    this.bookingService.count++;
+    
+    if (this.bookingService.count >= roomcount) {
+      this.bookingService.addflag = true;
+    }
   }
 
   expandImg(img: any) {

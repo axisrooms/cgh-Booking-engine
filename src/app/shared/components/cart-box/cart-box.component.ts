@@ -26,7 +26,9 @@ export class CartBoxComponent implements OnInit {
     this.bookingCart$ = this.bookingService.bookingCart$
     this.bookingCart$.subscribe(res => {
       this.bookingItems = res?.bookingItems
-      this.currency = res?.bookingItems[0]?.renderData?.currency
+      this.currency = res?.bookingItems && res.bookingItems.length > 0 
+        ? res.bookingItems[0]?.renderData?.currency 
+        : '';
     })
   }
   guest:any = localStorage.getItem('guests');
@@ -92,14 +94,15 @@ export class CartBoxComponent implements OnInit {
       return parseFloat(addon.cost || 0) * (addon.qty || 1);
     }
     
-    // Per guest - calculate based on adultValue and childValue
-    const noOfAdults = bookingItem.noOfAdults || 0;
-    const noOfChildren = bookingItem.noOfChildren || 0;
+    // Per guest - use selectedAdults/selectedChildren/selectedNights if available
+    const noOfAdults = addon.selectedAdults !== undefined ? addon.selectedAdults : (bookingItem.noOfAdults || 0);
+    const noOfChildren = addon.selectedChildren !== undefined ? addon.selectedChildren : (bookingItem.noOfChildren || 0);
+    const noOfNights = addon.selectedNights !== undefined ? addon.selectedNights : 1;
     
     const adultCost = (addon.adultValue || 0) * noOfAdults;
     const childCost = (addon.childValue || 0) * noOfChildren;
     
-    return (adultCost + childCost) * (addon.qty || 1);
+    return (adultCost + childCost) * noOfNights * (addon.qty || 1);
   }
 
   // Filter addons with qty > 0
@@ -119,5 +122,25 @@ export class CartBoxComponent implements OnInit {
     const totalRoomsRequested = parseInt(localStorage.getItem('rooms') || '1', 10);
     const roomsInCart = this.bookingItems?.length || 0;
     return Math.max(0, totalRoomsRequested - roomsInCart);
+  }
+
+  // Get total rooms required from search selection
+  getTotalRoomsRequired(): number {
+    return parseInt(localStorage.getItem('rooms') || '1', 10);
+  }
+
+  // Get guests count for a specific booking item
+  getGuestsForItem(bookingItem: BookingItem): number {
+    const adults = bookingItem.noOfAdults || 0;
+    const children = bookingItem.noOfChildren || 0;
+    return adults + children;
+  }
+
+  // Get total guests count for all booking items in cart
+  getTotalGuests(): number {
+    if (!this.bookingItems) return 0;
+    return this.bookingItems.reduce((total, item) => {
+      return total + (item.noOfAdults || 0) + (item.noOfChildren || 0);
+    }, 0);
   }
 }

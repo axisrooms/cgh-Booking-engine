@@ -171,24 +171,10 @@ export class PersonalDetailsComponent implements OnInit {
       promoCode: [''],
       prepayment: ['', Validators.pattern('^[0-9]*$')],
       address: this.formBuilder.group({
-        lane: ['', Validators.required],
-        city: ['', Validators.required],
-        state: [
-          '',
-          [
-            Validators.required,
-            Validators.maxLength(50),
-            Validators.pattern('^[a-zA-Z ]*$'),
-          ],
-        ],
-        country: [
-          '',
-          [
-            Validators.required,
-            Validators.maxLength(50),
-            Validators.pattern('^[a-zA-Z ]*$'),
-          ],
-        ],
+        lane: [''],
+        city: [''],
+        state: ['', [Validators.maxLength(50), Validators.pattern('^[a-zA-Z ]*$')]],
+        country: ['', [Validators.maxLength(50), Validators.pattern('^[a-zA-Z ]*$')]],
         cardno: [''],
         epdate: [''],
         cvv: [''],

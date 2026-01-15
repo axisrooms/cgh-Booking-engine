@@ -53,4 +53,7 @@ export interface Addon {
     qty: number,
     adultValue?: number,
     childValue?: number,
+    selectedAdults?: number,
+    selectedChildren?: number,
+    selectedNights?: number,
 }

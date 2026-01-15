@@ -25,17 +25,15 @@
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                         <span class="sr-only">Next</span>
                     </a>
-
-
-
-
-
                 </div>
             </div>
             <div class="room-header-text-col col-12 col-md-8 col-lg-8">
                 <p class="room-title">{{room.roomName}}</p>
+                <p class="rate-plan-name" *ngIf="room.ratePlanName">
+                    <i class="bi bi-tag-fill"></i> {{room.ratePlanName}}
+                </p>
                 <p *ngIf="room.description && room.description != ''"
-                    style="height: 80px; overflow: hidden; margin-bottom: 0;">{{room.description}}</p>
+                    style="height: 60px; overflow: hidden; margin-bottom: 0; font-size: 13px;">{{room.description}}</p>
                 <div>
                     <ng-container *ngIf="room.amenities?.length > 0">
                         <p class="room-title mb-1">Amenities:</p>
@@ -107,6 +105,9 @@
             <span class="per-unit">plus taxes and charges</span>
         </p>
         <div class="spacer" style="flex: 1;"></div>
-        <button class="btn-main"  (click)="onBookNow()">Add to Cart</button>
+        <button class="btn-main" (click)="onBookNow()" [disabled]="isCartFull()" 
+                [ngStyle]="isCartFull() ? {'opacity': '0.5', 'cursor': 'not-allowed'} : {}">
+            {{isCartFull() ? 'Cart Full' : 'Add to Cart'}}
+        </button>
     </div>
 </div>

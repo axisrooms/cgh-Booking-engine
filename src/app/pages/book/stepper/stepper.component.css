@@ -1,72 +1,160 @@
+/* Stepper Container */
 .stepper-section {
-  padding: 50px 15px 15px 15px;
+  padding: 40px 20px 20px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
 }
 
 .stepper-row {
   display: flex;
   width: 100%;
-  max-width: 650px;
+  max-width: 700px;
   margin: auto;
   justify-content: space-between;
   position: relative;
 }
 
+/* Individual Step Block */
 .stepper-block {
-  padding: 10px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
   z-index: 1;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
+.stepper-block:hover .stepper-icon {
+  transform: scale(1.05);
+}
+
+/* Step Icon Circle */
 .stepper-icon {
-  width: 70px;
-  height: 70px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: #e9ecef;
+  border: 3px solid #dee2e6;
+  transition: all 0.4s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
+/* Active Step */
 .stepper-block.active .stepper-icon {
-  background: #eae3d1;
+  background: linear-gradient(135deg, #2c7a4d 0%, #34a85a 100%);
+  border: 3px solid #2c7a4d;
+  box-shadow: 0 4px 16px rgba(44, 122, 77, 0.3);
 }
 
+/* Completed Step */
+.stepper-block.completed .stepper-icon {
+  background: linear-gradient(135deg, #28a745 0%, #34ce57 100%);
+  border: 3px solid #28a745;
+}
+
+/* Step Dot */
 .stepper-dot {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  background-color: #666;
-  border: 4px solid white;
+  background-color: #6c757d;
+  border: 3px solid white;
+  transition: all 0.3s ease;
 }
 
 .stepper-block.active .stepper-dot {
-  border: 4px solid #eae3d1;
+  border: 3px solid rgba(255, 255, 255, 0.9);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(44, 122, 77, 0.2);
 }
 
+.stepper-block.completed .stepper-dot {
+  background: #fff;
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+/* Step Text Label */
 .stepper-text {
-  font-family: "Adobe Caslon Pro";
-  font-weight: bold;
-  letter-spacing: 0.1em;
-  text-align: left;
-  color: #000;
-  margin-top: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #6c757d;
+  margin-top: 16px;
   text-align: center;
   text-transform: uppercase;
+  font-size: 12px;
+  transition: all 0.3s ease;
 }
 
+.stepper-block.active .stepper-text {
+  color: #2c7a4d;
+  font-weight: 700;
+}
+
+.stepper-block.completed .stepper-text {
+  color: #28a745;
+}
+
+/* Progress Line */
 .filler-line {
-  width: calc(100% - 165px);
+  width: calc(100% - 180px);
   position: absolute;
-  left: 90px;
-  top: 44px;
-  height: 2px;
-  background: #eae3d1;
+  left: 95px;
+  top: 48px;
+  height: 4px;
+  background: linear-gradient(90deg, #e9ecef 0%, #e9ecef 100%);
+  border-radius: 4px;
 }
 
+.filler-line::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #2c7a4d 0%, #34a85a 100%);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+/* Active states for progress line */
+.stepper-row[data-step="1"] .filler-line::before {
+  width: 0%;
+}
+
+.stepper-row[data-step="2"] .filler-line::before {
+  width: 50%;
+}
+
+.stepper-row[data-step="3"] .filler-line::before {
+  width: 100%;
+}
+
+/* Mobile Responsive */
 @media (max-width: 420px) {
+  .stepper-section {
+    padding: 30px 10px 15px 10px;
+  }
+
   .filler-line {
-    width: calc(100% - 100px);
+    width: calc(100% - 120px);
+    left: 60px;
+    top: 38px;
+    height: 3px;
+  }
+
+  .stepper-icon {
+    width: 56px;
+    height: 56px;
+  }
+
+  .stepper-dot {
+    width: 12px;
+    height: 12px;
   }
 
   .stepper-block:not(.active) .stepper-text {
@@ -74,6 +162,28 @@
   }
 
   .stepper-block:not(.active) .stepper-icon {
-    width: 20px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .stepper-text {
+    font-size: 10px;
+    margin-top: 12px;
+  }
+}
+
+/* Tablet */
+@media (min-width: 421px) and (max-width: 768px) {
+  .stepper-icon {
+    width: 64px;
+    height: 64px;
+  }
+
+  .stepper-text {
+    font-size: 11px;
+  }
+
+  .filler-line {
+    top: 44px;
   }
 }

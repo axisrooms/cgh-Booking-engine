@@ -90,7 +90,14 @@ export class AddonsComponent implements OnInit {
             });
           }
           
-          this.addons.forEach((element: { qty: number; count: boolean; mandatory?: boolean; policy_id: any }) => {
+          this.addons.forEach((element: { qty: number; count: boolean; mandatory?: boolean; policy_id: any; selectedAdults?: number; selectedChildren?: number; selectedNights?: number; adultValue?: number; childValue?: number }) => {
+            // Initialize guest selectors for per-guest addons
+            if ((element.adultValue && element.adultValue > 0) || (element.childValue && element.childValue > 0)) {
+              element.selectedAdults = element.selectedAdults || this.getNoOfAdults();
+              element.selectedChildren = element.selectedChildren || this.getNoOfChildren();
+              element.selectedNights = element.selectedNights || 1;
+            }
+            
             // Only auto-add mandatory addons to cart if they're not already there
             if (element.mandatory === true) {
               const inCart = bookingItem?.addons?.find((a: any) => a.policy_id === element.policy_id);
@@ -200,9 +207,9 @@ export class AddonsComponent implements OnInit {
       return parseFloat(addon.cost || 0);
     }
     
-    // Otherwise calculate based on adults and children (per guest)
-    const noOfAdults = this.bookingService.currBookingItemValue.noOfAdults || 0;
-    const noOfChildren = this.bookingService.currBookingItemValue.noOfChildren || 0;
+    // Use selected values if available, otherwise use booking values
+    const noOfAdults = addon.selectedAdults !== undefined ? addon.selectedAdults : (this.bookingService.currBookingItemValue.noOfAdults || 0);
+    const noOfChildren = addon.selectedChildren !== undefined ? addon.selectedChildren : (this.bookingService.currBookingItemValue.noOfChildren || 0);
     
     const adultCost = (addon.adultValue || 0) * noOfAdults;
     const childCost = (addon.childValue || 0) * noOfChildren;
@@ -212,18 +219,118 @@ export class AddonsComponent implements OnInit {
 
   // Calculate total addon price (including quantity)
   calculateTotalAddonPrice(addon: any): number {
-    const basePrice = this.calculateAddonPrice(addon);
+    const basePrice = this.calculateAddonPriceWithSelections(addon);
     return basePrice * (addon.qty || 1);
   }
 
-  // Get number of adults from current booking
+  // Get number of adults from all rooms (using paxInfo or booking cart)
   getNoOfAdults(): number {
-    return this.bookingService.currBookingItemValue?.noOfAdults || 0;
+    // First try to get from paxInfo in localStorage (contains all rooms info)
+    const paxInfo = localStorage.getItem('paxInfo');
+    if (paxInfo) {
+      const rooms = paxInfo.split('||');
+      let totalAdults = 0;
+      rooms.forEach(room => {
+        if (room) {
+          const parts = room.split('|');
+          if (parts.length > 0) {
+            totalAdults += parseInt(parts[0]) || 0;
+          }
+        }
+      });
+      if (totalAdults > 0) {
+        return totalAdults;
+      }
+    }
+    
+    // Fallback: sum adults from all booking items in cart
+    const bookingCart = this.bookingService.bookingCartValue;
+    if (bookingCart?.bookingItems && bookingCart.bookingItems.length > 0) {
+      let totalAdults = 0;
+      bookingCart.bookingItems.forEach(item => {
+        totalAdults += item.noOfAdults || 0;
+      });
+      if (totalAdults > 0) {
+        return totalAdults;
+      }
+    }
+    
+    // Last fallback: current booking item
+    return this.bookingService.currBookingItemValue?.noOfAdults || 1;
   }
 
-  // Get number of children from current booking
+  // Get number of children from all rooms (using paxInfo or booking cart)
   getNoOfChildren(): number {
+    // First try to get from paxInfo in localStorage (contains all rooms info)
+    const paxInfo = localStorage.getItem('paxInfo');
+    if (paxInfo) {
+      const rooms = paxInfo.split('||');
+      let totalChildren = 0;
+      rooms.forEach(room => {
+        if (room) {
+          const parts = room.split('|');
+          if (parts.length > 1) {
+            totalChildren += parseInt(parts[1]) || 0;
+          }
+        }
+      });
+      return totalChildren;
+    }
+    
+    // Fallback: sum children from all booking items in cart
+    const bookingCart = this.bookingService.bookingCartValue;
+    if (bookingCart?.bookingItems && bookingCart.bookingItems.length > 0) {
+      let totalChildren = 0;
+      bookingCart.bookingItems.forEach(item => {
+        totalChildren += item.noOfChildren || 0;
+      });
+      return totalChildren;
+    }
+    
+    // Last fallback: current booking item
     return this.bookingService.currBookingItemValue?.noOfChildren || 0;
+  }
+
+  // Get adult options for dropdown (1 to max adults)
+  getAdultOptions(): number[] {
+    const maxAdults = this.getNoOfAdults();
+    if (maxAdults <= 0) {
+      return [1];
+    }
+    return Array.from({ length: maxAdults }, (_, i) => i + 1);
+  }
+
+  // Get children options for dropdown (0 to max children)
+  getChildrenOptions(): number[] {
+    const maxChildren = this.getNoOfChildren();
+    return Array.from({ length: maxChildren + 1 }, (_, i) => i);
+  }
+
+  // Get night options for dropdown (1 to number of nights)
+  getNightOptions(): number[] {
+    const noOfNights = this.bookingService.currBookingItemValue?.noOfDays || 1;
+    return Array.from({ length: noOfNights }, (_, i) => i + 1);
+  }
+
+  // Calculate addon price based on user selections
+  calculateAddonPriceWithSelections(addon: any): number {
+    const selectedAdults = addon.selectedAdults || 0;
+    const selectedChildren = addon.selectedChildren || 0;
+    const selectedNights = addon.selectedNights || 1;
+    
+    const adultCost = (addon.adultValue || 0) * selectedAdults;
+    const childCost = (addon.childValue || 0) * selectedChildren;
+    
+    // Apply nights multiplier for per-guest addons
+    return (adultCost + childCost) * selectedNights;
+  }
+
+  // Update addon price when dropdown selection changes
+  updateAddonPrice(addon: any, i: number): void {
+    // Update the addon in the booking service
+    if (addon.count) {
+      this.bookingService.addAddon(addon);
+    }
   }
 
 }

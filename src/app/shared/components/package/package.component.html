@@ -6,17 +6,18 @@
             <div id="carouselExampleControls" class="carousel slide" [id]="'slider_hotel'+ id_num" data-ride="carousel"
             style="width: 200px;">
             <div class="carousel-inner">
-                <div class="carousel-item" *ngFor="let item of property.images;let i=index"
-                    [ngClass]="i == 1 ? 'active' : ''" [id]="'slide'+ i">
-                    <img class="d-block w-100" [src]="item" style="position: relative;">
+                <div class="carousel-item" *ngFor="let item of filteredImages; let i=index"
+                    [ngClass]="i == 0 ? 'active' : ''" [id]="'slide'+ i">
+                    <img class="d-block w-100" [src]="item" style="position: relative;" 
+                         onerror="this.src='assets/images/no-image-found.png'">
                     <i class="bi bi-arrows-angle-expand" (click)="expandImg(item)" ></i>
                 </div>
             </div>
-            <a class="carousel-control-prev" [href]="'#slider_hotel'+ id_num" role="button" data-slide="prev">
+            <a class="carousel-control-prev" [href]="'#slider_hotel'+ id_num" role="button" data-slide="prev" *ngIf="filteredImages.length > 1">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                 <span class="sr-only">Previous</span>
             </a>
-            <a class="carousel-control-next" [href]="'#slider_hotel'+ id_num" role="button" data-slide="next">
+            <a class="carousel-control-next" [href]="'#slider_hotel'+ id_num" role="button" data-slide="next" *ngIf="filteredImages.length > 1">
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="sr-only">Next</span>
             </a>
@@ -164,10 +165,130 @@
 
 <ng-template #roomsTab let-property="property">
     <p class="room-list-heading">Rooms Starting from</p>
-    <ng-container *ngFor="let room of property.rooms;let i=index">
-        <app-room [room]="room" [id]="i" [property]="property" (btnEvent)="roomBtnEvent(property, room)"
-        [checkIn]="checkIn" [checkOut]="checkOut" [paxInfo]="paxInfo" [productId]="productId">
-        </app-room>
+    <ng-container *ngFor="let group of groupedRooms; let i=index">
+        <div class="grouped-room-card">
+            <!-- Room Header with Image and Details -->
+            <div class="room-header-section">
+                <div class="room-image-col">
+                    <div class="carousel slide" [id]="'slider_group'+ i" data-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item" *ngFor="let img of group.lowestPriceRoom.images; let j=index"
+                                [ngClass]="j == 0 ? 'active' : ''">
+                                <img class="d-block w-100" [src]="img" 
+                                     onerror="this.src='assets/images/no-image-found.png'">
+                                <i class="bi bi-arrows-angle-expand" (click)="expandImg(img)"></i>
+                            </div>
+                        </div>
+                        <a class="carousel-control-prev" [href]="'#slider_group'+ i" role="button" data-slide="prev" 
+                           *ngIf="group.lowestPriceRoom.images?.length > 1">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        </a>
+                        <a class="carousel-control-next" [href]="'#slider_group'+ i" role="button" data-slide="next"
+                           *ngIf="group.lowestPriceRoom.images?.length > 1">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="room-info-col">
+                    <h3 class="room-name">{{group.roomName}}</h3>
+                    <p class="room-description" *ngIf="group.lowestPriceRoom.description">
+                        {{group.lowestPriceRoom.description}}
+                    </p>
+                    
+                    <div class="room-details-grid">
+                        <!-- Amenities -->
+                        <div class="detail-item" *ngIf="group.lowestPriceRoom.amenities?.length > 0">
+                            <p class="detail-label">Amenities:</p>
+                            <p class="detail-value">
+                                <span *ngFor="let amenity of group.lowestPriceRoom.amenities; let last=last">
+                                    {{amenity}}{{!last ? ' , ' : ''}}
+                                </span>
+                            </p>
+                        </div>
+                        
+                        <!-- Inclusions -->
+                        <div class="detail-item" *ngIf="group.lowestPriceRoom.inclusions?.length > 0">
+                            <p class="detail-label">Inclusions:</p>
+                            <p class="detail-value">{{group.lowestPriceRoom.inclusions[0]}}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Room Info Badges -->
+                    <div class="room-badges">
+                        <span class="room-badge" *ngIf="group.lowestPriceRoom.maxAdult">
+                            <i class="bi bi-person"></i> Max Person: {{group.lowestPriceRoom.maxAdult}}
+                        </span>
+                        <span class="room-badge" *ngIf="group.lowestPriceRoom.maxChild !== undefined">
+                            <i class="bi bi-person"></i> Max Children: {{group.lowestPriceRoom.maxChild}}
+                        </span>
+                        <span class="room-badge" *ngIf="group.lowestPriceRoom.maxOccupancy">
+                            <i class="bi bi-person"></i> Base Occupancy: {{group.lowestPriceRoom.maxOccupancy}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rate Plans List -->
+            <div class="rate-plans-section">
+                <!-- First/Lowest Rate Plan -->
+                <div class="rate-plan-row">
+                    <div class="rate-plan-info">
+                        <p class="rate-plan-title">{{group.lowestPriceRoom.ratePlanName}}</p>
+                        <p class="rate-plan-desc" *ngIf="group.lowestPriceRoom.ratePlanDescription">
+                            {{group.lowestPriceRoom.ratePlanDescription}}
+                        </p>
+                        <span class="meal-plan-badge" *ngIf="group.lowestPriceRoom.mealPlan">
+                            <i class="bi bi-egg-fried"></i> Meal Plan: {{group.lowestPriceRoom.mealPlan}}
+                        </span>
+                    </div>
+                    <div class="rate-plan-price">
+                        <p class="price-amount">{{property.currency}} {{group.lowestPriceRoom.price.actual | number:'1.2-2'}}</p>
+                        <p class="price-unit">Per Night</p>
+                        <p class="price-note">plus taxes and charges</p>
+                        <button class="add-to-cart-btn" 
+                                [class.cart-full]="isCartFull()"
+                                [disabled]="isCartFull()"
+                                (click)="roomBtnEvent(property, group.lowestPriceRoom)">
+                            {{isCartFull() ? 'CART FULL' : 'ADD TO CART'}}
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Other Rate Plans (Expanded) -->
+                <ng-container *ngIf="group.expanded">
+                    <div class="rate-plan-row" *ngFor="let ratePlan of group.otherRatePlans">
+                        <div class="rate-plan-info">
+                            <p class="rate-plan-title">{{ratePlan.ratePlanName}}</p>
+                            <p class="rate-plan-desc" *ngIf="ratePlan.ratePlanDescription">
+                                {{ratePlan.ratePlanDescription}}
+                            </p>
+                            <span class="meal-plan-badge" *ngIf="ratePlan.mealPlan">
+                                <i class="bi bi-egg-fried"></i> Meal Plan: {{ratePlan.mealPlan}}
+                            </span>
+                        </div>
+                        <div class="rate-plan-price">
+                            <p class="price-amount">{{property.currency}} {{ratePlan.price.actual | number:'1.2-2'}}</p>
+                            <p class="price-unit">Per Night</p>
+                            <p class="price-note">plus taxes and charges</p>
+                            <button class="add-to-cart-btn" 
+                                    [class.cart-full]="isCartFull()"
+                                    [disabled]="isCartFull()"
+                                    (click)="roomBtnEvent(property, ratePlan)">
+                                {{isCartFull() ? 'CART FULL' : 'ADD TO CART'}}
+                            </button>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+
+            <!-- View More/Less Rates Toggle -->
+            <div class="view-rates-toggle" *ngIf="group.otherRatePlans.length > 0">
+                <button class="toggle-rates-btn" (click)="toggleRatePlans(group)">
+                    <span *ngIf="!group.expanded">View More Rates <i class="bi bi-chevron-down"></i></span>
+                    <span *ngIf="group.expanded">View Less Rates <i class="bi bi-chevron-up"></i></span>
+                </button>
+            </div>
+        </div>
     </ng-container>
 </ng-template>
 <ng-template #amenitesTab let-property="property" style="height: 180% !important;">

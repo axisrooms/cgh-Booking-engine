@@ -13,6 +13,13 @@ export type RoomButtonActionType =
   | 'ongoingComponent-proceed'
   | undefined;
 
+export interface GroupedRoom {
+  roomName: string;
+  lowestPriceRoom: any;
+  otherRatePlans: any[];
+  expanded: boolean;
+}
+
 @Component({
   selector: 'app-package',
   templateUrl: './package.component.html',
@@ -27,10 +34,22 @@ export class PackageComponent implements OnInit, OnDestroy {
    | undefined
 
   noOfRooms: any;
+  filteredImages: string[] = [];
+  groupedRooms: GroupedRoom[] = [];
 
   @Input() set property(val) {
-    this._property = val
-    this.setDeal()
+    this._property = val;
+    this.setDeal();
+    // Filter out empty image strings
+    if (val && val.images) {
+      this.filteredImages = val.images.filter((img: string) => img && img.trim() !== '');
+      // If no valid images, use a placeholder
+      if (this.filteredImages.length === 0) {
+        this.filteredImages = ['assets/images/no-image-found.png'];
+      }
+    }
+    // Group rooms by name
+    this.groupRoomsByName();
   }
 
   get property() {
@@ -160,5 +179,45 @@ export class PackageComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
     });
+  }
+
+  groupRoomsByName() {
+    if (!this._property?.rooms) return;
+
+    const roomMap = new Map<string, any[]>();
+    
+    // Group rooms by roomName
+    this._property.rooms.forEach((room: any) => {
+      const roomName = room.roomName || 'Unknown Room';
+      if (!roomMap.has(roomName)) {
+        roomMap.set(roomName, []);
+      }
+      roomMap.get(roomName)!.push(room);
+    });
+
+    // Create grouped rooms with lowest price first
+    this.groupedRooms = [];
+    roomMap.forEach((rooms, roomName) => {
+      // Sort by price (lowest first)
+      rooms.sort((a, b) => a.price.actual - b.price.actual);
+      
+      this.groupedRooms.push({
+        roomName: roomName,
+        lowestPriceRoom: rooms[0],
+        otherRatePlans: rooms.slice(1),
+        expanded: false
+      });
+    });
+
+    // Sort grouped rooms by lowest price
+    this.groupedRooms.sort((a, b) => a.lowestPriceRoom.price.actual - b.lowestPriceRoom.price.actual);
+  }
+
+  toggleRatePlans(group: GroupedRoom) {
+    group.expanded = !group.expanded;
+  }
+
+  isCartFull(): boolean {
+    return this.bookingService.isCartFull();
   }
 }
