@@ -389,14 +389,9 @@ export class BookComponent implements OnInit {
 
         // Proceed with payment directly (recommendations popup disabled)
         if (this.payathotel) {
-          this.paymentService.createOrder(this.bookingService.currBookingItemValue).subscribe(
-            (res1) => {
-              this.clickFn();
-            },
-            (error) => {
-              console.error('Error creating order:', error);
-              this.snackBar.open('Error creating order. Please try again.', '', { duration: 3000 });
-            }
+          // Pay at Hotel - still need to call makePayment with payathotel=true
+          this.paymentService.createOrderAndMakePayment(
+            this.bookingService.currBookingItemValue, this.personalDetailsForm.value, this.payathotel
           );
         } else {
           try {

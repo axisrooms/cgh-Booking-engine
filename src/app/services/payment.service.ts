@@ -44,18 +44,52 @@ export class PaymentService {
     });
   }
 
-  makePayment(bookingItem: any, personalDetails: any,payathotel: any) {
-    this.bookingService.setPGLoaderFlag()
-    let item = cloneDeep(bookingItem)
-    let postpayment =personalDetails.prepayment?bookingItem.totalAmount-personalDetails.prepayment:0;
-    // this.bookingService.removeCurrentBookingItemFromList()
-    let url1 = `https://app.axisrooms.com/beV2/hotelBooking.html?currency=1&`;
-    let url2 = `searchId=${item.searchId}&promoCodeApplied=&promoCode=&`;
-    let url3 = `tokenvalues=&master_pax_first_name=${personalDetails.firstName}&master_pax_last_name=${personalDetails.lastName}&`;
-    let url4 = `contactEmail=${personalDetails.emailId}&contactMobile=${personalDetails.mobileNo}&`;
-    let url5 = `additional_request=${personalDetails.specialRequest}&payAtHotelWithCC=${payathotel}&cardType=4&cardNO=&`;
-    let url6 = `cardValidity_month=&cardValidity_year=&cardHolderName=&cardValidity_cvv=&postAmountValue=`+postpayment;
-    let finalUrl = url1 + url2 + url3 + url4 + url5 + url6;
+  makePayment(bookingItem: any, personalDetails: any, payathotel: any) {
+    this.bookingService.setPGLoaderFlag();
+    const item = cloneDeep(bookingItem);
+
+    // Build address string from address object if available
+    let guestAddress = '';
+    if (personalDetails.address) {
+      const addr = personalDetails.address;
+      const parts = [addr.lane, addr.city, addr.state, addr.country].filter(p => p);
+      guestAddress = parts.join(', ');
+    }
+
+    const params: Record<string, string> = {
+      isBEV3: 'true',
+      searchId: item.searchId || '',
+      currency: '1',
+      promoCodeApplied: '',
+      promoCode: personalDetails.promoCode || '',
+      guestORlogin: 'guestform',
+      master_pax_first_name: personalDetails.firstName || '',
+      master_pax_last_name: personalDetails.lastName || '',
+      contactEmail: personalDetails.emailId || '',
+      contactMobile: personalDetails.mobileNo || '',
+      guest_address: guestAddress,
+      additional_request: personalDetails.specialRequest || '',
+      acceptTerms: 'on',
+      payAtHotelWithoutCC: payathotel ? 'true' : '',
+      cardType: '',
+      cardNO: '',
+      cardValidity_month: '',
+      cardValidity_year: '',
+      cardHolderName: '',
+      cardValidity_cvv: '',
+      AgodacardType: '',
+      AgodacardNO: '',
+      AgodacardValidity_month: '',
+      AgodacardValidity_year: '',
+      AgodacardValidity_cvv: '',
+      AgodacardHolderName: '',
+    };
+
+    const qs = Object.entries(params)
+      .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
+      .join('&');
+
+    const finalUrl = `https://app.axisrooms.com/beV2/hotelBooking.html?${qs}`;
     window.open(finalUrl, '_self');
   }
 }
