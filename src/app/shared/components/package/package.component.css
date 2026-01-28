@@ -49,7 +49,7 @@ ul {
   border-radius: 12px;
   height: 100%;
   max-height: 200px;
-  min-height: 160px;
+  min-height: 290px;
   object-fit: cover;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
@@ -162,10 +162,32 @@ ul {
 
 .description {
   font-weight: 400;
-  text-align: left;
+  text-align: justify;
   color: #6c757d;
   margin-bottom: 12px;
-  line-height: 1.6;
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+.description-truncated {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.view-more-link {
+  color: #2c7a4d;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-block;
+  margin-top: 5px;
+  transition: color 0.2s ease;
+}
+
+.view-more-link:hover {
+  color: #1e5a38;
+  text-decoration: underline;
 }
 
 .map-text {
@@ -621,6 +643,28 @@ ul {
   line-height: 1.5;
 }
 
+/* Amenities List with Bullet Points */
+.amenities-list {
+  list-style: disc;
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px 15px;
+}
+
+.amenities-list li {
+  font-size: 12px;
+  color: #555;
+  line-height: 1.5;
+  padding: 0;
+}
+
+.amenities-list li::marker {
+  font-weight: bold;
+  color: #333;
+}
+
 /* Room Badges */
 .room-badges {
   display: flex;
@@ -699,10 +743,73 @@ ul {
   font-size: 11px;
 }
 
+/* Inclusions Wrapper */
+.inclusions-wrapper {
+  margin-top: 10px;
+}
+
+.inclusions-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Inclusions List with Bullet Points - 3 per row */
+.inclusions-list {
+  list-style: disc;
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px 15px;
+}
+
+.inclusions-list li {
+  font-size: 11px;
+  color: #555;
+  line-height: 1.5;
+  padding: 0;
+}
+
+.inclusions-list li::marker {
+  font-weight: bold;
+  color: #333;
+}
+
+/* Deal Applied Badge */
+.deal-applied-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #fff3e0;
+  color: #e65100;
+  padding: 4px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid #ffcc80;
+  margin-left: 8px;
+}
+
+.deal-applied-badge i {
+  font-size: 11px;
+  color: #ff9800;
+}
+
 /* Rate Plan Price */
 .rate-plan-price {
   text-align: right;
   min-width: 160px;
+}
+
+/* Strikeout Original Price */
+.rate-plan-price .price-original {
+  font-size: 14px;
+  color: #999;
+  text-decoration: line-through;
+  margin-bottom: 2px;
 }
 
 .rate-plan-price .price-amount {
@@ -715,7 +822,7 @@ ul {
 .rate-plan-price .price-unit {
   font-size: 12px;
   color: #888;
-  margin-bottom: 2px;
+  margin-bottom: 10px;
 }
 
 .rate-plan-price .price-note {
@@ -737,7 +844,7 @@ ul {
 }
 
 .add-to-cart-btn:hover:not(.cart-full) {
-  background: #236b3e;
+  background: #3da0a6;
   transform: translateY(-1px);
 }
 

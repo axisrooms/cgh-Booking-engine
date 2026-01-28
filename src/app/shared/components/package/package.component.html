@@ -8,9 +8,10 @@
             <div class="carousel-inner">
                 <div class="carousel-item" *ngFor="let item of filteredImages; let i=index"
                     [ngClass]="i == 0 ? 'active' : ''" [id]="'slide'+ i">
-                    <img class="d-block w-100" [src]="item" style="position: relative;" 
-                         onerror="this.src='assets/images/no-image-found.png'">
-                    <i class="bi bi-arrows-angle-expand" (click)="expandImg(item)" ></i>
+                    <img class="d-block w-100" [src]="item" style="position: relative; cursor: pointer;" 
+                         onerror="this.src='assets/images/no-image-found.png'"
+                         (click)="expandImg(item, filteredImages, i)">
+                    <i class="bi bi-arrows-angle-expand" (click)="expandImg(item, filteredImages, i)" ></i>
                 </div>
             </div>
             <a class="carousel-control-prev" [href]="'#slider_hotel'+ id_num" role="button" data-slide="prev" *ngIf="filteredImages.length > 1">
@@ -35,7 +36,7 @@
                         [ngStyle]="star === 5 ? { 'margin-right': '5px' } : {}"></i>
                 </ng-container>
                 <span>{{property.property_type}}</span><br>
-                <span class="view-more-span"(click)="onExpandTab('amenities')">Click to view Hotel Amenities</span>
+                <!-- <span class="view-more-span"(click)="onExpandTab('amenities')">Click to view Hotel Amenities</span> -->
             </p>
 
             <p class="higlight-point" style="margin-top: 2px; margin-bottom: 18px">
@@ -125,7 +126,12 @@
 <ng-template #overviewTab let-property="property">
     <div class="mb-3" *ngIf="property?.description">
         <p class="overview-title">Overview</p>
-        <p class="description">{{property.description}}</p>
+        <p class="description" [class.description-truncated]="!showFullOverview && isOverviewLong(property.description)">
+            {{ showFullOverview || !isOverviewLong(property.description) ? property.description : getTruncatedOverview(property.description) }}
+        </p>
+        <span class="view-more-link" *ngIf="isOverviewLong(property.description)" (click)="toggleOverview()">
+            {{ showFullOverview ? 'View Less' : 'View More' }}
+        </span>
     </div>
     <div class="mb-3" *ngIf="property?.address">
         <p class="overview-title">Address</p>
@@ -144,12 +150,12 @@
                 }}</span>
         </p>
     </div>
-    <div class="mb-3" *ngIf="property?.coordinates">
+    <!-- <div class="mb-3" *ngIf="property?.coordinates">
         <p class="overview-title">Latitude : <span class="description">{{property.coordinates.latitude}}</span> </p>
         </div>
         <div class="mb-3" *ngIf="property?.coordinates">
             <p class="overview-title"> Longitude :  <span class="description">{{property.coordinates.longitude}}</span></p>
-            </div>
+            </div> -->
     <div class="mb-3" *ngIf="property?.goodToKnow?.length > 0">
         <p class="overview-title">Good to know</p>
         <p class="description">{{property.description}}</p>
@@ -164,7 +170,7 @@
 </ng-template>
 
 <ng-template #roomsTab let-property="property">
-    <p class="room-list-heading">Rooms Starting from</p>
+    <p class="room-list-heading">Rooms Details</p>
     <ng-container *ngFor="let group of groupedRooms; let i=index">
         <div class="grouped-room-card">
             <!-- Room Header with Image and Details -->
@@ -174,9 +180,10 @@
                         <div class="carousel-inner">
                             <div class="carousel-item" *ngFor="let img of group.lowestPriceRoom.images; let j=index"
                                 [ngClass]="j == 0 ? 'active' : ''">
-                                <img class="d-block w-100" [src]="img" 
-                                     onerror="this.src='assets/images/no-image-found.png'">
-                                <i class="bi bi-arrows-angle-expand" (click)="expandImg(img)"></i>
+                                <img class="d-block w-100" [src]="img" style="cursor: pointer;"
+                                     onerror="this.src='assets/images/no-image-found.png'"
+                                     (click)="expandImg(img, group.lowestPriceRoom.images, j)">
+                                <i class="bi bi-arrows-angle-expand" (click)="expandImg(img, group.lowestPriceRoom.images, j)"></i>
                             </div>
                         </div>
                         <a class="carousel-control-prev" [href]="'#slider_group'+ i" role="button" data-slide="prev" 
@@ -198,19 +205,17 @@
                     <div class="room-details-grid">
                         <!-- Amenities -->
                         <div class="detail-item" *ngIf="group.lowestPriceRoom.amenities?.length > 0">
-                            <p class="detail-label">Amenities:</p>
-                            <p class="detail-value">
-                                <span *ngFor="let amenity of group.lowestPriceRoom.amenities; let last=last">
-                                    {{amenity}}{{!last ? ' , ' : ''}}
-                                </span>
-                            </p>
+                            <p class="detail-label">AMENITIES:</p>
+                            <ul class="amenities-list">
+                                <li *ngFor="let amenity of group.lowestPriceRoom.amenities">{{amenity}}</li>
+                            </ul>
                         </div>
                         
                         <!-- Inclusions -->
-                        <div class="detail-item" *ngIf="group.lowestPriceRoom.inclusions?.length > 0">
+                        <!-- <div class="detail-item" *ngIf="group.lowestPriceRoom.inclusions?.length > 0">
                             <p class="detail-label">Inclusions:</p>
                             <p class="detail-value">{{group.lowestPriceRoom.inclusions[0]}}</p>
-                        </div>
+                        </div> -->
                     </div>
                     
                     <!-- Room Info Badges -->
@@ -237,12 +242,30 @@
                         <p class="rate-plan-desc" *ngIf="group.lowestPriceRoom.ratePlanDescription">
                             {{group.lowestPriceRoom.ratePlanDescription}}
                         </p>
+                        <!-- Meal Plan Badge -->
                         <span class="meal-plan-badge" *ngIf="group.lowestPriceRoom.mealPlan">
                             <i class="bi bi-egg-fried"></i> Meal Plan: {{group.lowestPriceRoom.mealPlan}}
                         </span>
+                        <!-- Deal Applied Badge -->
+                        <span class="deal-applied-badge" *ngIf="group.lowestPriceRoom.deal?.title">
+                            <i class="bi bi-tag-fill"></i> {{group.lowestPriceRoom.deal.title}}
+                        </span>
+                        <!-- Inclusions as bullet points -->
+                        <div class="inclusions-wrapper" *ngIf="group.lowestPriceRoom.inclusions?.length > 0">
+                            <span class="inclusions-label">Inclusions:</span>
+                            <ul class="inclusions-list">
+                                <ng-container *ngFor="let inclusion of group.lowestPriceRoom.inclusions">
+                                    <li *ngFor="let item of inclusion.split(',')">{{item.trim()}}</li>
+                                </ng-container>
+                            </ul>
+                        </div>
                     </div>
                     <div class="rate-plan-price">
-                        <p class="price-amount">{{property.currency}} {{group.lowestPriceRoom.price.actual | number:'1.2-2'}}</p>
+                        <!-- Strikeout Original Price (if discount exists) -->
+                        <p class="price-original" *ngIf="group.lowestPriceRoom.price.discounted">
+                            {{property.currency}} {{(group.lowestPriceRoom.price.actual + group.lowestPriceRoom.price.discounted) | number:'1.0-0'}}
+                        </p>
+                        <p class="price-amount">{{property.currency}} {{group.lowestPriceRoom.price.actual | number:'1.0-0'}}</p>
                         <p class="price-unit">Per Night</p>
                         <p class="price-note">plus taxes and charges</p>
                         <button class="add-to-cart-btn" 
@@ -262,12 +285,30 @@
                             <p class="rate-plan-desc" *ngIf="ratePlan.ratePlanDescription">
                                 {{ratePlan.ratePlanDescription}}
                             </p>
+                            <!-- Meal Plan Badge -->
                             <span class="meal-plan-badge" *ngIf="ratePlan.mealPlan">
                                 <i class="bi bi-egg-fried"></i> Meal Plan: {{ratePlan.mealPlan}}
                             </span>
+                            <!-- Deal Applied Badge -->
+                            <span class="deal-applied-badge" *ngIf="ratePlan.deal?.title">
+                                <i class="bi bi-tag-fill"></i> {{ratePlan.deal.title}}
+                            </span>
+                            <!-- Inclusions as bullet points -->
+                            <div class="inclusions-wrapper" *ngIf="ratePlan.inclusions?.length > 0">
+                                <span class="inclusions-label">Inclusions:</span>
+                                <ul class="inclusions-list">
+                                    <ng-container *ngFor="let inclusion of ratePlan.inclusions">
+                                        <li *ngFor="let item of inclusion.split(',')">{{item.trim()}}</li>
+                                    </ng-container>
+                                </ul>
+                            </div>
                         </div>
                         <div class="rate-plan-price">
-                            <p class="price-amount">{{property.currency}} {{ratePlan.price.actual | number:'1.2-2'}}</p>
+                            <!-- Strikeout Original Price (if discount exists) -->
+                            <p class="price-original" *ngIf="ratePlan.price.discounted">
+                                {{property.currency}} {{(ratePlan.price.actual + ratePlan.price.discounted) | number:'1.0-0'}}
+                            </p>
+                            <p class="price-amount">{{property.currency}} {{ratePlan.price.actual | number:'1.0-0'}}</p>
                             <p class="price-unit">Per Night</p>
                             <p class="price-note">plus taxes and charges</p>
                             <button class="add-to-cart-btn" 

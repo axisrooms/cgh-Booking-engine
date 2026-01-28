@@ -56,12 +56,15 @@ export class PaymentService {
       guestAddress = parts.join(', ');
     }
 
+    // Get promo discount from booking item
+    const promoDiscount = item.promoDiscount || 0;
+    
     const params: Record<string, string> = {
       isBEV3: 'true',
       searchId: item.searchId || '',
       currency: '1',
-      promoCodeApplied: '',
-      promoCode: personalDetails.promoCode || '',
+      promoCodeApplied: promoDiscount > 0 ? promoDiscount.toString() : '',
+      promoCode: promoDiscount > 0 ? (item.promoCode || personalDetails.promoCode || '') : '',
       guestORlogin: 'guestform',
       master_pax_first_name: personalDetails.firstName || '',
       master_pax_last_name: personalDetails.lastName || '',

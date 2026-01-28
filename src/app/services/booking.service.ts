@@ -209,6 +209,28 @@ export class BookingService {
 
   }
 
+  // Update a specific booking item in the cart
+  updateBookingItem(updatedItem: BookingItem): void {
+    if (!this.bookingCartValue?.bookingItems) return;
+    
+    const bookingCart = cloneDeep(this.bookingCartValue);
+    const index = bookingCart.bookingItems.findIndex(
+      (item: BookingItem) => 
+        item.hotelId === updatedItem.hotelId && 
+        item.searchId === updatedItem.searchId &&
+        item.checkIn === updatedItem.checkIn &&
+        item.checkOut === updatedItem.checkOut
+    );
+    
+    if (index !== -1) {
+      bookingCart.bookingItems[index] = updatedItem;
+      this.bookingCartReflect.set(
+        this.bookingCartReflect.HOOKS.BOOKING_CART,
+        bookingCart
+      );
+    }
+  }
+
   //
   // Addons
   //

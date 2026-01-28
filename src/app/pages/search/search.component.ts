@@ -288,12 +288,20 @@ export class SearchComponent implements OnInit, OnDestroy {
   addAges(i: any, index: number, index1: number) {
 
     console.log(i.target.value, index, index1)
-    var title = index + index1;
-    this.age.delete(index + index1)
-    this.age.set(title, i.target.value)
+    var title = index + '' + index1;
+    this.age.delete(index + '' + index1)
+    this.age.set(title, parseInt(i.target.value))
 
     console.log(this.age)
   }
+
+  // Get the saved child age for a specific room and child index
+  getChildAge(roomIndex: number, childIndex: number): number {
+    const key = roomIndex + '' + childIndex;
+    const savedAge = this.age.get(key);
+    return savedAge ? parseInt(savedAge) : 1;
+  }
+
   getChildrenAgeFormArray(index: number): FormArray {
     const roomFormGroup = this.getTablesFormArray().at(index) as FormGroup;
     return roomFormGroup.get('agesOfChildren') as FormArray;
@@ -325,6 +333,20 @@ export class SearchComponent implements OnInit, OnDestroy {
       noOfChildren: [0],
       agesOfChildren: this.formBuilder.array([])
     });
+  }
+
+  // Calculate total adults across all rooms
+  getTotalAdults(): number {
+    const paxData = this.searchForm?.controls?.paxData?.value;
+    if (!paxData || paxData.length === 0) return 0;
+    return paxData.reduce((total: number, room: any) => total + (room.noOfAdults || 0), 0);
+  }
+
+  // Calculate total children across all rooms
+  getTotalChildren(): number {
+    const paxData = this.searchForm?.controls?.paxData?.value;
+    if (!paxData || paxData.length === 0) return 0;
+    return paxData.reduce((total: number, room: any) => total + (room.noOfChildren || 0), 0);
   }
 
   // getChildrenAgeFormArray(i: number): FormArray {
@@ -422,6 +444,9 @@ export class SearchComponent implements OnInit, OnDestroy {
         
         console.log('hotelsList populated with:', this.hotelsList.length, 'hotels');
         console.log('locationList populated with:', this.locationList.length, 'locations');
+        
+        // Set background image from hotel list
+        this.setBackgroundFromHotelList(hotelDetails);
       } else {
         console.error('No Hotel_Details in response:', res);
       }
@@ -461,6 +486,9 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.hotelsList = item.value;
         this.getLocationList(item.value);
         this.isHotelListLoaded = true;
+        
+        // Set background image from cached hotel list
+        this.setBackgroundFromHotelList(item.value);
       } else {
         // If invalid data, fetch fresh data
         localStorage.removeItem('hotel');
@@ -835,31 +863,67 @@ export class SearchComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Set background image from hotel list (before search, on page load)
+  setBackgroundFromHotelList(hotelList: any[]) {
+    if (!hotelList || hotelList.length === 0) {
+      this.hotelBackgroundImage = '';
+      return;
+    }
+
+    // Loop through all hotels to find the first valid image
+    for (const hotel of hotelList) {
+      if (hotel.images && hotel.images.length > 0) {
+        // Filter out empty strings and find the first valid image
+        const validImages = hotel.images.filter((img: string) => img && img.trim() !== '');
+        if (validImages.length > 0) {
+          this.hotelBackgroundImage = validImages[0];
+          console.log('✅ Set initial background image from hotel list:', this.hotelBackgroundImage);
+          this.cdr.detectChanges();
+          return;
+        }
+      }
+    }
+
+    // No valid images found, use default
+    this.hotelBackgroundImage = '';
+    console.log('No valid images in hotel list, using default background');
+  }
+
   updateBackgroundImage() {
-    // Check if searchResponse has Hotel_Details and if the first hotel has images
-    console.log('Search Response:', this.searchResponse);
+    console.log('=== updateBackgroundImage called ===');
+    console.log('searchResponse:', this.searchResponse);
+    console.log('Hotel_Details:', this.searchResponse?.Hotel_Details);
     
+    // Check if searchResponse has Hotel_Details and if any hotel has valid images
     if (this.searchResponse && 
         this.searchResponse.Hotel_Details && 
         this.searchResponse.Hotel_Details.length > 0) {
       
-      const firstHotel = this.searchResponse.Hotel_Details[0];
-      console.log('First Hotel:', firstHotel);
-      console.log('First Hotel Images:', firstHotel.images);
+      console.log('Found', this.searchResponse.Hotel_Details.length, 'hotels');
       
-      if (firstHotel.images && firstHotel.images.length > 0) {
-        // Use the first image of the first hotel
-        this.hotelBackgroundImage = firstHotel.images[0];
-        console.log('Updated background image to:', this.hotelBackgroundImage);
-      } else {
-        // Reset to default
-        this.hotelBackgroundImage = '';
-        console.log('No images found in hotel, reset to default background image');
+      // Loop through all hotels to find the first valid image
+      for (const hotel of this.searchResponse.Hotel_Details) {
+        console.log('Checking hotel:', hotel.hotel_name, 'images:', hotel.images);
+        if (hotel.images && hotel.images.length > 0) {
+          // Filter out empty strings and find the first valid image
+          const validImages = hotel.images.filter((img: string) => img && img.trim() !== '');
+          console.log('Valid images for', hotel.hotel_name, ':', validImages);
+          if (validImages.length > 0) {
+            this.hotelBackgroundImage = validImages[0];
+            console.log('✅ Updated background image to:', this.hotelBackgroundImage);
+            this.cdr.detectChanges();
+            return;
+          }
+        }
       }
+      
+      // No valid images found in any hotel
+      this.hotelBackgroundImage = '';
+      console.log('❌ No valid images found in any hotel, using default background');
     } else {
       // Reset to default
       this.hotelBackgroundImage = '';
-      console.log('No Hotel_Details found, reset to default background image');
+      console.log('❌ No Hotel_Details found, using default background image');
     }
     
     // Trigger change detection
@@ -867,21 +931,26 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   getBackgroundImageStyle() {
+    console.log('getBackgroundImageStyle called, hotelBackgroundImage:', this.hotelBackgroundImage);
     // Check if hotel background image is set
     if (this.hotelBackgroundImage) {
-      return {
+      const style = {
         'background-image': `url(${this.hotelBackgroundImage})`,
         'background-position': 'center',
         'background-size': 'cover'
       };
+      console.log('Returning dynamic style:', style);
+      return style;
     }
     
     // Fallback to default background image
-    return {
+    const defaultStyle = {
       'background-image': 'url(../../../assets/images/background.jpg)',
       'background-position': 'center',
       'background-size': 'cover'
     };
+    console.log('Returning default style:', defaultStyle);
+    return defaultStyle;
   }
 
 

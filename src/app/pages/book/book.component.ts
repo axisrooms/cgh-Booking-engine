@@ -62,6 +62,7 @@ export class BookComponent implements OnInit {
   hotelPolicy: string[] = [];
   policiesLoaded: boolean = false;
   acceptTerms: boolean = false;
+  acceptAllPolicies: boolean = false;
   constructor(
     public dialog: MatDialog,
     private bookingService: BookingService,
@@ -246,14 +247,14 @@ export class BookComponent implements OnInit {
   setPayNow() {
     this.payathotel = false;
     this.load = true;
-    this.acceptTerms = false;
+    this.acceptAllPolicies = false;
     // Card details will be shown for Pay Now option
   }
 
   setPayAtHotel() {
     this.payathotel = true;
     this.load = false;
-    this.acceptTerms = false;
+    this.acceptAllPolicies = false;
     // Clear card details when switching to Pay at Hotel
     this.cardDetails = {
       cardno: '',
@@ -353,20 +354,9 @@ export class BookComponent implements OnInit {
         return;
       }
 
-      // Check if terms and conditions are accepted
-      if (!this.acceptTerms) {
-        this.snackBar.open('Please accept the Terms and Conditions to proceed', '', { duration: 3000 });
-        return;
-      }
-
-      // Check if both policy checkboxes are checked
-      if (!this.cpolicy) {
-        this.snackBar.open('Please read and acknowledge the Cancellation Policy', '', { duration: 3000 });
-        return;
-      }
-
-      if (!this.hpolicy) {
-        this.snackBar.open('Please read and acknowledge the Hotel Policy', '', { duration: 3000 });
+      // Check if all policies are accepted
+      if (!this.acceptAllPolicies) {
+        this.snackBar.open('Please read and accept the Cancellation Policy, Hotel Policy and Terms & Conditions to proceed', '', { duration: 3000 });
         return;
       }
 

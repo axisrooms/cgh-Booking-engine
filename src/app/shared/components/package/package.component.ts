@@ -76,6 +76,8 @@ export class PackageComponent implements OnInit, OnDestroy {
   selectedTab!: 'overview' | 'rooms' | 'deals' | 'amenities' | undefined;
   adults:any;
   child:any;
+  showFullOverview: boolean = false;
+  overviewWordLimit: number = 30;
   constructor(
     private activatedRoute: ActivatedRoute,
     private bookingService: BookingService,
@@ -149,6 +151,28 @@ export class PackageComponent implements OnInit, OnDestroy {
     this.selectedTab = selection;
   }
 
+  // Get truncated overview text (first N words)
+  getTruncatedOverview(description: string): string {
+    if (!description) return '';
+    const words = description.split(/\s+/);
+    if (words.length <= this.overviewWordLimit) {
+      return description;
+    }
+    return words.slice(0, this.overviewWordLimit).join(' ') + '...';
+  }
+
+  // Check if overview needs truncation
+  isOverviewLong(description: string): boolean {
+    if (!description) return false;
+    const words = description.split(/\s+/);
+    return words.length > this.overviewWordLimit;
+  }
+
+  // Toggle full overview display
+  toggleOverview() {
+    this.showFullOverview = !this.showFullOverview;
+  }
+
   roomBtnEvent(property: any, room: any) {
     if (this.buttonActionType === 'searchComponent-newBooking') {
       this.bookingService.startNewBooking(
@@ -169,11 +193,18 @@ export class PackageComponent implements OnInit, OnDestroy {
     console.log(room, "hiii")
   }
 
-  expandImg(img: any) {
+  expandImg(img: any, images?: string[], index?: number) {
+    // If images array is provided, use the new gallery format
+    const dialogData = images ? {
+      images: images.filter((i: string) => i && i.trim() !== ''),
+      currentIndex: index || 0
+    } : img;
+
     const dialogRef = this.dialog.open(ImagePopupComponent, {
-      data: img,
-      width: '600px',
-      height: '500px'
+      data: dialogData,
+      panelClass: 'image-popup-dialog',
+      maxWidth: '95vw',
+      maxHeight: '95vh'
     });
 
     dialogRef.afterClosed().subscribe(result => {

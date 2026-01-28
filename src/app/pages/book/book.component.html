@@ -170,39 +170,17 @@
                     <!-- Policy Checkboxes Section -->
                     <div class="policy-section" *ngIf="stepper == eStepper.personalDetails">
                         
-                        <!-- View Cancellation Policy Checkbox -->
+                        <!-- Combined Policy Checkbox -->
                         <label class="policy-checkbox">
-                            <input type="checkbox" name="viewCancellationPolicy" 
-                                [(ngModel)]="cpolicy">
+                            <input type="checkbox" name="acceptAllPolicies" 
+                                [(ngModel)]="acceptAllPolicies">
                             <span class="checkbox-custom"></span>
                             <span class="policy-text">
                                 I have read the 
                                 <a (click)="viewCancellationPolicy(); $event.preventDefault()" class="policy-link">
-                                    Cancellation Policy
-                                </a>
-                            </span>
-                        </label>
-
-                        <!-- View Hotel Policy Checkbox -->
-                        <label class="policy-checkbox">
-                            <input type="checkbox" name="viewHotelPolicy" 
-                                [(ngModel)]="hpolicy">
-                            <span class="checkbox-custom"></span>
-                            <span class="policy-text">
-                                I have read the 
+                                    Cancellation Policy</a>, 
                                 <a (click)="viewHotelPolicy(); $event.preventDefault()" class="policy-link">
-                                    Hotel Policy
-                                </a>
-                            </span>
-                        </label>
-
-                        <!-- Terms and Conditions Checkbox -->
-                        <label class="policy-checkbox">
-                            <input type="checkbox" name="acceptTerms" 
-                                [(ngModel)]="acceptTerms">
-                            <span class="checkbox-custom"></span>
-                            <span class="policy-text">
-                                I accept the 
+                                    Hotel Policy</a> and accept the 
                                 <a (click)="openTermsDialog(); $event.preventDefault()" class="policy-link">
                                     Terms and Conditions
                                 </a>

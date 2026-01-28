@@ -242,8 +242,8 @@ export class PersonalDetailsComponent implements OnInit {
           if (this.bookingItem) {
             this.bookingItem.promoDiscount = this.promoDiscount;
             this.bookingItem.promoCode = promoCode.trim();
-            // Trigger cart update by reassigning bookingItem
-            this.bookingItem = {...this.bookingItem};
+            // Update the booking item in the service to reflect changes in cart
+            this.bookingService.updateBookingItem(this.bookingItem);
           }
           
           this.snackBar.open(`Promo code applied successfully! Discount: ₹${this.promoDiscount}`, 'Close', { 
@@ -300,8 +300,8 @@ export class PersonalDetailsComponent implements OnInit {
     if (this.bookingItem) {
       this.bookingItem.promoDiscount = 0;
       this.bookingItem.promoCode = undefined;
-      // Trigger cart update by reassigning bookingItem
-      this.bookingItem = {...this.bookingItem};
+      // Update the booking item in the service to reflect changes in cart
+      this.bookingService.updateBookingItem(this.bookingItem);
     }
   }
 }
