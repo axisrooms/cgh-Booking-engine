@@ -102,3 +102,143 @@
     text-align: center;
 }
 }
+
+/* Mobile Responsive */
+@media screen and (max-width: 480px) {
+  .banner-section {
+    height: 50vh;
+    min-height: 300px;
+  }
+
+  .banner-heading {
+    font-size: 24px;
+    letter-spacing: 5px;
+    padding: 10px 15px 10px 20px;
+    line-height: 28px;
+    border-width: 2px;
+  }
+
+  .deals-section {
+    padding: 30px 10px;
+  }
+
+  .deals {
+    padding: 15px 20px;
+    margin: 15px 0;
+  }
+
+  .deal-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+  }
+
+  .hotel-row {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .hotel-title {
+    font-size: 14px;
+  }
+
+  .contents-section-seperator {
+    margin: 30px auto 0 auto;
+  }
+}
+
+/* Tablet Responsive */
+@media screen and (min-width: 481px) and (max-width: 768px) {
+  .banner-section {
+    height: 60vh;
+    min-height: 350px;
+  }
+
+  .banner-heading {
+    font-size: 32px;
+    letter-spacing: 7px;
+    line-height: 30px;
+  }
+
+  .deals-section {
+    padding: 40px 15px;
+  }
+
+  .deals {
+    padding: 18px 25px;
+  }
+
+  .deal-title {
+    font-size: 22px;
+    margin-bottom: 25px;
+  }
+
+  .hotel-row {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
+
+/* Large Screens */
+@media screen and (min-width: 769px) and (max-width: 1200px) {
+  .banner-section {
+    height: 70vh;
+  }
+
+  .deals-section {
+    padding: 50px 20px;
+  }
+}
+
+/* All Tablets and Foldables */
+@media screen and (min-width: 769px) and (max-width: 1366px) {
+  .banner-section {
+    height: 60vh;
+    min-height: 350px;
+  }
+
+  .banner-heading {
+    font-size: 32px;
+    letter-spacing: 7px;
+    padding: 12px 20px 12px 28px;
+    line-height: 30px;
+  }
+
+  .deals-section {
+    padding: 40px 20px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .deals {
+    padding: 20px 25px;
+    margin: 20px 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .deal-title {
+    font-size: 24px;
+    margin-bottom: 25px;
+  }
+
+  .contents-section-seperator {
+    max-width: none;
+    width: 100%;
+    margin: 40px 0 0 0;
+  }
+
+  .container,
+  .container-lg,
+  .container-md,
+  .container-sm,
+  .container-xl,
+  .container-xxl {
+    max-width: none !important;
+    width: 100% !important;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}

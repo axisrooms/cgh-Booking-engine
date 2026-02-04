@@ -23,3 +23,30 @@
   align-items: center;
   justify-content: center;
 }
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+  .wrapper {
+    padding: 30px 12px;
+  }
+
+  .booking-item {
+    padding: 0 5px;
+  }
+
+  .banner-section {
+    height: 30vh;
+    min-height: 150px;
+  }
+}
+
+/* Tablet Responsive */
+@media (min-width: 481px) and (max-width: 768px) {
+  .wrapper {
+    padding: 40px 15px;
+  }
+
+  .banner-section {
+    height: 35vh;
+  }
+}

@@ -242,6 +242,14 @@ header {
   #showmenu {
     display: block;
   }
+  
+  .right-col {
+    gap: 12px;
+  }
+  
+  .my-booking {
+    display: none;
+  }
 }
 
 @media (max-width: 576px) {
@@ -256,6 +264,78 @@ header {
   }
   
   .book-now {
+    padding: 8px 16px;
+    font-size: 11px;
+  }
+  
+  .right-col {
+    gap: 8px;
+  }
+  
+  #showmenu::before {
+    font-size: 22px;
+  }
+  
+  .social {
+    display: none;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 380px) {
+  header {
+    height: 56px;
+    padding: 0 12px;
+  }
+  
+  .navbar-brand img {
+    max-width: 100px;
+    max-height: 40px;
+  }
+  
+  .book-now {
+    padding: 6px 12px;
+    font-size: 10px;
+    border-radius: 20px;
+  }
+  
+  .brand-name {
+    font-size: 18px;
+    letter-spacing: 1px;
+  }
+}
+
+/* All Tablets and Foldables */
+@media (min-width: 769px) and (max-width: 1366px) {
+  header {
+    height: 70px;
+    padding: 0 25px;
+    width: 100%;
+  }
+
+  .navbar-brand img {
+    max-width: 150px;
+    max-height: 55px;
+  }
+
+  .navigation {
+    display: none;
+  }
+
+  #showmenu {
+    display: block;
+  }
+
+  .right-col {
+    gap: 15px;
+  }
+
+  .book-now {
+    padding: 9px 20px;
+    font-size: 11px;
+  }
+
+  .my-booking {
     padding: 8px 16px;
     font-size: 11px;
   }

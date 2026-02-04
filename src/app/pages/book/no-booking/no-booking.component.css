@@ -19,3 +19,42 @@
   margin-top: 20px;
   flex-direction: column;
 }
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+  .wrapper {
+    padding: 30px 12px;
+    height: 50vh;
+    align-items: center;
+  }
+
+  .alert {
+    height: auto;
+    min-height: 150px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .alert h4 {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .alert p {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+}
+
+/* Tablet Responsive */
+@media (min-width: 481px) and (max-width: 768px) {
+  .wrapper {
+    padding: 40px 15px;
+    height: 55vh;
+  }
+
+  .alert {
+    max-width: 700px;
+    padding: 30px;
+  }
+}

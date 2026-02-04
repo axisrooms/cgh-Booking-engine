@@ -10,6 +10,7 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   border: 1px solid #e9ecef;
   transition: all 0.3s ease;
+  width: 100%;
 }
 
 .wrapper:hover {
@@ -936,6 +937,284 @@ ul {
   .room-badge {
     font-size: 11px;
     padding: 4px 10px;
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+  .wrapper {
+    margin-bottom: 15px;
+    border-radius: 12px;
+  }
+
+  .property-row {
+    flex-direction: column;
+  }
+
+  .property-image-col {
+    width: 100%;
+    padding: 12px;
+    padding-bottom: 0;
+  }
+
+  .property-image-col img {
+    width: 100%;
+    min-height: 180px;
+    max-height: 200px;
+    border-radius: 10px;
+  }
+
+  .property-text-col {
+    padding: 15px;
+  }
+
+  .package-title {
+    font-size: 16px;
+    margin-bottom: 6px;
+    text-align: center;
+  }
+
+  .higlight-points {
+    font-size: 12px;
+    justify-content: center;
+  }
+
+  .higlight-points-row {
+    gap: 6px;
+    margin-bottom: 12px;
+    justify-content: center;
+  }
+
+  .style-x {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  .tabs-block {
+    padding: 15px;
+  }
+
+  .room-list-heading {
+    font-size: 13px;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .room-header-section {
+    padding: 12px;
+    align-items: center;
+  }
+
+  .room-image-col {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .room-image-col img {
+    max-width: 240px;
+    height: 160px;
+  }
+
+  .room-info-col {
+    text-align: center;
+    align-items: center;
+  }
+
+  .room-name {
+    font-size: 15px;
+    text-align: center;
+  }
+
+  .room-badges {
+    justify-content: center;
+  }
+
+  .rate-plan-row {
+    padding: 12px 15px;
+    gap: 10px;
+  }
+
+  .rate-plan-name {
+    font-size: 13px;
+  }
+
+  .rate-plan-price {
+    justify-content: center;
+  }
+
+  .rate-plan-price .price-amount {
+    font-size: 18px;
+  }
+
+  .rate-plan-price .original-price {
+    font-size: 12px;
+  }
+
+  .add-to-cart-btn {
+    padding: 10px 16px;
+    font-size: 12px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .view-rates-toggle {
+    justify-content: center;
+    padding: 10px 16px;
+  }
+
+  .toggle-rates-btn {
+    font-size: 13px;
+  }
+
+  ul {
+    max-height: none;
+    flex-wrap: nowrap;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 360px) {
+  .property-image-col img {
+    min-height: 150px;
+    max-height: 170px;
+  }
+
+  .package-title {
+    font-size: 15px;
+  }
+
+  .style-x {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+
+  .room-image-col img {
+    max-width: 200px;
+    height: 130px;
+  }
+
+  .rate-plan-price .price-amount {
+    font-size: 16px;
+  }
+
+  .add-to-cart-btn {
+    padding: 8px 14px;
+    font-size: 11px;
+  }
+}
+
+/* Tablet Responsive */
+@media (min-width: 481px) and (max-width: 768px) {
+  .wrapper {
+    width: 100%;
+  }
+
+  .property-row {
+    flex-direction: row;
+  }
+
+  .property-image-col {
+    width: auto;
+    padding: 12px;
+  }
+
+  .property-image-col img {
+    width: 180px;
+    min-height: 200px;
+    max-height: 220px;
+  }
+
+  .property-text-col {
+    padding: 15px;
+  }
+
+  .package-title {
+    font-size: 18px;
+  }
+
+  .tabs-block {
+    padding: 15px;
+  }
+
+  .room-image-col img {
+    width: 150px;
+    height: 100px;
+  }
+
+  .rate-plan-row {
+    padding: 12px 18px;
+  }
+}
+
+/* All Tablets and Foldables (iPad Mini, Air, Pro, Surface Pro, Galaxy Fold, etc.) */
+@media (min-width: 769px) and (max-width: 1366px) {
+  .wrapper {
+    margin-bottom: 18px;
+    width: 100%;
+    box-sizing: border-box;
+    max-width: none;
+  }
+
+  .property-row {
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .property-image-col {
+    padding: 15px;
+  }
+
+  .property-image-col img {
+    width: 200px;
+    min-height: 220px;
+    max-height: 250px;
+  }
+
+  .property-text-col {
+    padding: 18px;
+    flex: 1;
+  }
+
+  .package-title {
+    font-size: 18px;
+  }
+
+  .higlight-points-row {
+    gap: 6px;
+  }
+
+  .style-x {
+    padding: 5px 12px;
+    font-size: 11px;
+  }
+
+  .tabs-block {
+    padding: 18px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .room-header-section {
+    flex-direction: row;
+    padding: 15px 18px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .room-image-col img {
+    width: 160px;
+    height: 110px;
+  }
+
+  .rate-plan-row {
+    flex-direction: row;
+    padding: 14px 20px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .rate-plan-price {
+    text-align: right;
   }
 }
 

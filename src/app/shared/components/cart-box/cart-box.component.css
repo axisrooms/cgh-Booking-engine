@@ -11,6 +11,7 @@
   border: 1px solid #e0d9ce;
   padding: 20px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
 }
 
 /* Cart Item Container */
@@ -405,4 +406,156 @@ hr {
 .room-select-prompt .message {
   font-size: 13px;
   opacity: 0.9;
+}
+
+/* Mobile Responsive */
+@media screen and (max-width: 480px) {
+  .cart-wrapper {
+    padding: 16px;
+    border-radius: 12px;
+    margin-top: 0;
+  }
+
+  .room-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding-right: 30px;
+  }
+
+  .room-number {
+    font-size: 14px;
+  }
+
+  .room-price .price-current {
+    font-size: 16px;
+  }
+
+  .info-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .info-box.half {
+    width: 100%;
+    border-radius: 8px !important;
+    border: 1px solid #d4cdc0 !important;
+  }
+
+  .info-box {
+    padding: 10px 12px;
+  }
+
+  .info-label {
+    font-size: 9px;
+  }
+
+  .info-value {
+    font-size: 12px;
+  }
+
+  .line-item {
+    font-size: 12px;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .item-desc {
+    flex: 1;
+    min-width: 60%;
+  }
+
+  .item-amount {
+    font-size: 13px;
+  }
+
+  .grand-total-label {
+    font-size: 14px;
+  }
+
+  .grand-total-amount {
+    font-size: 18px;
+  }
+
+  .total {
+    font-size: 14px;
+    flex-wrap: wrap;
+  }
+
+  .total .item-amount {
+    font-size: 16px;
+  }
+
+  .reserve-btn {
+    padding: 12px 24px;
+    font-size: 13px;
+  }
+
+  .room-select-prompt {
+    padding: 16px;
+    border-radius: 10px;
+  }
+
+  .room-select-prompt .count {
+    font-size: 20px;
+  }
+
+  .room-select-prompt .message {
+    font-size: 12px;
+  }
+}
+
+/* Tablet Responsive */
+@media screen and (min-width: 481px) and (max-width: 768px) {
+  .cart-wrapper {
+    padding: 18px;
+    width: 100%;
+  }
+
+  .room-header {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .info-row {
+    gap: 0;
+  }
+
+  .grand-total-amount {
+    font-size: 20px;
+  }
+}
+
+/* All Tablets and Foldables */
+@media screen and (min-width: 769px) and (max-width: 1366px) {
+  .cart-wrapper {
+    padding: 20px;
+    max-width: none;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .info-row {
+    flex-direction: row;
+    gap: 0;
+  }
+
+  .info-box.half {
+    width: 50%;
+  }
+
+  .room-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .grand-total-amount {
+    font-size: 22px;
+  }
+
+  .reserve-btn {
+    padding: 14px 30px;
+    font-size: 14px;
+  }
 }

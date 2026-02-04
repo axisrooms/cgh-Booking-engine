@@ -433,17 +433,21 @@
 /* Contents */
 .contents-section {
   padding: 80px 15px 0px 15px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .contents-section .contents-wrapper {
   display: flex;
   max-width: 1200px;
   margin: auto;
+  width: 100%;
 }
 
 .contents-section-seperator {
   max-width: 1180px;
   margin: 50px auto 0 auto;
+  width: 100%;
 }
 
 /* Placeholder styles */
@@ -727,4 +731,165 @@ hr {
     left: calc(0px);
   }
 
+}
+
+/* Tablet Responsive */
+@media screen and (min-width: 481px) and (max-width: 768px) {
+  .banner-section {
+    height: 80vh;
+  }
+
+  .search-bar {
+    max-width: 95%;
+    padding: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .search-bar .hotel-field,
+  .search-bar .checkin-field,
+  .search-bar .checkout-field,
+  .search-bar .pax-field {
+    width: calc(50% - 8px);
+    min-width: auto;
+  }
+
+  .search-bar .hotel-field {
+    width: 100%;
+    border-radius: 12px;
+  }
+
+  .search-bar .date-card {
+    min-width: 100%;
+    left: 0;
+  }
+
+  .search-bar .dropdown-card {
+    min-width: 100%;
+    max-width: 100%;
+    left: 0;
+  }
+
+  .contents-section {
+    padding: 40px 15px 0px 15px;
+  }
+
+  .contents-section .contents-wrapper {
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .search-results {
+    padding: 0 10px;
+    width: 100%;
+  }
+
+  .bi-search {
+    font-size: 22px;
+    padding: 14px;
+  }
+}
+
+/* All Tablets and Foldables (iPad Mini, Air, Pro, Surface Pro, Galaxy Fold, etc.) */
+@media screen and (min-width: 769px) and (max-width: 1366px) {
+  .banner-section {
+    height: 100vh;
+  }
+
+  .search-bar {
+    max-width: 95%;
+    width: 95%;
+    padding: 10px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .search-bar .hotel-field {
+    width: 100%;
+    border-radius: 12px;
+  }
+
+  .search-bar .checkin-field,
+  .search-bar .checkout-field,
+  .search-bar .pax-field {
+    flex: 1;
+    min-width: 150px;
+  }
+
+  .search-bar .date-card {
+    min-width: 500px;
+    left: 0;
+  }
+
+  .contents-section {
+    padding: 50px 20px 0px 20px;
+    width: 100%;
+  }
+
+  .contents-section .contents-wrapper {
+    flex-direction: column;
+    max-width: none;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  .contents-section .contents-wrapper > .col-12,
+  .contents-section .contents-wrapper > .col-md-8,
+  .contents-section .contents-wrapper > .col-lg-8,
+  .contents-section .contents-wrapper > .col-md-4,
+  .contents-section .contents-wrapper > .col-lg-4 {
+    flex: 0 0 100%;
+    max-width: 100%;
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .search-results {
+    padding: 0;
+    width: 100%;
+  }
+
+  .contents-section-seperator {
+    max-width: none;
+    width: 100%;
+    padding: 0;
+    margin: 50px 0 0 0;
+  }
+}
+
+/* Small Mobile */
+@media screen and (max-width: 360px) {
+  .search-bar {
+    max-width: 290px;
+    padding: 12px;
+  }
+
+  .search-bar .hotel-field,
+  .search-bar .checkin-field,
+  .search-bar .checkout-field,
+  .search-bar .pax-field {
+    width: 260px;
+    min-width: 260px;
+  }
+
+  .search-bar .dropdown-card {
+    min-width: 260px;
+    max-width: 260px;
+  }
+
+  .search-bar .field-heading {
+    font-size: 10px;
+  }
+
+  .search-bar .field-content {
+    font-size: 13px;
+  }
+
+  .date-card .calendar-controls-block .control {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
 }

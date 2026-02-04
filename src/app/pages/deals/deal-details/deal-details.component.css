@@ -41,3 +41,43 @@
     cursor: pointer;
     /* margin-right: 14px; */
 }
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+  .deals {
+    padding: 15px 18px;
+    margin: 8px 0 20px;
+  }
+
+  .deal-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+  }
+
+  .line-title {
+    font-size: 13px;
+  }
+
+  .line-detail {
+    font-size: 13px;
+  }
+
+  .close-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+  }
+}
+
+/* Tablet Responsive */
+@media (min-width: 481px) and (max-width: 768px) {
+  .deals {
+    padding: 18px 25px;
+  }
+
+  .deal-title {
+    font-size: 22px;
+    margin-bottom: 25px;
+  }
+}

@@ -311,3 +311,50 @@
     left: auto;
   }
 }
+
+/* All Tablets and Foldables */
+@media (min-width: 769px) and (max-width: 1366px) {
+  .room-details {
+    padding: 14px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .room-header {
+    flex-direction: row;
+    gap: 14px;
+  }
+
+  .room-header-image-col img {
+    width: 180px;
+    max-height: 140px;
+  }
+
+  .room-details .room-title {
+    font-size: 16px;
+  }
+
+  .room-details .room-col {
+    padding: 14px 18px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .room-details .room-col .price {
+    font-size: 22px;
+  }
+
+  .style-x {
+    padding: 5px 12px;
+    font-size: 12px;
+  }
+
+  .higlight-points-row {
+    gap: 6px;
+  }
+
+  .room-wrapper {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
