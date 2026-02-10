@@ -63,6 +63,8 @@ export class BookComponent implements OnInit {
   policiesLoaded: boolean = false;
   acceptTerms: boolean = false;
   acceptAllPolicies: boolean = false;
+  // Track if addons page was skipped due to no addons
+  addonsSkipped: boolean = false;
   constructor(
     public dialog: MatDialog,
     private bookingService: BookingService,
@@ -108,10 +110,20 @@ export class BookComponent implements OnInit {
           this.hotelPolicy = res['hotelPolicy'] || [];
           this.policiesLoaded = true;
           this.policyresp = res;
+          
+          // Skip addons page if no addons are available
+          const policies = res['policies'] || [];
+          if (!policies || policies.length === 0) {
+            this.addonsSkipped = true;
+            this.stepper = this.eStepper.personalDetails;
+          }
         },
         (error) => {
           console.error('Error loading policies:', error);
           this.snackBar.open('Failed to load policies', 'Close', { duration: 3000 });
+          // Skip to personal details on error as well
+          this.addonsSkipped = true;
+          this.stepper = this.eStepper.personalDetails;
         }
       );
     }
@@ -409,28 +421,34 @@ export class BookComponent implements OnInit {
 
     if (this.stepper === this.eStepper.addons) {
       // history.back();
-      let searchParams: any = {
-        bookingEngineId: this.BookingConfigService.getBookingEngineId(),
-      };
-      this.currBookingItem$.subscribe(e => {
-        console.log(e)
-        searchParams['productId'] = e?.hotelId;
-        searchParams['checkIn'] = e?.checkIn;
-        searchParams['checkOut'] = e?.checkOut;
-        searchParams['paxInfo'] = e?.paxInfo;
-        searchParams['rooms'] = JSON.stringify(e?.rooms);
-        searchParams['searchType'] = 'hotel';
-
-      })
-      this.router.navigate(['/search'], { queryParams: searchParams })
-
-
+      this.navigateToSearch();
     } else if (this.stepper === this.eStepper.personalDetails) {
-      this.stepper = this.eStepper.addons;
+      // If addons were skipped, go back to search instead of addons
+      if (this.addonsSkipped) {
+        this.navigateToSearch();
+      } else {
+        this.stepper = this.eStepper.addons;
+      }
     } else if (this.stepper === this.eStepper.payment) {
       this.stepper = this.eStepper.personalDetails;
     }
     window.scrollTo(0, 0);
+  }
+
+  private navigateToSearch(): void {
+    let searchParams: any = {
+      bookingEngineId: this.BookingConfigService.getBookingEngineId(),
+    };
+    this.currBookingItem$.subscribe(e => {
+      console.log(e)
+      searchParams['productId'] = e?.hotelId;
+      searchParams['checkIn'] = e?.checkIn;
+      searchParams['checkOut'] = e?.checkOut;
+      searchParams['paxInfo'] = e?.paxInfo;
+      searchParams['rooms'] = JSON.stringify(e?.rooms);
+      searchParams['searchType'] = 'hotel';
+    });
+    this.router.navigate(['/search'], { queryParams: searchParams });
   }
 
   clickFn() {

@@ -807,6 +807,13 @@ export class SearchComponent implements OnInit, OnDestroy {
       return;
     }
     
+    // Clear cart if searching for a different hotel
+    const newHotelId = this.getProductId();
+    if (newHotelId && this.bookingService.hasItemsFromDifferentHotel(newHotelId)) {
+      console.log('Hotel changed in search, clearing cart');
+      this.bookingService.clearCart();
+    }
+    
     // if(      this.searchForm.controls.searchType.status== "VALID" ){
     //   this.searchForm.valid
     // }

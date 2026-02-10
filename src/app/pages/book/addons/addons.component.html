@@ -1,5 +1,5 @@
 <div class="addon-col">
-    <p class="title">ADDONS</p>
+    <p class="title">{{ 'addons' | translate | uppercase }}</p>
     <ng-container *ngIf="addons.length > 0; else elseTemplate">
         <div class="row">
             <div [ngClass]="openAddon == true ? 'col-lg-6 col-md-6' : 'col-12'">
@@ -43,7 +43,7 @@
                                     
                                     <!-- View Details Link -->
                                     <a class="view-details-link" (click)="openAddon = true; getDetails(item)">
-                                        <i class="bi bi-info-circle"></i> View Details
+                                        <i class="bi bi-info-circle"></i> {{ 'view_details' | translate }}
                                     </a>
 
                                     <!-- Pricing Box -->

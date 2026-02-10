@@ -1,27 +1,36 @@
 <div class="form-col" [formGroup]="personalDetailsForm">
-  <p class="title">PERSONAL DETAILS</p>
+  <p class="title">{{ 'personal_details' | translate }}</p>
 
   <div class="row m-0">
-    <input class="first-name" type="text" name="" placeholder="First Name *" formControlName="firstName" [ngClass]="{
+    <div class="col-6" style="padding: 0 5px 0 0;">
+      <input class="first-name w-100" type="text" name="" [placeholder]="('first_name' | translate) + ' *'" formControlName="firstName" [ngClass]="{
         'form-input-error':
           personalDetailsForm.controls.firstName.invalid &&
           (personalDetailsForm.controls.firstName.dirty ||
             personalDetailsForm.controls.firstName.touched)
       }" />
-    <input class="last-name" type="text" name="" placeholder="Last Name *" formControlName="lastName" [ngClass]="{
+      <label class="err-txt" *ngIf="personalDetailsForm.controls.firstName.invalid &&
+        (personalDetailsForm.controls.firstName.dirty || personalDetailsForm.controls.firstName.touched)">
+        *Please enter valid first name
+      </label>
+    </div>
+    <div class="col-6" style="padding: 0 0 0 5px;">
+      <input class="last-name w-100" type="text" name="" [placeholder]="('last_name' | translate) + ' *'" formControlName="lastName" [ngClass]="{
         'form-input-error':
           personalDetailsForm.controls.lastName.invalid &&
           (personalDetailsForm.controls.lastName.dirty ||
             personalDetailsForm.controls.lastName.touched)
       }" />
+      <label class="err-txt" *ngIf="personalDetailsForm.controls.lastName.invalid &&
+        (personalDetailsForm.controls.lastName.dirty || personalDetailsForm.controls.lastName.touched)">
+        *Please enter valid last name
+      </label>
+    </div>
   </div>
-  <div class="row m-0 mb-4">
-    <div class="col-6" style="padding: 0 5px 0 0;display: flex;">
-      <select class="address-input"  style="
-      height: 78%;
-      margin-top: 6px;
-      width: 41%;
-  "class="veg">
+  <div class="row m-0 mb-2">
+    <div class="col-6" style="padding: 0 5px 0 0;">
+      <div style="display: flex;">
+        <select class="address-input" style="height: 78%;  width: 41%;" class="veg">
   <option value="" disabled="" selected="">Please select</option>
         <option data-countryCode="GB" value="44" >Norway (+47)</option>
         <option data-countryCode="US" value="1">UK (+44)</option>
@@ -241,70 +250,52 @@
           <option data-countryCode="ZW" value="263">Zimbabwe (+263)</option>
         
     </select>
-      <input class="phone w-100"  type="text" name="" placeholder="Phone *" formControlName="mobileNo" [ngClass]="{
+      <input class="phone w-100"  type="text" name="" [placeholder]="('phone' | translate) + ' *'" formControlName="mobileNo" [ngClass]="{
         'form-input-error':
           personalDetailsForm.controls.mobileNo.invalid &&
           (personalDetailsForm.controls.mobileNo.dirty ||
             personalDetailsForm.controls.mobileNo.touched)
       }" />
+      </div>
+      <label class="err-txt" *ngIf="personalDetailsForm.controls.mobileNo.invalid &&
+        (personalDetailsForm.controls.mobileNo.dirty || personalDetailsForm.controls.mobileNo.touched)">
+        *Please enter valid phone number (minimum 10 digits)
+      </label>
     </div>
     
     <div class="col-6" style="padding: 0 0 0 5px;">
-      <div class="col-12" style="padding: 0 0 0 5px;">
-      <input class="email w-100"  type="text" name="" placeholder="Email Address *" formControlName="emailId" [ngClass]="{
+      <input class="email w-100"  type="text" name="" [placeholder]="('email' | translate) + ' *'" formControlName="emailId" [ngClass]="{
         'form-input-error':
           personalDetailsForm.controls.emailId.invalid &&
           (personalDetailsForm.controls.emailId.dirty ||
             personalDetailsForm.controls.emailId.touched)
-      }" /></div>
+      }" />
       <label class="err-txt" *ngIf=" personalDetailsForm.controls.emailId.invalid &&
     (personalDetailsForm.controls.emailId.dirty ||
       personalDetailsForm.controls.emailId.touched)">*Please enter valid email</label>
     </div>
 
   </div>
-  <div class="row m-0 mb-2">
-    <div class="col-6" style="padding: 0 5px 0 0;">
-      <label class="err-txt" *ngIf="personalDetailsForm.controls.firstName.invalid &&
-        (personalDetailsForm.controls.firstName.dirty || personalDetailsForm.controls.firstName.touched)">
-        *Please enter valid first name
-      </label>
-    </div>
-    <div class="col-6" style="padding: 0 0 0 5px;">
-      <label class="err-txt" *ngIf="personalDetailsForm.controls.lastName.invalid &&
-        (personalDetailsForm.controls.lastName.dirty || personalDetailsForm.controls.lastName.touched)">
-        *Please enter valid last name
-      </label>
-    </div>
-  </div>
-  <div class="row m-0 mb-2">
-    <div class="col-6" style="padding: 0 5px 0 0;">
-      <label class="err-txt" *ngIf="personalDetailsForm.controls.mobileNo.invalid &&
-        (personalDetailsForm.controls.mobileNo.dirty || personalDetailsForm.controls.mobileNo.touched)">
-        *Please enter valid phone number (minimum 10 digits)
-      </label>
-    </div>
-  </div>
 
-  <p class="title">ADDRESS</p>
+  <p class="title">{{ 'address' | translate | uppercase }}</p>
   <ng-container formGroupName="address">
     <div class="row m-0">
-      <input class="address-input" type="text" name="" placeholder="Lane Address" formControlName="lane" />
-      <input class="address-input" type="text" name="" placeholder="City" formControlName="city" />
+      <input class="address-input" type="text" name="" [placeholder]="'lane_address' | translate" formControlName="lane" />
+      <input class="address-input" type="text" name="" [placeholder]="'city' | translate" formControlName="city" />
     </div>
-    <div class="row m-0 mb-4">
-      <input class="address-input" type="text" name="" placeholder="State" formControlName="state" [ngClass]="{
+    <div class="row m-0 mb-2">
+      <input class="address-input" type="text" name="" [placeholder]="'state' | translate" formControlName="state" [ngClass]="{
           'form-input-error':
             address.controls.state.invalid &&
             (address.controls.state.dirty || address.controls.state.touched)
         }" />
-      <input class="address-input" type="text" name="" placeholder="Country" formControlName="country" [ngClass]="{
+      <input class="address-input" type="text" name="" [placeholder]="'country' | translate" formControlName="country" [ngClass]="{
           'form-input-error':
             address.controls.country.invalid &&
             (address.controls.country.dirty || address.controls.country.touched)
         }" />
     </div>
-    <div class="row m-0 mb-4">
+    <div class="row m-0 mb-2">
       <div class="col-6" style="padding: 0 5px 0 0;">
         <label class="err-txt" *ngIf="address.controls.state.invalid &&
           (address.controls.state.dirty || address.controls.state.touched)">
@@ -322,7 +313,7 @@
   
   </ng-container>
 
-  <p class="title">SPECIAL REQUESTS</p>
+  <p class="title">{{ 'special_requests' | translate | uppercase }}</p>
   <div class="row m-0">
     <textarea class="address-input mx-0" type="text" name="" placeholder="Add any notes here"
       formControlName="specialRequest" style="padding: 10px; height: 100px"></textarea>
@@ -349,7 +340,7 @@
       </button>
     </div>
   </div>
-  <div class="row m-0 mb-4" *ngIf="promoValidated || promoError">
+  <div class="row m-0 mb-2" *ngIf="promoValidated || promoError">
     <div class="col-12 px-0">
       <p *ngIf="promoValidated" style="color: #4CAF50; margin: 5px 0; font-size: 14px;">
         ✓ Promo code applied successfully! Discount: ₹{{promoDiscount}}

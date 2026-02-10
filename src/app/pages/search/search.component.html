@@ -8,7 +8,7 @@
                     <div class="hotel-field" (click)="focusDestinationFieldInput('hotel')">
                         <p class="field-heading" style="margin-bottom: 5px;">
 
-                            <span (click)="changeSearchType('hotel')" style="font-weight: 500">Hotel/City</span>
+                            <span (click)="changeSearchType('hotel')" style="font-weight: 500">{{ 'hotel_city' | translate }}</span>
 
                             <i style="margin-left: 1px;" (click)="changeSearchType('hotel')"></i>
 
@@ -16,7 +16,7 @@
 
                         <ng-container>
                             <input type="search" autocomplete="off" class="field-content cstm" id="hotel-field-input"
-                                placeholder="Search By Hotel/City" aria-label="Number" matInput formControlName="hotel"
+                                [placeholder]="'search_by_hotel' | translate" aria-label="Number" matInput formControlName="hotel"
                                 (input)="onHotelFieldEvent('input', $event)" (focus)="onHotelFieldEvent('focus')">
 
                             <mat-card class="dropdown-card p-0" style="  scroll-behavior: smooth;
@@ -102,7 +102,7 @@
 
                     <div class="checkin-field">
                         <div (click)="toggleDropdown(dropdownType.checkin)">
-                            <p class="field-heading">Check in</p>
+                            <p class="field-heading">{{ 'check_in' | translate }}</p>
                             <input class="field-content date-plchldr" formControlName="checkIn"
                                 placeholder="-- / -- / ----" readonly>
                             <i class="bi bi-calendar4-week icon-style"></i>
@@ -118,7 +118,7 @@
 
                     <div class="checkout-field">
                         <div (click)="toggleDropdown(dropdownType.checkout)">
-                            <p class="field-heading">Check out</p>
+                            <p class="field-heading">{{ 'check_out' | translate }}</p>
                             <input class="field-content date-plchldr" formControlName="checkOut"
                                 placeholder="-- / -- / ----" readonly>
                             <i class="bi bi-calendar4-week icon-style"></i>
@@ -134,7 +134,7 @@
                     </div>
                     <div class="pax-field">
                         <div (click)="toggleDropdown(dropdownType.rooms)" style="height: 36px;">
-                            <p class="field-heading">ROOM</p>
+                            <p class="field-heading">{{ 'room' | translate }}</p>
                             <p class="field-content" style="margin-top: 1px;" [ngClass]="{'not-selected': searchForm?.controls?.rooms?.value 
                                      === 0 }">
                                 {{(searchForm?.controls?.rooms?.value > 0)
@@ -177,7 +177,7 @@
                                     <div class="w-100 d-flex mb-2">
 
                                         <div class="text-box">
-                                            <label class="field-heading">Adult(s)</label>
+                                            <label class="field-heading">{{ 'adults' | translate }}</label>
                                         </div>
                                         <div class="control-box">
                                             <i class="bi bi-dash" (click)="updateAdultCount('decrement',i)"></i>
@@ -189,7 +189,7 @@
                                     </div>
                                     <div class="w-100 d-flex mb-2">
                                         <div class="text-box">
-                                            <label class="field-heading">Children</label>
+                                            <label class="field-heading">{{ 'children' | translate }}</label>
                                         </div>
                                         <div class="control-box">
                                             <i class="bi bi-dash" (click)="updateChildCount('decrement',i)"></i>
@@ -322,10 +322,10 @@
                 <div class="row contents-wrapper">
                     <div class="col-12 col-md-8 col-lg-8">
                         <div class="search-results mb-5">
-                            <h2 class="main-title" id="searchTitleId">SEARCH RESULTS</h2>
+                            <h2 class="main-title" id="searchTitleId">{{ 'search_results' | translate }}</h2>
                             <hr>
                             <ng-container *ngIf="searchResponse?.Hotel_Details?.length; else noPackageTemplate">
-                                <h3 class="hotel-details-title">Hotel Details :</h3>
+                                <h3 class="hotel-details-title">{{ 'hotel_details' | translate }} :</h3>
                                 <div *ngFor="let property of searchResponse?.Hotel_Details; let i = index">
                                     <app-package [property]="property" [searchId]="searchId" [id_num]="i" [pax]="searchForm.controls.paxData.value"
                                         [buttonActionType]="'searchComponent-newBooking'"></app-package>
@@ -333,13 +333,13 @@
                             </ng-container>
                             <ng-template #noPackageTemplate>
                                 <div class="no-packages">
-                                    Sorry, we are unable to match your search criteria. <br>Please choose alternate dates or you may reach out to us via email at support@axisrooms.com or call us at +91-7026568280
+                                    {{ 'no_results' | translate }}
                                 </div>
                             </ng-template>
                         </div>
                     </div>
                     <div class="col-12 col-md-4 col-lg-4">
-                       <p *ngIf="searchResponse?.Hotel_Details?.length && bookingItems" class="main-title">My Cart</p>
+                       <p *ngIf="searchResponse?.Hotel_Details?.length && bookingItems" class="main-title">{{ 'my_cart' | translate }}</p>
                         <app-cart-box *ngIf="searchResponse?.Hotel_Details?.length && bookingItems"[type]="'searchComponent-newBooking'"></app-cart-box><br>
                         <app-deals-bar [supplierId]="searchResponse?.Hotel_Details?.[0]?.supplier_id"></app-deals-bar>
 

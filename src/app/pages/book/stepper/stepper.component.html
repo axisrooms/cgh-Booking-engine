@@ -5,7 +5,7 @@
                 <div class="stepper-dot"></div>
             </div>
             <!-- <div class="stepper-text">Personal Details</div> -->
-            <div class="stepper-text">Hotels & Resorts</div>
+            <div class="stepper-text">{{ 'hotels_resorts' | translate }}</div>
 
         </div>
 
@@ -13,13 +13,13 @@
             <div class="stepper-icon">
                 <div class="stepper-dot"></div>
             </div>
-            <div class="stepper-text">Addons</div>
+            <div class="stepper-text">{{ 'addons' | translate }}</div>
         </div>
         <div class="stepper-block" [ngClass]="{'active': stepper === eStepper.personalDetails}">
             <div class="stepper-icon">
                 <div class="stepper-dot"></div>
             </div>
-            <div class="stepper-text">Personal Details</div>
+            <div class="stepper-text">{{ 'personal_details' | translate }}</div>
 
         </div>
 
@@ -27,14 +27,14 @@
             <div class="stepper-icon">
                 <div class="stepper-dot"></div>
             </div>
-            <div class="stepper-text">Payment</div>
+            <div class="stepper-text">{{ 'pay_now' | translate }}</div>
         </div>
 
         <div class="stepper-block" [ngClass]="{'active': stepper === eStepper.confirmation}">
             <div class="stepper-icon">
                 <div class="stepper-dot"></div>
             </div>
-            <div class="stepper-text">Confirmation</div>
+            <div class="stepper-text">{{ 'confirmation' | translate }}</div>
         </div>
 
         <div class="filler-line"></div>

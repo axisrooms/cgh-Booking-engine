@@ -5,30 +5,30 @@
             
             <!-- Room Header -->
             <div class="room-header">
-                <span class="room-number">Room {{i+1}}</span>
+                <span class="room-number">{{ 'room' | translate }} {{i+1}}</span>
                 <div class="room-price">
                     <span class="price-original" *ngIf="bookingItem.rooms[0]?.price?.discounted">
                         {{bookingItem.renderData.currency}} {{((bookingItem.rooms[0]?.price?.actual || 0) + (bookingItem.rooms[0]?.price?.discounted || 0)) | number: '1.0-0'}}
                     </span>
                     <span class="price-current">{{bookingItem.renderData.currency}} {{bookingItem.rooms[0]?.price?.actual | number: '1.0-0'}}</span>
-                    <span class="price-unit">/night</span>
+                    <span class="price-unit">/{{ 'per_night' | translate }}</span>
                     <span class="deal-badge" *ngIf="bookingItem.rooms[0]?.price?.discounted">DEAL</span>
                 </div>
             </div>
             
             <!-- Hotel Name -->
             <div class="info-box hotel-name">
-                Hotel Name - {{bookingItem.property.hotel_name}}
+                {{ 'hotel_name' | translate }} - {{bookingItem.property.hotel_name}}
             </div>
 
             <!-- Room & Rate Plan -->
             <div class="info-row">
                 <div class="info-box half">
-                    <p class="info-label">Room Name</p>
+                    <p class="info-label">{{ 'room_type' | translate }}</p>
                     <p class="info-value">{{getRoomName(bookingItem.property.rooms, bookingItem.rooms[0].roomId)}}</p>
                 </div>
                 <div class="info-box half">
-                    <p class="info-label">Rate Plan</p>
+                    <p class="info-label">{{ 'rate_plan' | translate }}</p>
                     <p class="info-value">{{getRatePlan(bookingItem.property.rooms, bookingItem.rooms[0].roomId, bookingItem.rooms[0].ratePlanId)}}</p>
                 </div>
             </div>
@@ -36,25 +36,25 @@
             <!-- Check-in & Check-out -->
             <div class="info-row">
                 <div class="info-box half">
-                    <p class="info-label">Check-in</p>
+                    <p class="info-label">{{ 'check_in_date' | translate }}</p>
                     <p class="info-value">{{bookingItem.checkIn}}</p>
                 </div>
                 <div class="info-box half">
-                    <p class="info-label">Check-out</p>
+                    <p class="info-label">{{ 'check_out_date' | translate }}</p>
                     <p class="info-value">{{bookingItem.checkOut}}</p>
                 </div>
             </div>
             
             <!-- Guests Info -->
             <div class="info-box guests-info">
-                <span>No of Guests - {{getGuestsForItem(bookingItem)}}</span>
+                <span>{{ 'guests' | translate }} - {{getGuestsForItem(bookingItem)}}</span>
             </div>
             
             <!-- Price Breakdown -->
             <div class="price-breakdown">
                 <!-- Original Price (if discounted) -->
                 <p class="line-item" *ngIf="bookingItem.rooms[0]?.price?.discounted">
-                    <span class="item-desc">Original Price</span>
+                    <span class="item-desc">{{ 'original_price' | translate }}</span>
                     <span class="item-amount strikethrough">
                         {{bookingItem.renderData.currency}} {{((bookingItem.rooms[0]?.price?.actual || 0) + (bookingItem.rooms[0]?.price?.discounted || 0)) | number: '1.2-2'}}
                     </span>
@@ -63,7 +63,7 @@
                 <!-- Room Cost -->
                 <p class="line-item">
                     <span class="item-desc">
-                        {{(bookingItem.rooms[0]?.price?.actual || 0) / (bookingItem.noOfDays || 1) | number: '1.0-0'}} x {{bookingItem.noOfDays}} nights
+                        {{(bookingItem.rooms[0]?.price?.actual || 0) / (bookingItem.noOfDays || 1) | number: '1.0-0'}} x {{bookingItem.noOfDays}} {{ 'nights' | translate }}
                     </span>
                     <span class="item-amount">{{bookingItem.renderData.currency}} {{bookingItem.rooms[0]?.price?.actual | number: '1.2-2'}}</span>
                 </p>
@@ -71,7 +71,7 @@
                 <!-- Deal Discount -->
                 <p class="line-item discount" *ngIf="bookingItem.rooms[0]?.price?.discounted">
                     <span class="item-desc">
-                        <i class="bi bi-tag-fill"></i> Deal Discount
+                        <i class="bi bi-tag-fill"></i> {{ 'deal_discount' | translate }}
                     </span>
                     <span class="item-amount">
                         - {{bookingItem.renderData.currency}} {{bookingItem.rooms[0]?.price?.discounted | number: '1.2-2'}}
@@ -80,14 +80,14 @@
                 
                 <!-- Tax -->
                 <p class="line-item">
-                    <span class="item-desc">Tax (per night)</span>
+                    <span class="item-desc">{{ 'tax_per_night' | translate }}</span>
                     <span class="item-amount">{{bookingItem.renderData.currency}} {{bookingItem.rooms[0]?.price?.taxValue | number: '1.2-2'}}</span>
                 </p>
             </div>
             
             <!-- Addons Section -->
             <div class="addons-section" *ngIf="hasActiveAddons(bookingItem.addons)">
-                <h6 class="addons-title">Addons</h6>
+                <h6 class="addons-title">{{ 'addons' | translate }}</h6>
                 <ng-container *ngFor="let item of getActiveAddons(bookingItem.addons)">
                     <p class="line-item">
                         <span class="item-desc">{{item.policy_name}} - {{item.qty}} Qty</span>
@@ -98,20 +98,20 @@
 
             <!-- Promo Discount -->
             <p class="line-item promo" *ngIf="bookingItem.promoDiscount && bookingItem.promoDiscount > 0">
-                <span class="item-desc">Promo Discount ({{bookingItem.promoCode}})</span>
+                <span class="item-desc">{{ 'promo_discount' | translate }} ({{bookingItem.promoCode}})</span>
                 <span class="item-amount">- {{bookingItem.renderData.currency}} {{bookingItem.promoDiscount | number: '1.2-2'}}</span>
             </p>
 
             <!-- Room Total -->
             <div class="room-total">
-                <span class="total-label">TOTAL</span>
+                <span class="total-label">{{ 'total' | translate }}</span>
                 <span class="total-amount">{{currency}} {{(bookingItem.totalAmount + bookingItem.addonTotalPrice - (bookingItem.promoDiscount || 0)) | number: '1.2-2'}}</span>
             </div>
         </div>
         
         <!-- Grand Total -->
         <div class="grand-total" *ngIf="bookingItems?.length != 0 && getTotal(bookingItems) != 0.0">
-            <span class="grand-total-label">GRAND TOTAL</span>
+            <span class="grand-total-label">{{ 'grand_total' | translate }}</span>
             <span class="grand-total-amount">{{currency}} {{getTotal(bookingItems)| number: '1.2-2'}}</span>
         </div>
         
@@ -119,7 +119,7 @@
         <button class="reserve-btn" 
             (click)="router.navigate(['/book'], { queryParams: { bookingEngineId: BookingConfigService.getBookingEngineId() } })" 
             *ngIf="type === 'searchComponent-newBooking' && getRemainingRooms() === 0 && bookingItems?.length != 0">
-            RESERVE
+            {{ 'reserve_now' | translate }}
         </button>
 
 
@@ -153,20 +153,20 @@
                           font-weight: 600; 
                           margin: 0 0 6px 0;
                           line-height: 1.3;">
-                    {{getRemainingRooms()}} More Room{{getRemainingRooms() > 1 ? 's' : ''}} Needed
+                    {{getRemainingRooms()}} {{ 'more_rooms_needed' | translate }}
                 </p>
                 <p style="color: rgba(255,255,255,0.85); 
                           font-size: 12px; 
                           margin: 0;
                           line-height: 1.4;">
-                    Please select {{getRemainingRooms() === 1 ? 'another room' : getRemainingRooms() + ' more rooms'}} to complete your booking
+                    {{ 'select_more_rooms' | translate }}
                 </p>
             </div>
         </div>
 
         <div class="wrapper" *ngIf="bookingItems?.length == 0">
             <div class="alert alert-secondary" role="alert">
-                You have not selected any room for booking!
+                {{ 'no_room_selected' | translate }}
             </div>
         </div>
 

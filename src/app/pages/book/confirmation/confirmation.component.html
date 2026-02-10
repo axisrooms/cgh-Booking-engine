@@ -1,11 +1,11 @@
 <div class="wrapper">
-    <p class="title text-center mb-4">BOOKING CONFIRMATION</p>
+    <p class="title text-center mb-4">{{ 'booking_confirmed' | translate }}</p>
     <img class="package-image" [src]="cart?.property?.banner_image || cart?.renderData?.banner_image || 'https://www.cghearth.com/uploads/banner/20170519203337PMbanneraerial1.jpg'" 
          [alt]="cart?.property?.hotel_name || 'Hotel Image'">
 
-    <p class="title mb-4">BOOKING CONFIRMATION #{{bookingConfirmationNumber || 'PENDING'}}</p>
+    <p class="title mb-4">{{ 'booking_id' | translate }} #{{bookingConfirmationNumber || 'PENDING'}}</p>
 
-    <p class="title">PACKAGE SUMMARY</p>
+    <p class="title">{{ 'package_summary' | translate }}</p>
     <div class="content-box">
         <p class="mb-2">
             <strong>{{cart?.property?.hotel_name || cart?.renderData?.hotel_name || 'Hotel Booking'}}</strong>
@@ -14,51 +14,51 @@
             {{cart?.property?.description || cart?.renderData?.description}}
         </p>
         <p class="mb-2" *ngIf="cart?.rooms && cart.rooms.length > 0">
-            <strong>Room:</strong> {{getRoomName(cart?.renderData?.rooms || cart?.property?.rooms, cart?.rooms[0]?.roomId)}}
+            <strong>{{ 'room' | translate }}:</strong> {{getRoomName(cart?.renderData?.rooms || cart?.property?.rooms, cart?.rooms[0]?.roomId)}}
             <br>
-            <strong>Rate Plan:</strong> {{getRatePlan(cart?.renderData?.rooms || cart?.property?.rooms, cart?.rooms[0]?.roomId, cart?.rooms[0]?.ratePlanId)}}
+            <strong>{{ 'rate_plan' | translate }}:</strong> {{getRatePlan(cart?.renderData?.rooms || cart?.property?.rooms, cart?.rooms[0]?.roomId, cart?.rooms[0]?.ratePlanId)}}
             <br>
-            <strong>Number of Rooms:</strong> {{cart?.noOfRooms || 1}}
+            <strong>{{ 'rooms' | translate }}:</strong> {{cart?.noOfRooms || 1}}
         </p>
     </div>
 
-    <p class="title">CHECK-IN DETAILS</p>
+    <p class="title">{{ 'check_in_date' | translate }}</p>
     <div class="content-box">
         <p class="line-item">
-            <span class="item-desc">Check in</span>
+            <span class="item-desc">{{ 'check_in' | translate }}</span>
             <span class="item-value">{{cart?.checkIn}}</span>
         </p>
         <p class="line-item">
-            <span class="item-desc">Check out</span>
+            <span class="item-desc">{{ 'check_out' | translate }}</span>
             <span class="item-value">{{cart?.checkOut}}</span>
         </p>
         <p class="line-item">
-            <span class="item-desc">No of nights</span>
+            <span class="item-desc">{{ 'nights' | translate }}</span>
             <span class="item-value">{{cart?.noOfDays || 1}}</span>
         </p>
         <p class="line-item">
-            <span class="item-desc">No of guests</span>
+            <span class="item-desc">{{ 'guests' | translate }}</span>
             <span class="item-value">
                 {{(cart?.noOfAdults || 0) + (cart?.noOfChildren || 0)}}
-                ( {{cart?.noOfAdults || 0}} Adults and {{cart?.noOfChildren || 0}} Children )</span>
+                ( {{cart?.noOfAdults || 0}} {{ 'adults' | translate }} and {{cart?.noOfChildren || 0}} {{ 'children' | translate }} )</span>
         </p>
     </div>
 
-    <p class="title">TARIFFS</p>
+    <p class="title">{{ 'tariffs' | translate }}</p>
     <div class="background-box">
-        <p class="title mt-2">ROOM</p>
+        <p class="title mt-2">{{ 'room' | translate | uppercase }}</p>
         <p class="line-item" *ngIf="cart?.rooms && cart.rooms.length > 0">
             <span class="item-desc">
-                {{getCurrency()}} {{getRoomRatePerNight() | number: '1.2-2'}} x {{cart?.noOfDays || 1}} night(s)
+                {{getCurrency()}} {{getRoomRatePerNight() | number: '1.2-2'}} x {{cart?.noOfDays || 1}} {{ 'night' | translate }}(s)
             </span>
             <span class="item-value">{{getCurrency()}} {{getRoomRate() | number: '1.2-2'}}</span>
         </p>
         <p class="line-item" *ngIf="cart?.rooms?.[0]?.price?.discounted">
-            <span class="item-desc">Discount</span>
+            <span class="item-desc">{{ 'deal_discount' | translate }}</span>
             <span class="item-value">- {{getCurrency()}} {{(cart.rooms[0].price.discounted || 0) | number: '1.2-2'}}</span>
         </p>
 
-        <p class="title mt-3" *ngIf="hasActiveAddons(cart?.addons)">ADDONS</p>
+        <p class="title mt-3" *ngIf="hasActiveAddons(cart?.addons)">{{ 'addons' | translate | uppercase }}</p>
         <ng-container *ngFor="let addon of getActiveAddons(cart?.addons)">
             <p class="line-item">
                 <span class="item-desc">{{addon?.policy_name || 'Addon'}} - {{addon?.qty || 1}} Qty</span>
@@ -66,54 +66,54 @@
             </p>
         </ng-container>
         <p class="line-item" *ngIf="!hasActiveAddons(cart?.addons)">
-            <span class="item-desc">No addons selected</span>
+            <span class="item-desc">{{ 'no_addons' | translate }}</span>
             <span class="item-value">{{getCurrency()}} 0.00</span>
         </p>
 
-        <p class="title mt-3">OTHERS</p>
+        <p class="title mt-3">{{ 'others' | translate | uppercase }}</p>
         <p class="line-item" *ngIf="cart?.rooms && cart.rooms.length > 0">
-            <span class="item-desc">Tax (per night)</span>
+            <span class="item-desc">{{ 'tax_per_night' | translate }}</span>
             <span class="item-value">{{getCurrency()}} {{(cart.rooms[0]?.price?.taxValue || 0) | number: '1.2-2'}}</span>
         </p>
 
         <p class="line-item" *ngIf="cart?.promoDiscount">
-            <span class="item-desc">Promo Discount ({{cart?.promoCode}})</span>
+            <span class="item-desc">{{ 'promo_discount' | translate }} ({{cart?.promoCode}})</span>
             <span class="item-value">- {{getCurrency()}} {{(cart.promoDiscount || 0) | number: '1.2-2'}}</span>
         </p>
 
-        <p class="title total">TOTAL <span class="item-value">{{getCurrency()}} {{getTotalAmount() | number: '1.2-2'}}</span></p>
+        <p class="title total">{{ 'total' | translate | uppercase }} <span class="item-value">{{getCurrency()}} {{getTotalAmount() | number: '1.2-2'}}</span></p>
     </div>
 
 
-    <p class="title">PERSONAL DETAILS</p>
+    <p class="title">{{ 'personal_details' | translate }}</p>
     <p class="line-item grey-bg">
-        <span class="item-desc">Full Name</span>
+        <span class="item-desc">{{ 'first_name' | translate }} {{ 'last_name' | translate }}</span>
         <span class="item-value">{{personalDetails?.firstName}} {{personalDetails?.lastName}}</span>
     </p>
     <p class="line-item grey-bg">
-        <span class="item-desc">Phone</span>
+        <span class="item-desc">{{ 'phone' | translate }}</span>
         <span class="item-value">{{personalDetails?.mobileNo}}</span>
     </p>
     <p class="line-item grey-bg" style="border-bottom: none">
-        <span class="item-desc">Email</span>
+        <span class="item-desc">{{ 'email' | translate }}</span>
         <span class="item-value">{{personalDetails?.emailId}}</span>
     </p>
 
-    <p class="title">ADDRESS</p>
+    <p class="title">{{ 'address' | translate | uppercase }}</p>
     <p class="line-item grey-bg">
-        <span class="item-desc">Lane Address</span>
+        <span class="item-desc">{{ 'lane_address' | translate }}</span>
         <span class="item-value">{{personalDetails?.address?.lane}}</span>
     </p>
     <p class="line-item grey-bg">
-        <span class="item-desc">City</span>
+        <span class="item-desc">{{ 'city' | translate }}</span>
         <span class="item-value">{{personalDetails?.address?.city}}</span>
     </p>
     <p class="line-item grey-bg">
-        <span class="item-desc">State</span>
+        <span class="item-desc">{{ 'state' | translate }}</span>
         <span class="item-value">{{personalDetails?.address?.state}}</span>
     </p>
     <p class="line-item grey-bg" style="border-bottom: none">
-        <span class="item-desc">Country</span>
+        <span class="item-desc">{{ 'country' | translate }}</span>
         <span class="item-value">{{personalDetails?.address?.country}}</span>
     </p>
 

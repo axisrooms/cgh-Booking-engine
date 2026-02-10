@@ -1,50 +1,36 @@
-<header style="display: flex; justify-content: center; align-items: center;">
+<header style="display: flex; justify-content: space-between; align-items: center;">
     <div class="navbar-brand brand-name">
         <a>
             <img class="img-responsive img-responsive"
                 src="https://app.axisrooms.com/static/images/ar_logo_white_h30.png" alt="AxisRooms"
                 width="300" height="150"></a>
-
     </div>
-     <!-- <div class="d-flex align-items-center" style="gap: 15px;">
-                <a routerLink="/cart" class="my-booking">MY BOOKING</a>
-            </div> -->
-    <!-- <nav class="navigation font-menu text-uppercase" id="main-nav">
-        <ul class="list-inline nav-secondary">
-            <li><a href="http://www.cghearthayurveda.com/" target="_blank">CGH EARTH AYURVEDA</a></li>
-            <li><a href="http://www.cghearth.com/swaswara" target="_blank">swaswara</a></li>
-            <li><a href="http://www.prakritishakti.com" target="_blank">PRAKRITI SHAKTI</a></li>
-            <li><a href="http://www.davidhall.in/" target="_blank">DAVID HALL</a></li>
-            <li><a href="https://www.cghearth.com/Action-plan-COVID-19-pandemic/" target="_blank">COVID-19 Safety</a>
-            </li>
-        </ul>
-        <ul class="list-inline nav-primary">
-            <li><a href="#top">Destinations</a></li>
-            <li><a href="https://www.cghearth.com/aboutus">about</a></li>
-            <li><a href="https://www.cghearth.com/responsibletourism">responsible tourism</a></li>
-            <li><a href="https://www.cghearth.com/packages">packages</a></li>
-            <li><a href="https://www.cghearth.com/offers">offers</a></li>
-            <li><a href="https://www.cghearth.com/careers">Careers</a></li>
-            <li><a href="https://www.cghearth.com/contactus">Contact us</a></li>
-        </ul>
-    </nav> -->
 
-    <!-- <div id="showmenu" class=""></div> -->
-    <!-- <div class="right-col">
-        <a href="https://www.cghearth.com/booknow" class="book-now" target="_blank">BOOK NOW</a>
-        <ul class="social">
-            <li><a href="https://twitter.com/cgh_earth" target="_blank">
-                    <img src="https://www.cghearth.com/uploads/UploadImage/20170614072438AMtwitter_white.png"
-                        alt="Twitter" class="img-responsive img-responsive" height="28" width="29"></a></li>
-            <li><a href="https://www.pinterest.com/cghearth/" target="_blank"><img
-                        src="https://www.cghearth.com/uploads/UploadImage/20170614072424AMpintrest_white.png"
-                        alt="Pintrest" class="img-responsive img-responsive" height="28" width="29"></a></li>
-            <li><a href="https://www.facebook.com/cghearth/" target="_blank"><img
-                        src="https://www.cghearth.com/uploads/UploadImage/20170614072410AMfacebook_white.png"
-                        alt="Facebook" class="img-responsive img-responsive" height="28" width="29"></a></li>
-            <li><a href="https://www.instagram.com/cghearth/" target="_blank"><img
-                        src="https://www.cghearth.com/uploads/UploadImage/20170614072347AMinstagram_white.png"
-                        alt="Instagram" class="img-responsive img-responsive" height="28" width="29"></a></li>
-        </ul>
-    </div> -->
+    <div class="header-right-section">
+        <!-- Language Selector -->
+        <div class="language-selector" (clickOutside)="closeLangDropdown()">
+            <button class="lang-btn" (click)="toggleLangDropdown()">
+                <span class="lang-flag">{{ getCurrentLanguageDisplay()?.flag }}</span>
+                <span class="lang-code">{{ getCurrentLanguageDisplay()?.code?.toUpperCase() }}</span>
+                <i class="bi bi-chevron-down" [class.rotated]="isLangDropdownOpen"></i>
+            </button>
+            
+            <div class="lang-dropdown" *ngIf="isLangDropdownOpen">
+                <div class="lang-dropdown-header">
+                    {{ 'select_language' | translate }}
+                </div>
+                <div class="lang-options">
+                    <button 
+                        *ngFor="let lang of languages" 
+                        class="lang-option" 
+                        [class.active]="currentLang === lang.code"
+                        (click)="selectLanguage(lang.code)">
+                        <span class="lang-flag">{{ lang.flag }}</span>
+                        <span class="lang-name">{{ lang.name }}</span>
+                        <i class="bi bi-check2" *ngIf="currentLang === lang.code"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </header>

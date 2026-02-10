@@ -63,6 +63,36 @@ export class BookingService {
     return Math.max(0, totalRoomsRequired - roomsInCart);
   }
 
+  // Clear the entire cart
+  clearCart(): void {
+    const emptyCart: BookingCart = {
+      bookingItems: [],
+      currIndex: undefined
+    };
+    this.bookingCartReflect.set(
+      this.bookingCartReflect.HOOKS.BOOKING_CART,
+      emptyCart
+    );
+  }
+
+  // Check if cart has items from a different hotel
+  hasItemsFromDifferentHotel(newHotelId: number): boolean {
+    if (!this.bookingCartValue?.bookingItems?.length) {
+      return false;
+    }
+    return this.bookingCartValue.bookingItems.some(
+      (item: BookingItem) => item.hotelId !== newHotelId
+    );
+  }
+
+  // Get the current hotel ID in cart (if any)
+  getCurrentCartHotelId(): number | undefined {
+    if (!this.bookingCartValue?.bookingItems?.length) {
+      return undefined;
+    }
+    return this.bookingCartValue.bookingItems[0]?.hotelId;
+  }
+
   initializeNewBooking(bookingItem: BookingItem): boolean {
     // Check if cart is already full
     if (this.isCartFull()) {
@@ -142,6 +172,13 @@ export class BookingService {
     addons: any,
     noOfRooms:any
   ) {
+    // Clear cart if adding room from a different hotel
+    const newHotelId = property.hotel_id;
+    if (this.hasItemsFromDifferentHotel(newHotelId)) {
+      console.log('Hotel changed, clearing previous cart items');
+      this.clearCart();
+    }
+
     let room: Room = {
       ratePlanId: selectedRoom.ratePlanId,
       roomId: selectedRoom.roomId,

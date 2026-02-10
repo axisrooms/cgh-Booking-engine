@@ -1,4 +1,4 @@
-<section class="banner-section"></section>
+<!-- <section class="banner-section"></section> -->
 
 <ng-container *ngIf="{bookingCart: bookingCart$ | async, 
     currBookingItem: currBookingItem$ | async} as streams">
@@ -87,17 +87,17 @@
 
                     </div><br> -->
                     <div class="payment-options" *ngIf="stepper == eStepper.personalDetails">
-                        <p class="payment-title">Payment Method</p>
+                        <p class="payment-title">{{ 'payment' | translate }}</p>
                         <div class="payment-radio-group">
                             <label class="payment-option">
                                 <input type="radio" [checked]="!payathotel" name="pay" (click)="setPayNow();">
                                 <span class="radio-custom"></span>
-                                <span class="radio-label">Pay Now</span>
+                                <span class="radio-label">{{ 'pay_now' | translate }}</span>
                             </label>
                             <label class="payment-option" *ngIf="isPayAtHotelAvailable">
                                 <input type="radio" [checked]="payathotel" name="pay" (click)="setPayAtHotel();">
                                 <span class="radio-custom"></span>
-                                <span class="radio-label">Pay At Hotel</span>
+                                <span class="radio-label">{{ 'pay_at_hotel' | translate }}</span>
                             </label>
                         </div>
                     </div>
@@ -190,20 +190,20 @@
                     
                     <div class="btn-row">
                         <button class="btn-main" (click)="goBack()">
-                            {{ stepper != eStepper.confirmation ? 'BACK' : 'Download PDF'}}
+                            {{ stepper != eStepper.confirmation ? ('back' | translate | uppercase) : 'Download PDF'}}
                         </button>
 
 
                         <ng-container *ngIf="stepper != eStepper.addons">
                             <button class="btn-main" (click)="onNext()" *ngIf="stepper == eStepper.confirmation">
-                                CONTINUE
+                                {{ 'continue' | translate | uppercase }}
                             </button>
                         </ng-container>
                         <button *ngIf="stepper == eStepper.addons" class="btn-main" (click)="onNext()">
-                            PROCEED
+                            {{ 'proceed_to_book' | translate | uppercase }}
                         </button>
                         <button *ngIf="stepper == eStepper.personalDetails" class="btn-main" (click)="onNext()">
-                            CONTINUE And confirm
+                            {{ 'confirm_booking' | translate | uppercase }}
                         </button>
 
 
@@ -214,7 +214,7 @@
 
 
 
-                    <p class="title">BOOKING DETAILS</p>
+                    <p class="title">{{ 'cart_summary' | translate | uppercase }}</p>
                     <app-cart-box></app-cart-box>
                 </div>
             </div>

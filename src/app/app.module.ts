@@ -41,6 +41,8 @@ import { NgxPaginationModule } from "ngx-pagination";
 import { ImagePopupComponent } from './shared/components/image-popup/image-popup.component';
 import { DealDetailsComponent } from './pages/deals/deal-details/deal-details.component';
 import { TermsDialogComponent } from './shared/components/terms-dialog/terms-dialog.component';
+import { TranslatePipe } from './shared/pipes/translate.pipe';
+import { ClickOutsideDirective } from './shared/directives/click-outside.directive';
 
 
 @NgModule({
@@ -66,7 +68,9 @@ import { TermsDialogComponent } from './shared/components/terms-dialog/terms-dia
     BookingNotificationComponent,
     ImagePopupComponent,
     DealDetailsComponent,
-    TermsDialogComponent
+    TermsDialogComponent,
+    TranslatePipe,
+    ClickOutsideDirective
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

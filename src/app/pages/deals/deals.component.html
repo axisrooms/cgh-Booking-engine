@@ -1,33 +1,33 @@
-<section class="banner-section">
+<!-- <section class="banner-section">
     <div class="banner-heading">
-        Deals
+        {{ 'deals' | translate }}
     </div>
-</section>
+</section> -->
 
 <section class="deals-section container">
     <div class="deals" *ngFor="let item of deals?.dealsList; let i=index" id="index-{{i}}">
         <p class="deal-title">{{item.name}}</p>
         <p>
-            <span class="line-title">Deal: </span>
+            <span class="line-title">{{ 'deal_name' | translate }}: </span>
             <span class="line-detail">{{item.name}}</span>
         </p>
         <p>
-            <span class="line-title">Description: </span>
+            <span class="line-title">{{ 'description' | translate }}: </span>
             <span class="line-detail">{{item.description}}</span>
         </p>
         <p>
-            <span class="line-title">Offer available for stays between: </span>
+            <span class="line-title">{{ 'valid_until' | translate }}: </span>
             <span class="line-detail">{{item.checkinDetails?.startDate}} to {{item.checkinDetails?.endDate}}</span>
         </p>
         <p>
-            <span class="line-title">For bookings made between: </span>
+            <span class="line-title">{{ 'bookings_made_between' | translate }}: </span>
             <span class="line-detail">{{item.bookingDetails?.startDate}} to {{item.bookingDetails?.endDate}} </span>
         </p>
         <div class="hotels-container">
             <div class="hotel-row" *ngFor="let prod of item.products;">
                 <p class="m-0 hotel-title">{{prod.name}}</p>
                 <br [ngClass]="'col-12'">
-                <button class="btn-main" (click)="openDialog(item)">View Details</button>
+                <button class="btn-main" (click)="openDialog(item)">{{ 'view_details' | translate }}</button>
             </div>
         </div>
     </div>
