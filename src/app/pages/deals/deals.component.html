@@ -1,9 +1,3 @@
-<!-- <section class="banner-section">
-    <div class="banner-heading">
-        {{ 'deals' | translate }}
-    </div>
-</section> -->
-
 <section class="deals-section container">
     <div class="deals" *ngFor="let item of deals?.dealsList; let i=index" id="index-{{i}}">
         <p class="deal-title">{{item.name}}</p>

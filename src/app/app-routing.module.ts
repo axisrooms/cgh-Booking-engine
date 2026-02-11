@@ -14,6 +14,14 @@ const routes: Routes = [
 
   { path: 'book', component: BookComponent },
   { path: 'book/:bookingEngineId', component: BookComponent },
+  { path: 'book/addons', component: BookComponent },
+  { path: 'book/addons/:bookingEngineId', component: BookComponent },
+  { path: 'book/personal-details', component: BookComponent },
+  { path: 'book/personal-details/:bookingEngineId', component: BookComponent },
+  { path: 'book/payment', component: BookComponent },
+  { path: 'book/payment/:bookingEngineId', component: BookComponent },
+  { path: 'book/confirmation', component: BookComponent },
+  { path: 'book/confirmation/:bookingEngineId', component: BookComponent },
 
   { path: 'deals', component: DealsComponent },
   { path: 'deals/:bookingEngineId', component: DealsComponent },

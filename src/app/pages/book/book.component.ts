@@ -12,7 +12,7 @@ import { PaymentService } from 'src/app/services/payment.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SearchService } from 'src/app/services/search.service';
 import { BookingConfigService } from 'src/app/services/bookingid.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { BOOKING_ENGINE_ID } from 'src/app/shared/constants/url.constants';
 import { ComponentType } from '@angular/cdk/portal';
 import { json } from 'express';
@@ -73,6 +73,7 @@ export class BookComponent implements OnInit {
     private paymentService: PaymentService,
     private snackBar: MatSnackBar,
     private router: Router,
+    private route: ActivatedRoute,
     private BookingConfigService: BookingConfigService
   ) {
     this.currBookingItem$ = this.bookingService.currBookingItem$
@@ -94,8 +95,31 @@ export class BookComponent implements OnInit {
       }
     });
 
-    // Set default stepper to addons - the addons component will handle fetching
-    this.stepper = this.eStepper.addons;
+    // Detect route and set stepper accordingly
+    this.setStepperFromRoute();
+    
+    // Subscribe to route changes to update stepper when URL changes
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.setStepperFromRoute();
+      }
+    });
+  }
+
+  setStepperFromRoute(): void {
+    const url = this.router.url;
+    if (url.includes('/book/confirmation')) {
+      this.stepper = this.eStepper.confirmation;
+    } else if (url.includes('/book/payment')) {
+      this.stepper = this.eStepper.payment;
+    } else if (url.includes('/book/personal-details')) {
+      this.stepper = this.eStepper.personalDetails;
+    } else if (url.includes('/book/addons')) {
+      this.stepper = this.eStepper.addons;
+    } else {
+      // Default to addons for /book route
+      this.stepper = this.eStepper.addons;
+    }
   }
 
   loadPolicies(): void {
@@ -111,19 +135,21 @@ export class BookComponent implements OnInit {
           this.policiesLoaded = true;
           this.policyresp = res;
           
-          // Skip addons page if no addons are available
+          // Skip addons page if no addons are available and we're on the addons route
           const policies = res['policies'] || [];
-          if (!policies || policies.length === 0) {
+          if ((!policies || policies.length === 0) && this.router.url.includes('/book/addons')) {
             this.addonsSkipped = true;
-            this.stepper = this.eStepper.personalDetails;
+            this.navigateToStep('personal-details');
           }
         },
         (error) => {
           console.error('Error loading policies:', error);
           this.snackBar.open('Failed to load policies', 'Close', { duration: 3000 });
-          // Skip to personal details on error as well
-          this.addonsSkipped = true;
-          this.stepper = this.eStepper.personalDetails;
+          // Skip to personal details on error as well if on addons route
+          if (this.router.url.includes('/book/addons')) {
+            this.addonsSkipped = true;
+            this.navigateToStep('personal-details');
+          }
         }
       );
     }
@@ -351,13 +377,15 @@ export class BookComponent implements OnInit {
 
   onNext() {
     console.log(this.stepper, this.eStepper.payment, this.eStepper.personalDetails)
+    const bookingEngineId = this.BookingConfigService.getBookingEngineId();
+    
     if (this.stepper === this.eStepper.addons) {
       // If there are no addons, skip to personalDetails
       if (!this.policyresp?.addons || this.policyresp.addons.length === 0) {
-        this.stepper = this.eStepper.personalDetails;
+        this.navigateToStep('personal-details');
       } else {
         // If addons exist, stay on addons and let user proceed manually
-        this.stepper = this.eStepper.personalDetails;
+        this.navigateToStep('personal-details');
       }
     } else if (this.stepper === this.eStepper.personalDetails) {
       // Check if personalDetailsComponent is initialized
@@ -417,6 +445,12 @@ export class BookComponent implements OnInit {
     window.scrollTo(0, 200);
   }
 
+  navigateToStep(step: string): void {
+    const bookingEngineId = this.BookingConfigService.getBookingEngineId();
+    const path = bookingEngineId ? `/book/${step}/${bookingEngineId}` : `/book/${step}`;
+    this.router.navigate([path]);
+  }
+
   goBack() {
 
     if (this.stepper === this.eStepper.addons) {
@@ -427,10 +461,10 @@ export class BookComponent implements OnInit {
       if (this.addonsSkipped) {
         this.navigateToSearch();
       } else {
-        this.stepper = this.eStepper.addons;
+        this.navigateToStep('addons');
       }
     } else if (this.stepper === this.eStepper.payment) {
-      this.stepper = this.eStepper.personalDetails;
+      this.navigateToStep('personal-details');
     }
     window.scrollTo(0, 0);
   }

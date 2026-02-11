@@ -442,6 +442,15 @@
   max-width: 1200px;
   margin: auto;
   width: 100%;
+  align-items: flex-start;
+}
+
+/* Sticky Cart Sidebar */
+.cart-sidebar {
+  position: sticky;
+  top: 100px;
+  align-self: flex-start;
+  height: fit-content;
 }
 
 .contents-section-seperator {
@@ -780,6 +789,11 @@ hr {
     max-width: 100%;
   }
 
+  .cart-sidebar {
+    position: static;
+    align-self: auto;
+  }
+
   .search-results {
     padding: 0 10px;
     width: 100%;
@@ -845,6 +859,11 @@ hr {
     width: 100%;
     padding-left: 0;
     padding-right: 0;
+  }
+
+  .cart-sidebar {
+    position: static;
+    align-self: auto;
   }
 
   .search-results {

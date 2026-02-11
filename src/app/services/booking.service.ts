@@ -131,7 +131,8 @@ export class BookingService {
       bookingCart
     );
   }
-  this.router.navigate(['/book'], { queryParams: { bookingEngineId: this.BookingConfigService.getBookingEngineId() } });
+  const bookingEngineId = this.BookingConfigService.getBookingEngineId();
+  this.router.navigate([`/book/addons/${bookingEngineId}`]);
 }  getTotalAmount(checkIn: string, checkOut: string, room: any) {
     // let diff = this.getNoOfDays(checkIn, checkOut);
     let price =
@@ -225,7 +226,8 @@ export class BookingService {
       this.bookingCartReflect.HOOKS.BOOKING_CART,
       bookingCart
     );
-    this.router.navigate(['/book'], { queryParams: { bookingEngineId: this.BookingConfigService.getBookingEngineId() } });
+    const bookingEngineId = this.BookingConfigService.getBookingEngineId();
+    this.router.navigate([`/book/addons/${bookingEngineId}`]);
   }
 
   removeCurrentBookingItemFromList(i: any) {

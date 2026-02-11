@@ -117,7 +117,7 @@
         
         <!-- Reserve Button -->
         <button class="reserve-btn" 
-            (click)="router.navigate(['/book'], { queryParams: { bookingEngineId: BookingConfigService.getBookingEngineId() } })" 
+            (click)="router.navigate(['/book/addons/' + BookingConfigService.getBookingEngineId()])" 
             *ngIf="type === 'searchComponent-newBooking' && getRemainingRooms() === 0 && bookingItems?.length != 0">
             {{ 'reserve_now' | translate }}
         </button>

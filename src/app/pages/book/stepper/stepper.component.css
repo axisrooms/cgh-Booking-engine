@@ -21,10 +21,14 @@
   align-items: center;
   z-index: 1;
   transition: all 0.3s ease;
+  cursor: default;
+}
+
+.stepper-block.clickable {
   cursor: pointer;
 }
 
-.stepper-block:hover .stepper-icon {
+.stepper-block.clickable:hover .stepper-icon {
   transform: scale(1.05);
 }
 
