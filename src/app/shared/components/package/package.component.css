@@ -40,18 +40,19 @@ ul {
 
 /* Property Image */
 .property-image-col {
-  width: fit-content;
   padding: 15px;
   padding-right: 0;
+  /* fix image area width so all cards look consistent */
+  width: 240px;
 }
 
 .property-image-col img {
-  width: 220px;
+  width: 100%;
+  /* fixed height so all four sides appear the same across cards */
+  height: 170px;
   border-radius: 12px;
-  height: 100%;
-  max-height: 200px;
-  min-height: 290px;
   object-fit: cover;
+  object-position: center;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
 }
