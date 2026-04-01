@@ -1,0 +1,76 @@
+<div class="addon-details-dialog">
+  <div class="dialog-header">
+    <h2 class="dialog-title">{{ addonDetail?.policy_name }}</h2>
+    <button (click)="onClose()" class="close-btn" title="Close dialog">
+      <i class="bi bi-x"></i>
+    </button>
+  </div>
+
+  <div class="dialog-content">
+    <!-- Image Section -->
+    <div class="image-section">
+      <img class="detail-image" 
+           [src]="addonDetail?.policy_image_url" 
+           alt="{{addonDetail?.policy_name}}"
+           onerror="this.src='assets/images/no-image-found.png'">
+      <button class="expand-btn" (click)="expandImg(addonDetail?.policy_image_url)">
+        <i class="bi bi-arrows-fullscreen"></i> Expand
+      </button>
+    </div>
+
+    <!-- Description Section -->
+    <div class="description-section">
+      <h3>Description</h3>
+      <p class="addon-description">{{ addonDetail?.policy_description }}</p>
+    </div>
+
+    <!-- Pricing Section -->
+    <div class="pricing-section">
+      <h3>Pricing Details</h3>
+      <div class="pricing-breakdown">
+        <!-- Per Booking Type -->
+        <ng-container *ngIf="(addonDetail?.adultValue === 0 || !addonDetail?.adultValue) && (addonDetail?.childValue === 0 || !addonDetail?.childValue)">
+          <div class="pricing-row">
+            <span class="label">
+              <i class="bi bi-tag-fill"></i> {{ addonDetail?.policy_type_name }}
+            </span>
+            <span class="value">{{ addonDetail?.currency }} {{ addonDetail?.cost }}</span>
+          </div>
+        </ng-container>
+
+        <!-- Per Guest Type -->
+        <ng-container *ngIf="(addonDetail?.adultValue && addonDetail?.adultValue > 0) || (addonDetail?.childValue && addonDetail?.childValue > 0)">
+          <div class="pricing-row">
+            <span class="label">
+              <i class="bi bi-person-fill"></i> Adults ({{ getNoOfAdults() }}) × {{ addonDetail?.currency }} {{ addonDetail?.adultValue || 0 }}
+            </span>
+            <span class="value">{{ addonDetail?.currency }} {{ (addonDetail?.adultValue || 0) * getNoOfAdults() }}</span>
+          </div>
+          <div class="pricing-row">
+            <span class="label">
+              <i class="bi bi-person-fill"></i> Children ({{ getNoOfChildren() }}) × {{ addonDetail?.currency }} {{ addonDetail?.childValue || 0 }}
+            </span>
+            <span class="value">{{ addonDetail?.currency }} {{ (addonDetail?.childValue || 0) * getNoOfChildren() }}</span>
+          </div>
+          <div class="pricing-row total">
+            <span class="label">
+              <i class="bi bi-tag-fill"></i> Total ({{ addonDetail?.policy_type_name }})
+            </span>
+            <span class="value">{{ addonDetail?.currency }} {{ calculateAddonPrice(addonDetail) }}</span>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Mandatory Badge -->
+    <div class="mandatory-section" *ngIf="addonDetail?.mandatory === true">
+      <span class="mandatory-badge">
+        <i class="bi bi-lock-fill"></i> This is a mandatory addon
+      </span>
+    </div>
+  </div>
+
+  <div class="dialog-footer">
+    <button (click)="onClose()" style="border-radius: 5px;padding: 5px 20px; background-color: #34a85a; color: white;">Close</button>
+  </div>
+</div>

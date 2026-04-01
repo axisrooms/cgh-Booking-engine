@@ -2,10 +2,10 @@
     <p class="title">{{ 'addons' | translate | uppercase }}</p>
     <ng-container *ngIf="addons.length > 0; else elseTemplate">
         <div class="row">
-            <div [ngClass]="openAddon == true ? 'col-lg-6 col-md-6' : 'col-12'">
+            <div class="col-12">
                 <div class="row">
                     <ng-container *ngFor="let item of addons | paginate: config; let i=index">
-                        <div class="col-12 col-md-6" [ngClass]="openAddon == true ? 'col-lg-12' : 'col-lg-6'">
+                        <div class="col-12 col-md-6 col-lg-6">
                             <div class="card">
                                 <img class="addon-img" 
                                      [src]="item.policy_image_url" 
@@ -42,7 +42,7 @@
                                     <p class="addon-desc">{{item?.policy_description}}</p>
                                     
                                     <!-- View Details Link -->
-                                    <a class="view-details-link" (click)="openAddon = true; getDetails(item)">
+                                    <a class="view-details-link" (click)="getDetails(item)">
                                         <i class="bi bi-info-circle"></i> {{ 'view_details' | translate }}
                                     </a>
 
@@ -137,49 +137,6 @@
                             </div>
                         </div>
                     </ng-container>
-                </div>
-            </div>
-
-            <!-- Detail Panel -->
-            <div class="col-lg-6 col-md-6" *ngIf="openAddon == true">
-                <div class="detail-panel">
-                    <div class="detail-close-btn" (click)="openAddon = false">
-                        <i class="bi bi-x"></i>
-                    </div>
-                    <img class="detail-image" 
-                         [src]="addonDetail.policy_image_url" 
-                         alt="{{addonDetail.policy_name}}"
-                         onerror="this.src='assets/images/no-image-found.png'">
-                    <div class="expand-btn" (click)="expandImg(addonDetail.policy_image_url)">
-                        <i class="bi bi-arrows-fullscreen"></i> Expand
-                    </div>
-                    
-                    <div class="detail-content">
-                        <div class="detail-section">
-                            <p class="detail-title">{{addonDetail.policy_name}}</p>
-                            <p class="detail-desc">{{addonDetail.policy_description}}</p>
-                        </div>
-                        
-                        <div class="detail-pricing-section">
-                            <p class="detail-pricing-title">
-                                <i class="bi bi-currency-exchange"></i> Pricing Breakdown
-                            </p>
-                            <div class="detail-pricing-box">
-                                <div class="detail-pricing-row">
-                                    <span><i class="bi bi-person-fill"></i> Adults ({{getNoOfAdults()}}) × {{addonDetail.currency}} {{addonDetail.adultValue || 0}}</span>
-                                    <span>{{addonDetail.currency}} {{(addonDetail.adultValue || 0) * getNoOfAdults()}}</span>
-                                </div>
-                                <div class="detail-pricing-row">
-                                    <span><i class="bi bi-person-fill"></i> Children ({{getNoOfChildren()}}) × {{addonDetail.currency}} {{addonDetail.childValue || 0}}</span>
-                                    <span>{{addonDetail.currency}} {{(addonDetail.childValue || 0) * getNoOfChildren()}}</span>
-                                </div>
-                                <div class="detail-pricing-row total">
-                                    <span><i class="bi bi-tag-fill"></i> Total ({{addonDetail.policy_type_name}})</span>
-                                    <span>{{addonDetail.currency}} {{calculateAddonPrice(addonDetail)}}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

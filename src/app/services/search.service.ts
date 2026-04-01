@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, forkJoin } from 'rxjs';
 import { map, mergeMap, take, tap } from 'rxjs/operators';
@@ -40,6 +40,39 @@ export class SearchService {
     return this.http.get<any>(`${BASE_URL}api/be/finalPrices`, {
       params: params,
       headers: getDefaultHeaders(),
+    });
+  }
+
+  getPriceGrid(params: {
+    productId: number;
+    startDate?: string;
+    roomId?: number;
+    occupancy?: number;
+    paxInfo?: string;
+    isDorm?: boolean;
+  }): Observable<any> {
+    let httpParams = new HttpParams().set('productId', String(params.productId));
+
+    if (params.startDate) {
+      httpParams = httpParams.set('startDate', params.startDate);
+    }
+    if (params.roomId && params.roomId > 0) {
+      httpParams = httpParams.set('roomId', String(params.roomId));
+    }
+    if (params.occupancy && params.occupancy > 0) {
+      httpParams = httpParams.set('occupancy', String(params.occupancy));
+    }
+    if (params.paxInfo) {
+      httpParams = httpParams.set('paxInfo', params.paxInfo);
+    }
+    if (typeof params.isDorm === 'boolean') {
+      httpParams = httpParams.set('isDorm', String(params.isDorm));
+    }
+
+    return this.http.get<any>(`${BASE_URL}api/v1/hotel/price-grid`, {
+      params: httpParams,
+      headers: new HttpHeaders({ accept: 'application/json' }),
+      withCredentials: true,
     });
   }
 

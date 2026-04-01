@@ -16,6 +16,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatNativeDateModule } from '@angular/material/core';
 import { AddonsComponent } from './pages/book/addons/addons.component';
+import { AddonDetailsDialogComponent } from './pages/book/addons/addon-details-dialog/addon-details-dialog.component';
 import { CartBoxComponent } from './shared/components/cart-box/cart-box.component';
 import { ConfirmationComponent } from './pages/book/confirmation/confirmation.component';
 import { FooterComponent } from './shared/components/footer/footer.component';
@@ -54,6 +55,7 @@ import { ClickOutsideDirective } from './shared/directives/click-outside.directi
     PersonalDetailsComponent,
     ConfirmationComponent,
     AddonsComponent,
+    AddonDetailsDialogComponent,
     StepperComponent,
     OngoingBookingsComponent,
     NoBookingComponent,

@@ -1,18 +1,21 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BookingConfigService } from 'src/app/services/bookingid.service';
 import {
   BASE_URL,
-  BOOKING_ENGINE_ID,
   getDefaultHeaders,
 } from '../shared/constants/url.constants';
 import { BookingService } from './booking.service';
 import { cloneDeep } from 'lodash-es';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PaymentService {
+  private readonly addonsDebugFlagKey = 'DEBUG_ADDONS_PAYLOAD_ONCE';
+
   constructor(
     private http: HttpClient,
     private bookingService: BookingService,
@@ -22,7 +25,16 @@ export class PaymentService {
   async createOrderAndMakePayment(bookingItem: any, personalDetailsForm: any,payathotel: any) {
     console.log(bookingItem,personalDetailsForm,payathotel,"!!!!!")
     this.createOrder(bookingItem).subscribe((res1) => {
-      this.makePayment(bookingItem, personalDetailsForm,payathotel);
+      this.addAddonsToAxisRooms(bookingItem)
+        .pipe(
+          catchError((error) => {
+            console.error('Error while adding addons. Continuing with payment flow.', error);
+            return of(null);
+          })
+        )
+        .subscribe(() => {
+          this.makePayment(bookingItem, personalDetailsForm,payathotel);
+        });
     });
   }
 
@@ -42,6 +54,104 @@ export class PaymentService {
       params: params,
       headers: getDefaultHeaders(),
     });
+  }
+
+  private addAddonsToAxisRooms(bookingItem: any): Observable<any> {
+    const activeAddons = (bookingItem?.addons || []).filter((addon: any) => (addon?.qty || 0) > 0);
+    if (!activeAddons.length) {
+      return of(null);
+    }
+
+    const formBody = new URLSearchParams();
+    const roomIndex = this.bookingService.bookingCartValue?.currIndex ?? 0;
+
+    formBody.append('searchId', String(bookingItem?.searchId || ''));
+    formBody.append('roomNumber', String(roomIndex));
+    formBody.append('searchNumber', String(roomIndex + 1));
+    formBody.append('promoCode', bookingItem?.promoCode || 'null');
+
+    activeAddons.forEach((addon: any) => {
+      const policyId = addon?.policy_id;
+      if (!policyId) {
+        return;
+      }
+
+      const chargeType = this.getAddonChargeType(addon);
+      const qty = Number(addon?.qty || 0);
+
+      formBody.append(`policy${policyId}`, this.getPolicyValueForChargeType(chargeType, qty));
+      formBody.append(`policychild${policyId}`, '');
+      formBody.append(`policychargetype${policyId}`, chargeType);
+
+      if (chargeType.toLowerCase() === 'per guest') {
+        formBody.append(`policy_gn${policyId}`, String(addon?.selectedAdults ?? bookingItem?.noOfAdults ?? 1));
+        formBody.append(`policy_nn${policyId}`, String(addon?.selectedNights ?? 1));
+      }
+    });
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    });
+
+    this.logAddonsPayloadIfDebugEnabled(formBody);
+
+    return this.http.post('https://app.axisrooms.com/beV2/addAddOnsV3.html', formBody.toString(), {
+      headers,
+      responseType: 'text',
+      withCredentials: true,
+    });
+  }
+
+  private getAddonChargeType(addon: any): string {
+    const rawType = (addon?.policy_type_name || addon?.policyChargeType || addon?.type || '').toString().toLowerCase();
+
+    if (rawType.includes('per guest') || rawType.includes('per person')) {
+      return 'Per guest';
+    }
+    if (rawType.includes('per booking')) {
+      return 'Per Booking';
+    }
+    return 'Custom';
+  }
+
+  private getPolicyValueForChargeType(chargeType: string, qty: number): string {
+    if (chargeType.toLowerCase() === 'per guest') {
+      return '';
+    }
+    return qty > 0 ? String(qty) : '';
+  }
+
+  private logAddonsPayloadIfDebugEnabled(formBody: URLSearchParams): void {
+    if (!this.consumeAddonsDebugFlag()) {
+      return;
+    }
+
+    const payloadEntries: Record<string, string[]> = {};
+    formBody.forEach((value, key) => {
+      if (!payloadEntries[key]) {
+        payloadEntries[key] = [];
+      }
+      payloadEntries[key].push(value);
+    });
+
+    console.group('DEBUG addAddOnsV3 payload (one-time)');
+    console.log('Endpoint:', 'https://app.axisrooms.com/beV2/addAddOnsV3.html');
+    console.log('Form body encoded:', formBody.toString());
+    console.log('Form body entries:', payloadEntries);
+    console.groupEnd();
+  }
+
+  private consumeAddonsDebugFlag(): boolean {
+    if (typeof window === 'undefined') {
+      return false;
+    }
+
+    const enabled = window.localStorage.getItem(this.addonsDebugFlagKey) === 'true';
+    if (enabled) {
+      window.localStorage.removeItem(this.addonsDebugFlagKey);
+    }
+    return enabled;
   }
 
   makePayment(bookingItem: any, personalDetails: any, payathotel: any) {

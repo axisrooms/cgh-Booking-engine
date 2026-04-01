@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BookingService } from 'src/app/services/booking.service';
 import { ImagePopupComponent } from 'src/app/shared/components/image-popup/image-popup.component';
+import { AddonDetailsDialogComponent } from './addon-details-dialog/addon-details-dialog.component';
 
 @Component({
   selector: 'app-addons',
@@ -12,10 +13,8 @@ import { ImagePopupComponent } from 'src/app/shared/components/image-popup/image
 export class AddonsComponent implements OnInit {
   addons: any = [];
   selectedAddons: any;
-  openAddon: boolean | undefined
   num = 0
   totalPrice: number | undefined;
-  addonDetail: any;
   config = {
     id: 'custom',
     itemsPerPage: 4,
@@ -29,7 +28,6 @@ export class AddonsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.openAddon = false
     this.getAddons()
   }
 
@@ -180,8 +178,18 @@ export class AddonsComponent implements OnInit {
   }
 
 
-  getDetails(e: any) {
-    this.addonDetail = e;
+  getDetails(addon: any) {
+    const dialogRef = this.dialog.open(AddonDetailsDialogComponent, {
+      data: addon,
+      width: '80vw',
+      maxWidth: '900px',
+      maxHeight: '95vh',
+      disableClose: false
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 
   expandImg(img: any) {

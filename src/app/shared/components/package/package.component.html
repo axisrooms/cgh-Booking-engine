@@ -248,7 +248,7 @@
                         </span>
                         <!-- Deal Applied Badge -->
                         <span class="deal-applied-badge" *ngIf="group.lowestPriceRoom.deal?.title">
-                            <i class="bi bi-tag-fill"></i> {{group.lowestPriceRoom.deal.title}}
+                            <i class="bi bi-tag-fill"></i>Deal Name: {{group.lowestPriceRoom.deal.title}}
                         </span>
                         <!-- Inclusions as bullet points -->
                         <div class="inclusions-wrapper" *ngIf="group.lowestPriceRoom.inclusions?.length > 0">
@@ -291,7 +291,7 @@
                             </span>
                             <!-- Deal Applied Badge -->
                             <span class="deal-applied-badge" *ngIf="ratePlan.deal?.title">
-                                <i class="bi bi-tag-fill"></i> {{ratePlan.deal.title}}
+                                <i class="bi bi-tag-fill"></i> Deal Name:{{ratePlan.deal.title}}
                             </span>
                             <!-- Inclusions as bullet points -->
                             <div class="inclusions-wrapper" *ngIf="ratePlan.inclusions?.length > 0">

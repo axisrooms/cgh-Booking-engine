@@ -57,6 +57,28 @@ export class SearchComponent implements OnInit, OnDestroy {
   roomCount: any;
   bookingItems: BookingItem[] | undefined = [];
   bookingCart$: Observable<BookingCart | undefined> | undefined;
+  priceGridSubscription$!: Subscription;
+  priceGridByDate: { [dateKey: string]: number } = {};
+  priceGridCurrency = 'INR';
+  lastPriceGridRoomId: number | null = null;
+  lastPriceGridRatePlanId: number | null = null;
+  lastPriceGridDorm = false;
+  private monthNavFetchTimer: ReturnType<typeof setTimeout> | null = null;
+  private readonly onNativeCalendarNavClick = (event: Event) => {
+    const target = event.target as HTMLElement | null;
+    if (!target) {
+      return;
+    }
+
+    const navButton = target.closest(
+      '.mat-calendar-next-button, .mat-calendar-previous-button'
+    );
+    if (!navButton || !navButton.closest('.date-card')) {
+      return;
+    }
+
+    this.schedulePriceGridRefetchForVisibleMonth();
+  };
 
   constructor(
     private searchService: SearchService,
@@ -77,6 +99,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     })
     this.bookingService.cartflag = false;
+    document.addEventListener('click', this.onNativeCalendarNavClick);
     this.minDate = new Date();
     this.searchForm = this.getsearchForm();
     console.log(this.searchForm.value,
@@ -250,6 +273,13 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.searchTypeControlSubscription?.unsubscribe();
+    this.activateRouteSubscription$?.unsubscribe();
+    this.priceGridSubscription$?.unsubscribe();
+    if (this.monthNavFetchTimer) {
+      clearTimeout(this.monthNavFetchTimer);
+      this.monthNavFetchTimer = null;
+    }
+    document.removeEventListener('click', this.onNativeCalendarNavClick);
   }
 
   getsearchForm() {
@@ -552,6 +582,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.showFieldWarnings = this.dropdownType.none;
     if (type === DropdownType.checkin || type === DropdownType.checkout) {
       this.updateHeaderText();
+      if (this.showDropdown === type) {
+        this.loadPriceGridForCalendar();
+      }
     }
   }
 
@@ -1140,15 +1173,382 @@ export class SearchComponent implements OnInit, OnDestroy {
     var e2 = classes[1] as HTMLElement;
     e1.click();
     e2.click();
-    this.updateHeaderText();
+    this.schedulePriceGridRefetchForVisibleMonth();
   }
 
-  updateHeaderText() {
+  private schedulePriceGridRefetchForVisibleMonth() {
+    if (this.monthNavFetchTimer) {
+      clearTimeout(this.monthNavFetchTimer);
+    }
+
+    this.monthNavFetchTimer = setTimeout(() => {
+      this.updateHeaderText(() => {
+        this.loadPriceGridForCalendar(true);
+      });
+    }, 80);
+  }
+
+  updateHeaderText(onUpdated?: () => void) {
     setTimeout(() => {
       var cl = document.getElementsByClassName('mat-calendar-period-button');
       this.calendarOneHeading = cl[0]?.children[0]?.children[0]?.textContent;
       this.calendarTwoHeading = cl[1]?.children[0]?.children[0]?.textContent;
+      this.applyPriceTagsToCalendarCells();
+      onUpdated?.();
     }, 0);
+  }
+
+  private loadPriceGridForCalendar(useVisibleCalendarMonth = false) {
+    const productId = this.getSelectedProductIdForPriceGrid();
+    if (!productId) {
+      this.priceGridByDate = {};
+      this.applyPriceTagsToCalendarCells();
+      return;
+    }
+
+    const requestParams = {
+      productId,
+      startDate: this.getStartDateForPriceGrid(useVisibleCalendarMonth),
+      roomId: this.getSelectedRoomIdForPriceGrid(),
+      occupancy: this.getOccupancyForPriceGrid(),
+      paxInfo: this.getPaxInfo() || '2|0||',
+      isDorm: this.getIsDormForPriceGrid(),
+    };
+
+    this.priceGridSubscription$?.unsubscribe();
+    this.priceGridSubscription$ = this.searchService
+      .getPriceGrid(requestParams)
+      .pipe(take(1))
+      .subscribe({
+        next: (response) => {
+          this.handlePriceGridResponse(response, requestParams);
+        },
+        error: () => {
+          this.priceGridByDate = {};
+          this.applyPriceTagsToCalendarCells();
+        },
+      });
+  }
+
+  private getSelectedProductIdForPriceGrid(): number | null {
+    const queryProductId = Number(this.activatedRoute.snapshot.queryParamMap.get('productId'));
+    if (!isNaN(queryProductId) && queryProductId > 0) {
+      return queryProductId;
+    }
+
+    const selectedProductId = this.getProductId();
+    if (selectedProductId) {
+      return selectedProductId;
+    }
+
+    const cartHotelId = this.bookingItems?.[0]?.hotelId;
+    if (cartHotelId) {
+      return cartHotelId;
+    }
+
+    const searchedHotelId = this.searchResponse?.Hotel_Details?.[0]?.hotel_id;
+    if (searchedHotelId) {
+      return searchedHotelId;
+    }
+
+    return null;
+  }
+
+  private getSelectedRoomIdForPriceGrid(): number {
+    const queryRoomId = Number(this.activatedRoute.snapshot.queryParamMap.get('roomId'));
+    if (!isNaN(queryRoomId) && queryRoomId > 0) {
+      return queryRoomId;
+    }
+
+    const cartRoomId = this.bookingItems?.[0]?.rooms?.[0]?.roomId;
+    if (cartRoomId) {
+      return cartRoomId;
+    }
+
+    const searchedRoomId = this.searchResponse?.Hotel_Details?.[0]?.rooms?.[0]?.roomId;
+    if (searchedRoomId) {
+      return searchedRoomId;
+    }
+
+    if (this.lastPriceGridRoomId) {
+      return this.lastPriceGridRoomId;
+    }
+
+    return 0;
+  }
+
+  private getStartDateForPriceGrid(useVisibleCalendarMonth = false): string {
+    if (useVisibleCalendarMonth) {
+      const visibleMonthStartDate = this.getVisibleCalendarMonthStartDate();
+      if (visibleMonthStartDate) {
+        return visibleMonthStartDate;
+      }
+    }
+
+    const checkInValue = this.searchForm?.controls?.checkIn?.value;
+    if (!checkInValue) {
+      return moment().format('YYYY-MM-DD');
+    }
+
+    const parsedCheckIn = moment(
+      checkInValue,
+      ['DD/MM/YYYY', 'YYYY-MM-DD', moment.ISO_8601],
+      true
+    );
+
+    if (parsedCheckIn.isValid()) {
+      return parsedCheckIn.format('YYYY-MM-DD');
+    }
+
+    const parsedAsDate = moment(new Date(checkInValue));
+    if (parsedAsDate.isValid()) {
+      return parsedAsDate.format('YYYY-MM-DD');
+    }
+
+    return moment().format('YYYY-MM-DD');
+  }
+
+  private getVisibleCalendarMonthStartDate(): string | null {
+    const monthHeading = this.calendarOneHeading?.trim();
+    if (!monthHeading) {
+      return null;
+    }
+
+    const parsedMonth = moment(monthHeading, ['MMMM YYYY', 'MMM YYYY'], true);
+    if (!parsedMonth.isValid()) {
+      return null;
+    }
+
+    return parsedMonth.startOf('month').format('YYYY-MM-DD');
+  }
+
+  private getIsDormForPriceGrid(): boolean {
+    const isDormQuery = this.activatedRoute.snapshot.queryParamMap.get('isDorm');
+    if (isDormQuery === 'true') {
+      return true;
+    }
+
+    const searchedDorm = this.searchResponse?.Hotel_Details?.[0]?.rooms?.[0]?.dorm;
+    if (typeof searchedDorm === 'boolean') {
+      return searchedDorm;
+    }
+
+    return this.lastPriceGridDorm;
+  }
+
+  private getOccupancyForPriceGrid(): number {
+    const firstRoom = this.getTablesFormArray()?.value?.[0];
+    const adultsCount = Number(firstRoom?.noOfAdults || 0);
+    const childrenCount = Number(firstRoom?.noOfChildren || 0);
+    const occupancy = adultsCount + childrenCount;
+
+    if (occupancy > 0) {
+      return occupancy;
+    }
+
+    const paxInfo = this.getPaxInfo();
+    if (paxInfo) {
+      const firstRoomPax = paxInfo.split('||')[0] || '';
+      const [adultPart, childPart] = firstRoomPax.split('|');
+      const parsedOccupancy = (Number(adultPart) || 0) + (Number(childPart) || 0);
+      if (parsedOccupancy > 0) {
+        return parsedOccupancy;
+      }
+    }
+
+    return 2;
+  }
+
+  private handlePriceGridResponse(response: any, requestParams: any) {
+    if (response?.currency) {
+      this.priceGridCurrency = String(response.currency).toUpperCase();
+    }
+
+    const selectedRoomId = response?.selectedRoom?.id;
+    if (selectedRoomId) {
+      this.lastPriceGridRoomId = selectedRoomId;
+      this.lastPriceGridDorm = !!response?.selectedRoom?.dorm;
+    }
+    const selectedRatePlanId = response?.selectedRatePlan?.id;
+    if (selectedRatePlanId) {
+      this.lastPriceGridRatePlanId = selectedRatePlanId;
+    }
+
+    if (!response?.selectedRoom && response?.roomList?.length) {
+      const firstAvailableRoom = response.roomList.find((room: any) => room?.id);
+      if (
+        firstAvailableRoom?.id &&
+        firstAvailableRoom.id !== requestParams.roomId
+      ) {
+        this.retryPriceGridWithRoomId(firstAvailableRoom.id, !!firstAvailableRoom.dorm, requestParams);
+        return;
+      }
+    }
+
+    this.priceGridByDate = this.buildPriceMap(response);
+    this.applyPriceTagsToCalendarCells();
+  }
+
+  private retryPriceGridWithRoomId(roomId: number, dorm: boolean, baseParams: any) {
+    const retryParams = {
+      ...baseParams,
+      roomId,
+      isDorm: dorm,
+    };
+
+    this.priceGridSubscription$?.unsubscribe();
+    this.priceGridSubscription$ = this.searchService
+      .getPriceGrid(retryParams)
+      .pipe(take(1))
+      .subscribe({
+        next: (retryResponse) => {
+          if (retryResponse?.currency) {
+            this.priceGridCurrency = String(retryResponse.currency).toUpperCase();
+          }
+
+          const selectedRoomId = retryResponse?.selectedRoom?.id || roomId;
+          this.lastPriceGridRoomId = selectedRoomId;
+          this.lastPriceGridDorm = !!retryResponse?.selectedRoom?.dorm || dorm;
+          const retryRatePlanId = retryResponse?.selectedRatePlan?.id;
+          if (retryRatePlanId) {
+            this.lastPriceGridRatePlanId = retryRatePlanId;
+          }
+          this.priceGridByDate = this.buildPriceMap(retryResponse);
+          this.applyPriceTagsToCalendarCells();
+        },
+        error: () => {
+          this.priceGridByDate = {};
+          this.applyPriceTagsToCalendarCells();
+        },
+      });
+  }
+
+  private buildPriceMap(response: any): { [dateKey: string]: number } {
+    const priceMap: { [dateKey: string]: number } = {};
+    const months = Array.isArray(response?.months)
+      ? response.months
+      : [response?.currentMonth, response?.nextMonth];
+
+    months.forEach((monthData: any) => {
+      monthData?.days?.forEach((day: any) => {
+        if (!day?.date || day?.closed) {
+          return;
+        }
+
+        const dateKey = this.getDateKeyFromApiDate(day.date);
+        if (!dateKey) {
+          return;
+        }
+
+        const dayPrice = this.getDayPrice(day);
+        if (!dayPrice || dayPrice <= 0) {
+          return;
+        }
+
+        if (!priceMap[dateKey] || dayPrice < priceMap[dateKey]) {
+          priceMap[dateKey] = dayPrice;
+        }
+      });
+    });
+
+    return priceMap;
+  }
+
+  private getDayPrice(day: any): number | null {
+    if (typeof day?.price === 'number' && day.price > 0) {
+      return day.price;
+    }
+
+    const prices = day?.prices;
+    if (!prices || typeof prices !== 'object') {
+      return null;
+    }
+
+    const allPrices = Object.values(prices)
+      .map((value) => Number(value))
+      .filter((value) => value > 0);
+
+    if (!allPrices.length) {
+      return null;
+    }
+
+    return Math.min(...allPrices);
+  }
+
+  private applyPriceTagsToCalendarCells() {
+    setTimeout(() => {
+      const calendarCells = Array.from(
+        document.querySelectorAll('.date-card .mat-calendar-body-cell')
+      ) as HTMLElement[];
+
+      calendarCells.forEach((cell) => {
+        const existingTag = cell.querySelector('.calendar-day-price');
+        if (existingTag) {
+          existingTag.remove();
+        }
+
+        if (!Object.keys(this.priceGridByDate).length) {
+          return;
+        }
+
+        if (cell.classList.contains('mat-calendar-body-disabled')) {
+          return;
+        }
+
+        const ariaLabel = cell.getAttribute('aria-label') || '';
+        const parsedDate = new Date(ariaLabel);
+        if (isNaN(parsedDate.getTime())) {
+          return;
+        }
+
+        const dateKey = this.getDateKeyFromDate(parsedDate);
+        const price = this.priceGridByDate[dateKey];
+        if (!price) {
+          return;
+        }
+
+        const priceTag = document.createElement('span');
+        priceTag.className = 'calendar-day-price';
+        priceTag.textContent = this.formatCalendarPrice(price);
+        cell.appendChild(priceTag);
+      });
+    }, 0);
+  }
+
+  private formatCalendarPrice(price: number): string {
+    if (!price) {
+      return '';
+    }
+
+    if (price < 1000) {
+      return new Intl.NumberFormat('en-IN', {
+        maximumFractionDigits: 0,
+      }).format(price);
+    }
+
+    const valueInThousands = Math.round(price / 1000);
+    return `${valueInThousands}K`;
+  }
+
+  private getDateKeyFromApiDate(dateObj: any): string {
+    const year = Number(dateObj?.year);
+    const month = Number(dateObj?.monthValue);
+    const day = Number(dateObj?.dayOfMonth);
+
+    if (!year || !month || !day) {
+      return '';
+    }
+
+    const mm = month.toString().padStart(2, '0');
+    const dd = day.toString().padStart(2, '0');
+    return `${year}-${mm}-${dd}`;
+  }
+
+  private getDateKeyFromDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   selectedChange(m: any) {
