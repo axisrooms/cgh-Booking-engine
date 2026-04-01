@@ -14,8 +14,6 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class PaymentService {
-  private readonly addonsDebugFlagKey = 'DEBUG_ADDONS_PAYLOAD_ONCE';
-
   constructor(
     private http: HttpClient,
     private bookingService: BookingService,
@@ -23,7 +21,6 @@ export class PaymentService {
   ) {}
 
   async createOrderAndMakePayment(bookingItem: any, personalDetailsForm: any,payathotel: any) {
-    console.log(bookingItem,personalDetailsForm,payathotel,"!!!!!")
     this.createOrder(bookingItem).subscribe((res1) => {
       this.addAddonsToAxisRooms(bookingItem)
         .pipe(
@@ -78,13 +75,21 @@ export class PaymentService {
 
       const chargeType = this.getAddonChargeType(addon);
       const qty = Number(addon?.qty || 0);
+      const adultsCount = Number(addon?.selectedAdults ?? bookingItem?.noOfAdults ?? 1);
+      const childrenCount = Number(addon?.selectedChildren ?? bookingItem?.noOfChildren ?? 0);
 
-      formBody.append(`policy${policyId}`, this.getPolicyValueForChargeType(chargeType, qty));
-      formBody.append(`policychild${policyId}`, '');
+      formBody.append(
+        `policy${policyId}`,
+        this.getPolicyValueForChargeType(chargeType, qty, adultsCount, childrenCount)
+      );
+      formBody.append(
+        `policychild${policyId}`,
+        this.getPolicyChildValueForChargeType(chargeType, childrenCount)
+      );
       formBody.append(`policychargetype${policyId}`, chargeType);
 
       if (chargeType.toLowerCase() === 'per guest') {
-        formBody.append(`policy_gn${policyId}`, String(addon?.selectedAdults ?? bookingItem?.noOfAdults ?? 1));
+        formBody.append(`policy_gn${policyId}`, String(adultsCount));
         formBody.append(`policy_nn${policyId}`, String(addon?.selectedNights ?? 1));
       }
     });
@@ -94,9 +99,7 @@ export class PaymentService {
       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     });
 
-    this.logAddonsPayloadIfDebugEnabled(formBody);
-
-    return this.http.post('https://app.axisrooms.com/beV2/addAddOnsV3.html', formBody.toString(), {
+    return this.http.post(`${BASE_URL}beV2/addAddOnsV3.html`, formBody.toString(), {
       headers,
       responseType: 'text',
       withCredentials: true,
@@ -115,43 +118,25 @@ export class PaymentService {
     return 'Custom';
   }
 
-  private getPolicyValueForChargeType(chargeType: string, qty: number): string {
+  private getPolicyValueForChargeType(
+    chargeType: string,
+    qty: number,
+    adultsCount: number,
+    childrenCount: number
+  ): string {
     if (chargeType.toLowerCase() === 'per guest') {
-      return '';
+      const totalGuests = Math.max(0, adultsCount) + Math.max(0, childrenCount);
+      return totalGuests > 0 ? String(totalGuests) : '';
     }
+
     return qty > 0 ? String(qty) : '';
   }
 
-  private logAddonsPayloadIfDebugEnabled(formBody: URLSearchParams): void {
-    if (!this.consumeAddonsDebugFlag()) {
-      return;
+  private getPolicyChildValueForChargeType(chargeType: string, childrenCount: number): string {
+    if (chargeType.toLowerCase() === 'per guest') {
+      return String(childrenCount >= 0 ? childrenCount : 0);
     }
-
-    const payloadEntries: Record<string, string[]> = {};
-    formBody.forEach((value, key) => {
-      if (!payloadEntries[key]) {
-        payloadEntries[key] = [];
-      }
-      payloadEntries[key].push(value);
-    });
-
-    console.group('DEBUG addAddOnsV3 payload (one-time)');
-    console.log('Endpoint:', 'https://app.axisrooms.com/beV2/addAddOnsV3.html');
-    console.log('Form body encoded:', formBody.toString());
-    console.log('Form body entries:', payloadEntries);
-    console.groupEnd();
-  }
-
-  private consumeAddonsDebugFlag(): boolean {
-    if (typeof window === 'undefined') {
-      return false;
-    }
-
-    const enabled = window.localStorage.getItem(this.addonsDebugFlagKey) === 'true';
-    if (enabled) {
-      window.localStorage.removeItem(this.addonsDebugFlagKey);
-    }
-    return enabled;
+    return '';
   }
 
   makePayment(bookingItem: any, personalDetails: any, payathotel: any) {
