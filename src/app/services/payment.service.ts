@@ -7,7 +7,7 @@ import {
 } from '../shared/constants/url.constants';
 import { BookingService } from './booking.service';
 import { cloneDeep } from 'lodash-es';
-import { Observable, of } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Injectable({
@@ -99,11 +99,34 @@ export class PaymentService {
       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     });
 
+    if (this.isLocalDevelopment()) {
+      return from(
+        fetch(`${BASE_URL}beV2/addAddOnsV3.html`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: formBody.toString(),
+          credentials: 'include',
+          mode: 'no-cors',
+        }).then(() => null)
+      );
+    }
+
     return this.http.post(`${BASE_URL}beV2/addAddOnsV3.html`, formBody.toString(), {
       headers,
       responseType: 'text',
       withCredentials: true,
     });
+  }
+
+  private isLocalDevelopment(): boolean {
+    if (typeof window === 'undefined') {
+      return false;
+    }
+
+    const host = window.location.hostname;
+    return host === 'localhost' || host === '127.0.0.1';
   }
 
   private getAddonChargeType(addon: any): string {
