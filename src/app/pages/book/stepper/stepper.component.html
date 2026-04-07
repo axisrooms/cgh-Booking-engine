@@ -1,1 +1,41 @@
-<!-- Stepper removed -->
+<section class="stepper-section">
+  <div class="stepper-row" [attr.data-step]="stepper">
+
+    <!-- Progress line -->
+    <div class="filler-line"></div>
+
+    <!-- Step 1: Hotel Details (always completed once in booking flow, navigates back to search) -->
+    <div class="stepper-block completed clickable"
+         (click)="navigateToSearch()">
+      <div class="stepper-icon">
+        <span class="stepper-dot"></span>
+      </div>
+      <span class="stepper-text">Hotel Details</span>
+    </div>
+
+    <!-- Step 2: Addons -->
+    <div class="stepper-block"
+         [class.active]="stepper === eStepper.addons"
+         [class.completed]="stepper > eStepper.addons"
+         [class.clickable]="isStepClickable(eStepper.addons)"
+         (click)="isStepClickable(eStepper.addons) && navigateTo('addons')">
+      <div class="stepper-icon">
+        <span class="stepper-dot"></span>
+      </div>
+      <span class="stepper-text">Addons</span>
+    </div>
+
+    <!-- Step 3: Personal Details -->
+    <div class="stepper-block"
+         [class.active]="stepper === eStepper.personalDetails"
+         [class.completed]="stepper > eStepper.personalDetails"
+         [class.clickable]="isStepClickable(eStepper.personalDetails)"
+         (click)="isStepClickable(eStepper.personalDetails) && navigateTo('personal-details')">
+      <div class="stepper-icon">
+        <span class="stepper-dot"></span>
+      </div>
+      <span class="stepper-text">Personal Details</span>
+    </div>
+
+  </div>
+</section>

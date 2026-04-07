@@ -125,16 +125,21 @@
   transition: width 0.5s ease;
 }
 
-/* Active states for progress line */
+/* Active states for progress line - 3 visual steps: hotel(always done), addons(1), personal(2) */
+/* data-step matches StepperType enum: addons=1, personalDetails=2, payment/confirmation=3+ */
 .stepper-row[data-step="1"] .filler-line::before {
-  width: 0%;
-}
-
-.stepper-row[data-step="2"] .filler-line::before {
   width: 50%;
 }
 
+.stepper-row[data-step="2"] .filler-line::before {
+  width: 100%;
+}
+
 .stepper-row[data-step="3"] .filler-line::before {
+  width: 100%;
+}
+
+.stepper-row[data-step="4"] .filler-line::before {
   width: 100%;
 }
 

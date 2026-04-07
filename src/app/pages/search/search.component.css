@@ -305,6 +305,31 @@
   color: #fff;
 }
 
+/* ── Unavailable date cells (zero availability / closed) ── */
+.search-bar .date-card ::ng-deep .calendar-cell-unavailable {
+  opacity: 0.45;
+}
+
+.search-bar .date-card ::ng-deep .calendar-cell-unavailable .mat-calendar-body-cell-content {
+  background-color: rgba(220, 53, 69, 0.08) !important;
+  border-color: transparent !important;
+  text-decoration: line-through;
+  color: #999 !important;
+}
+
+.search-bar .date-card ::ng-deep .calendar-day-unavailable {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 1px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  color: #dc3545;
+  pointer-events: none;
+  z-index: 2;
+}
+
 .calendar-header-row {
   display: flex;
   flex-direction: row;

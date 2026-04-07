@@ -59,6 +59,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   bookingCart$: Observable<BookingCart | undefined> | undefined;
   priceGridSubscription$!: Subscription;
   priceGridByDate: { [dateKey: string]: number } = {};
+  unavailableDateKeys: Set<string> = new Set();
   priceGridCurrency = 'INR';
   lastPriceGridRoomId: number | null = null;
   lastPriceGridRatePlanId: number | null = null;
@@ -1202,6 +1203,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     const productId = this.getSelectedProductIdForPriceGrid();
     if (!productId) {
       this.priceGridByDate = {};
+      this.unavailableDateKeys = new Set();
       this.applyPriceTagsToCalendarCells();
       return;
     }
@@ -1225,6 +1227,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         },
         error: () => {
           this.priceGridByDate = {};
+          this.unavailableDateKeys = new Set();
           this.applyPriceTagsToCalendarCells();
         },
       });
@@ -1418,6 +1421,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         },
         error: () => {
           this.priceGridByDate = {};
+          this.unavailableDateKeys = new Set();
           this.applyPriceTagsToCalendarCells();
         },
       });
@@ -1425,19 +1429,47 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   private buildPriceMap(response: any): { [dateKey: string]: number } {
     const priceMap: { [dateKey: string]: number } = {};
+    this.unavailableDateKeys = new Set<string>();
+
     const months = Array.isArray(response?.months)
       ? response.months
       : [response?.currentMonth, response?.nextMonth];
 
     months.forEach((monthData: any) => {
       monthData?.days?.forEach((day: any) => {
-        if (!day?.date || day?.closed) {
+        if (!day?.date) {
           return;
         }
 
         const dateKey = this.getDateKeyFromApiDate(day.date);
         if (!dateKey) {
           return;
+        }
+
+        // Mark as unavailable if closed OR all room availabilities are zero
+        if (day?.closed) {
+          this.unavailableDateKeys.add(dateKey);
+          return;
+        }
+
+        const available = day?.available;
+        if (available && typeof available === 'object') {
+          const roomId = this.lastPriceGridRoomId;
+          let isUnavailable = false;
+
+          if (roomId !== null && roomId in available) {
+            // Check specific room availability
+            isUnavailable = Number(available[roomId]) === 0;
+          } else {
+            // Check if ALL rooms have zero availability
+            const counts = Object.values(available).map((v) => Number(v));
+            isUnavailable = counts.length > 0 && counts.every((c) => c === 0);
+          }
+
+          if (isUnavailable) {
+            this.unavailableDateKeys.add(dateKey);
+            return;
+          }
         }
 
         const dayPrice = this.getDayPrice(day);
@@ -1482,9 +1514,28 @@ export class SearchComponent implements OnInit, OnDestroy {
       ) as HTMLElement[];
 
       calendarCells.forEach((cell) => {
-        const existingTag = cell.querySelector('.calendar-day-price');
-        if (existingTag) {
-          existingTag.remove();
+        // Clean up previous injected elements
+        cell.querySelector('.calendar-day-price')?.remove();
+        cell.querySelector('.calendar-day-unavailable')?.remove();
+        cell.classList.remove('calendar-cell-unavailable');
+
+        const ariaLabel = cell.getAttribute('aria-label') || '';
+        const parsedDate = new Date(ariaLabel);
+        if (isNaN(parsedDate.getTime())) {
+          return;
+        }
+
+        const dateKey = this.getDateKeyFromDate(parsedDate);
+
+        // Handle unavailable (zero availability / closed) dates
+        if (this.unavailableDateKeys.has(dateKey)) {
+          cell.classList.add('calendar-cell-unavailable');
+          const crossMark = document.createElement('span');
+          crossMark.className = 'calendar-day-unavailable';
+          crossMark.innerHTML = '&times;';
+          crossMark.title = 'Not available';
+          cell.appendChild(crossMark);
+          return;
         }
 
         if (!Object.keys(this.priceGridByDate).length) {
@@ -1495,13 +1546,6 @@ export class SearchComponent implements OnInit, OnDestroy {
           return;
         }
 
-        const ariaLabel = cell.getAttribute('aria-label') || '';
-        const parsedDate = new Date(ariaLabel);
-        if (isNaN(parsedDate.getTime())) {
-          return;
-        }
-
-        const dateKey = this.getDateKeyFromDate(parsedDate);
         const price = this.priceGridByDate[dateKey];
         if (!price) {
           return;
@@ -1553,6 +1597,19 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   selectedChange(m: any) {
     this.isCurrentCalendarInputCheckout = false;
+
+    // Determine whether this click is for check-in (start) or check-out (end)
+    const isSelectingStart = !this.selectedRangeValue?.start || !!this.selectedRangeValue?.end;
+
+    // Only block unavailable dates for check-in selection.
+    // Check-out date does not require availability (guest departs that day).
+    if (isSelectingStart && m instanceof Date) {
+      const dateKey = this.getDateKeyFromDate(m);
+      if (this.unavailableDateKeys.has(dateKey)) {
+        return;
+      }
+    }
+
     if (!this.selectedRangeValue?.start || this.selectedRangeValue?.end) {
       if (this.dateRangeSelectionType != 'exact') {
         let incDays = parseInt(this.dateRangeSelectionType);
