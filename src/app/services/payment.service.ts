@@ -210,7 +210,8 @@ export class PaymentService {
       .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
       .join('&');
 
-    const finalUrl = `https://app.axisrooms.com/beV2/hotelBooking.html?${qs}`;
+    const bookingUrl = new URL('beV2/hotelBooking.html', BASE_URL).toString();
+    const finalUrl = `${bookingUrl}?${qs}`;
     window.open(finalUrl, '_self');
   }
 }
