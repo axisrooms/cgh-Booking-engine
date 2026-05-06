@@ -277,8 +277,8 @@
                     </div>
                 </div>
 
-                <!-- Other Rate Plans (Expanded) -->
-                <ng-container *ngIf="group.expanded">
+                <!-- Other Rate Plans -->
+                <ng-container>
                     <div class="rate-plan-row" *ngFor="let ratePlan of group.otherRatePlans">
                         <div class="rate-plan-info">
                             <p class="rate-plan-title">{{ratePlan.ratePlanName}}</p>
@@ -322,13 +322,6 @@
                 </ng-container>
             </div>
 
-            <!-- View More/Less Rates Toggle -->
-            <div class="view-rates-toggle" *ngIf="group.otherRatePlans.length > 0">
-                <button class="toggle-rates-btn" (click)="toggleRatePlans(group)">
-                    <span *ngIf="!group.expanded">{{ 'view_more_rates' | translate }} <i class="bi bi-chevron-down"></i></span>
-                    <span *ngIf="group.expanded">{{ 'view_less_rates' | translate }} <i class="bi bi-chevron-up"></i></span>
-                </button>
-            </div>
         </div>
     </ng-container>
 </ng-template>
